@@ -3,7 +3,6 @@ import { ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, V
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING,} from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
-import CustomIcon from '../components/CustomIcon';
 import {FlatList} from 'react-native';
 import {Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,9 +14,10 @@ import CartPageScreen from './CartScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from 'react-native-paper';
 import { ChickenData2 } from '../data/ChickenData';
-import { css, tabBarHeight } from '../theme/CSS';
+import { css } from '../theme/CSS';
 
 const HomeScreen = ({navigation}: any) => {
+  const tabBarHeight = useBottomTabBarHeight();
   const [userID, setUserID] = useState('');
   const [processData, setProcessData] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -146,7 +146,7 @@ const HomeScreen = ({navigation}: any) => {
                   roasted={""}
                   imagelink_square={require('../assets/chicken_assets/FrozenChicken.jpg')}
                   name={"Frozen chicken"}
-                  special_ingredient={"Can keep between 3 to 5 months."}
+                  special_ingredient={"Can keep 3 to 5 months."}
                   average_rating={5.0}
                   price={{size: 'M', price: '1500', currency: 'RM'}}
                   buttonPressHandler={{}}
@@ -161,7 +161,7 @@ const HomeScreen = ({navigation}: any) => {
                   roasted={""}
                   imagelink_square={require('../assets/chicken_assets/FullChicken.jpg')}
                   name={"Fresh Chicken"}
-                  special_ingredient={"Can Keep between 3 to 5 Days."}
+                  special_ingredient={"Can Keep 3 to 5 Days."}
                   average_rating={5.0}
                   price={{size: 'M', price: '1400', currency: 'RM'}}
                   buttonPressHandler={{}}
@@ -182,7 +182,7 @@ const HomeScreen = ({navigation}: any) => {
               </TouchableOpacity>
             </View>
 
-            <View style={[css.FlatListContainer,{flexDirection: "row"}]}>
+            <View style={[css.FlatListContainer,{flexDirection: "row", marginBottom: tabBarHeight}]}>
               <FlatList
                 data={fetchedData}
                 renderItem={showChickenCard}

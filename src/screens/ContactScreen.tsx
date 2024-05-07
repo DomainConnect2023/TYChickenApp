@@ -7,9 +7,11 @@ import { COLORS, FONTSIZE } from '../theme/theme';
 import { HistoryCardProps } from '../components/ChickenCard';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { css, tabBarHeight } from '../theme/CSS';
+import { css } from '../theme/CSS';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const ContactPageScreen = ({navigation}: {navigation:any}) => {
+    const tabBarHeight = useBottomTabBarHeight();
     const [processData, setProcessData] = useState(false);
     const [userID, setUserID] = useState('');
     const [fetchedData, setFetchedData] = useState<HistoryCardProps[]>([]);

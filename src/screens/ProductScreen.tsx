@@ -135,6 +135,7 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                     data={fetchedData}
                     renderItem={showChickenCard}
                     keyExtractor={(item) => item.id}
+                    style={{marginBottom: tabBarHeight}}
                 />
             </View>
             )}

@@ -1,21 +1,15 @@
 import React from 'react';
 import {
-  Dimensions,
   ImageBackground,
   ImageProps,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {
-  BORDERRADIUS,
   COLORS,
-  FONTFAMILY,
   FONTSIZE,
-  SPACING,
 } from '../theme/theme';
-import CustomIcon from './CustomIcon';
 import BGIcon from './BGIcon';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';

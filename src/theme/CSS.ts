@@ -1,10 +1,7 @@
 import { Dimensions, StyleSheet } from "react-native";
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from "./theme";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-export const CARD_WIDTH = Dimensions.get('window').width * 0.36;
-
-export const tabBarHeight = useBottomTabBarHeight();
+const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
 export const css = StyleSheet.create({
     ScreenContainer: {
@@ -399,9 +396,9 @@ export const css = StyleSheet.create({
         height: SPACING.space_50, 
         justifyContent: 'center', 
         alignItems: 'center',
-        bottom: -70, 
-        right: 30,
-        position: "absolute",
+        // bottom: 0, 
+        // right: 30,
+        // position: "absolute",
         elevation: 5,
     },
     MenuIcon: {

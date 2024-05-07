@@ -6,8 +6,10 @@ import HeaderBar from '../components/HeaderBar';
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import { ChickenCardProps } from '../components/ChickenCard';
 import { ChickenData3 } from '../data/ChickenData';
-import { CARD_WIDTH, css } from '../theme/CSS';
+import { css } from '../theme/CSS';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
 const CartPageScreen = ({navigation}: {navigation:any}) => {
     const [dataProcess, setDataProcess] = useState(false);
