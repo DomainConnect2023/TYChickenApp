@@ -1,118 +1,69 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, {useEffect} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import TabNavigator from './src/navigators/TabNavigator';
+import LoginScreen from './src/screens/LoginScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Dimensions, View } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
+import SearchPageScreen from './src/screens/SearchScreen';
+import ProductPageScreen from './src/screens/ProductScreen';
+import CartPageScreen from './src/screens/CartScreen';
+import ProductDetailPageScreen from './src/screens/ProductDetailScreen';
+import HistoryPageScreen from './src/screens/HistoryScreen';
+import ContactPageScreen from './src/screens/ContactScreen';
+import ProfilePageScreen from './src/screens/ProfileScreen';
+import { CustomDrawer } from './src/components/CustomDrawer';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const Stack = createNativeStackNavigator();
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  const [loading, setLoading] = React.useState(true);
+  const [initialRouteName, setInitialRouteName] = React.useState("");
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  React.useEffect(() => {
+    const checkUserCode = async () => {
+      const userCode = await AsyncStorage.getItem('UserID');
+      if (userCode === null) {
+        setInitialRouteName('Login');
+      }else{
+        if(userCode=="admin"){
+          setInitialRouteName('CustomDrawer');
+        }else{
+          setInitialRouteName('Tab');
+        }
+      }
+      setLoading(false);
+    };
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+    checkUserCode();
+  }, []);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+    {loading ? (
+      <View style={{ flex: 1, marginVertical: Dimensions.get('screen').height / 100 * 10 }}>
+        <ActivityIndicator size={40} color="#000000" />
+      </View>
+    ) : (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Login" component={LoginScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="Tab" component={TabNavigator} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="CustomDrawer" component={CustomDrawer} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="Search" component={SearchPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="Product" component={ProductPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="Cart" component={CartPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="ProductDetail" component={ProductDetailPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="History" component={HistoryPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="Contact" component={ContactPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="Profile" component={ProfilePageScreen} options={{animation: 'slide_from_bottom'}} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    )}
     </SafeAreaView>
   );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
