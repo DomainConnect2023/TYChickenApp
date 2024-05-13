@@ -1,45 +1,64 @@
-import React, {useEffect, useRef, useState} from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground, Image,} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image,} from 'react-native';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING,} from '../theme/theme';
+import { COLORS, FONTSIZE, SPACING,} from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
 import {FlatList} from 'react-native';
 import {Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import BGIcon from '../components/BGIcon';
-import { ChickenCard, ChickenCardProps } from '../components/ChickenCard';
+import { ChickenCard, } from '../components/ChickenCard';
 import Snackbar from 'react-native-snackbar';
-import CartPageScreen from './CartScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from 'react-native-paper';
 import { ChickenData2 } from '../data/ChickenData';
 import { css } from '../theme/CSS';
+import { useFocusEffect } from '@react-navigation/native';
+import { createTable, db } from '../data/SQLiteFile';
+import { ChickenCardProps, currencyFormat } from '../components/Objects';
 
 const HomeScreen = ({navigation}: any) => {
   const tabBarHeight = useBottomTabBarHeight();
   const [userID, setUserID] = useState('');
   const [processData, setProcessData] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [categoryIndex, setCategoryIndex] = useState({ index: 1 });
-
-  const ListRef: any = useRef<FlatList>();
-  
+  const [countItem, setCountItem] = useState<number>(0);
 
   const [fetchedData, setFetchedData] = useState<ChickenCardProps[]>([]);
 
   useEffect(()=> {
     (async()=> {
+      await createTable();
+      await checkCartNum();
       await fetchedDataAPI(ChickenData2);
       // console.log(userID);
     })();
   }, []);
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     fetchedDataAPI(ChickenData2);
-  //   }, [])
-  // );
+  useFocusEffect(
+    React.useCallback(() => {
+      createTable();
+      checkCartNum();
+    }, [])
+  );
+
+  const checkCartNum = async () => {
+    try {
+      let sql = "SELECT * FROM Carts GROUP BY id";
+      db.transaction((tx) => {
+          tx.executeSql(sql, [], async (tx, resultSet) => {
+              var length = resultSet.rows.length;
+              setCountItem(length);
+          }, (error) => {
+              console.log("Error", error);
+          })
+      });
+    }catch (error: any) {
+        Snackbar.show({
+          text: error.message,
+          duration: Snackbar.LENGTH_SHORT,
+        });
+    }
+  };
 
   const fetchedDataAPI = async(newData: { itemList: ChickenCardProps[] }) => {
     setProcessData(true);
@@ -60,7 +79,16 @@ const HomeScreen = ({navigation}: any) => {
 
   const showChickenCard = ({ item }: { item: ChickenCardProps }) => {
     return (
-      <TouchableOpacity onPress={() => {navigation.navigate("ProductDetail")}} >
+      <TouchableOpacity onPress={() => {
+        navigation.navigate('ProductDetail', {
+          key: item.index, 
+          name: item.name, 
+          type: item.type, 
+          price: parseInt(item.price[1].price),
+          picture: item.imagelink_square, 
+          description: item.special_ingredient
+      });
+      }} >
         <LinearGradient
           start={{x: 0, y: 0}}
           end={{x: 1, y: 1}}
@@ -84,16 +112,19 @@ const HomeScreen = ({navigation}: any) => {
           <Text style={css.CardSubtitle}>{item.special_ingredient}</Text>
           <View style={css.CardFooterRow}>
             <Text style={css.CardPriceCurrency}>
-              RM <Text style={css.CardPrice}>{item.price[1].price}</Text>
+              RM <Text style={css.CardPrice}>{currencyFormat(parseInt(item.price[1].price))}</Text>
             </Text>
             <TouchableOpacity
-              onPress={() => {navigation.navigate("ProductDetail")}}>
-              <BGIcon
-                color={COLORS.primaryWhiteHex}
-                name={'add'}
-                BGColor={COLORS.primaryOrangeHex}
-                size={FONTSIZE.size_10}
-              />
+              onPress={() => {
+                navigation.navigate('ProductDetail', {
+                  key: item.index, 
+                  name: item.name, 
+                  type: item.type, 
+                  price: item.price[1].price,
+                  picture: item.imagelink_square, 
+                  description: item.special_ingredient
+                });
+              }}>
             </TouchableOpacity>
           </View>
         </LinearGradient>
@@ -113,7 +144,7 @@ const HomeScreen = ({navigation}: any) => {
           {userID == "admin" ? (
             <></>
           ) : (
-            <HeaderBar title="TY CHICKEN" />
+            <HeaderBar title="TY CHICKEN" badgeNumber={countItem} />
           )}
           <View style={css.LineContainer}></View>
           <ScrollView
@@ -138,34 +169,54 @@ const HomeScreen = ({navigation}: any) => {
             </View>
 
             <View style={[css.FlatListContainer,{flexDirection: "row", width: Dimensions.get("screen").width/100*95, marginBottom: SPACING.space_18}]}>
-              <TouchableOpacity onPress={() => {navigation.navigate("ProductDetail")}} >
+              <TouchableOpacity onPress={() => {
+                navigation.navigate('ProductDetail', {
+                  key: 10, 
+                  name: "Frozen Chicken", 
+                  type: "", 
+                  price: 1500,
+                  picture: require('../assets/chicken_assets/FrozenChicken.jpg'), 
+                  description: "Can keep 3 to 5 months."
+                });
+              }} >
                 <ChickenCard
                   id={"1"}
                   index={1}
                   type={""}
                   roasted={""}
                   imagelink_square={require('../assets/chicken_assets/FrozenChicken.jpg')}
-                  name={"Frozen chicken"}
+                  name={"Frozen Chicken"}
                   special_ingredient={"Can keep 3 to 5 months."}
                   average_rating={5.0}
                   price={{size: 'M', price: '1500', currency: 'RM'}}
+                  quantity={0}
                   buttonPressHandler={{}}
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => {navigation.navigate("ProductDetail")}}>
+              <TouchableOpacity onPress={() => {
+                navigation.navigate('ProductDetail', {
+                  key: 20, 
+                  name: "Fresh Chicken", 
+                  type: "", 
+                  price: 1400,
+                  picture: require('../assets/chicken_assets/FullChicken.jpg'), 
+                  description: "Can Keep 3 to 5 Days."
+                });
+              }}>
                 <ChickenCard
-                  id={"2"}
-                  index={2}
-                  type={""}
-                  roasted={""}
-                  imagelink_square={require('../assets/chicken_assets/FullChicken.jpg')}
-                  name={"Fresh Chicken"}
-                  special_ingredient={"Can Keep 3 to 5 Days."}
-                  average_rating={5.0}
-                  price={{size: 'M', price: '1400', currency: 'RM'}}
-                  buttonPressHandler={{}}
-                />
+                    id={"2"}
+                    index={2}
+                    type={""}
+                    roasted={""}
+                    imagelink_square={require('../assets/chicken_assets/FullChicken.jpg')}
+                    name={"Fresh Chicken"}
+                    special_ingredient={"Can Keep 3 to 5 Days."}
+                    average_rating={5.0}
+                    price={{ size: 'M', price: '1400', currency: 'RM' }}
+                    quantity={0}
+                    buttonPressHandler={{}}
+                  />
               </TouchableOpacity>
             </View>
 
@@ -196,10 +247,5 @@ const HomeScreen = ({navigation}: any) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-
-
-});
 
 export default HomeScreen;

@@ -4,25 +4,56 @@ import { View, Alert, ScrollView, StatusBar, StyleSheet, Dimensions, Image, Text
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
-import { HistoryCardProps } from '../components/ChickenCard';
 import ProfilePic from '../components/ProfilePic';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Collapsible from 'react-native-collapsible';
 import { Switch } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { css } from '../theme/CSS';
+import { createTable, db, deleteAllData } from '../data/SQLiteFile';
+import { useFocusEffect } from '@react-navigation/native';
+import HeaderDriverBar from '../components/HeaderDriverBar';
 
 const ProfilePageScreen = ({navigation}: {navigation:any}) => {
     const [showLanguage, setShowLanguage] = useState(false);
     const [userID, setUserID] = useState('');
     const [userName, setUserName] = useState('Hahahaha');
+    const [countItem, setCountItem] = useState<number>(0);
 
-    useEffect(() => {
-        (async () => {
+    useEffect(()=> {
+        (async()=> {
+            await createTable();
+            await checkCartNum();
             await fetchedDataAPI();
             // console.log(userID);
         })();
     }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            createTable();
+            checkCartNum();
+        }, [])
+    );
+
+    const checkCartNum = async () => {
+        try {
+            let sql = "SELECT * FROM Carts GROUP BY id";
+            db.transaction((tx) => {
+                tx.executeSql(sql, [], async (tx, resultSet) => {
+                    var length = resultSet.rows.length;
+                    setCountItem(length);
+                }, (error) => {
+                    console.log("Error", error);
+                })
+            });
+        }catch (error: any) {
+            Snackbar.show({
+                text: error.message,
+                duration: Snackbar.LENGTH_SHORT,
+            });
+        }
+    };
 
     const onToggleLanguage = () => {
         setShowLanguage(!showLanguage);
@@ -48,7 +79,11 @@ const ProfilePageScreen = ({navigation}: {navigation:any}) => {
                 {userID == "admin" ? (
                     <></>
                 ) : (
-                    <HeaderBar title="Profile" />
+                    userID == "driver" ? (
+                        <HeaderDriverBar title="Profile" />
+                    ) : (
+                        <HeaderBar title="Profile" badgeNumber={countItem} />
+                    )
                 )}
 
                 <TouchableOpacity onPress={()=>{
@@ -121,7 +156,7 @@ const ProfilePageScreen = ({navigation}: {navigation:any}) => {
                                 </Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {}}>
+                        {/* <TouchableOpacity onPress={() => {}}>
                             <View style={{ 
                                 padding: SPACING.space_16, 
                                 margin: SPACING.space_4, 
@@ -155,12 +190,16 @@ const ProfilePageScreen = ({navigation}: {navigation:any}) => {
                                     Malay
                                 </Text>
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </Collapsible>
                 </View>
 
                 <View style={styles.InputContainerComponent}>
-                    <TouchableOpacity onPress={async () => {[await AsyncStorage.removeItem("UserID"), navigation.navigate("Login" as never)]}}>
+                    <TouchableOpacity onPress={async () => {[
+                        await AsyncStorage.removeItem("UserID"), 
+                        deleteAllData(),
+                        navigation.navigate("Login" as never),
+                    ]}}>
                         <View style={{ flexDirection: "row", width: Dimensions.get("screen").width, justifyContent: 'center', alignItems: "center" }}>
                             <View style={{ width: "20%", alignItems: "center", padding: SPACING.space_10 }}>
                                 <Icon name={"logout" ?? ""} size={FONTSIZE.size_30} color={COLORS.primaryRedHex} />

@@ -9,6 +9,7 @@ import ProductPageScreen from '../screens/ProductScreen';
 import HistoryPageScreen from '../screens/HistoryScreen';
 import ContactPageScreen from '../screens/ContactScreen';
 import ProfilePageScreen from '../screens/ProfileScreen';
+import { css } from '../theme/CSS';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,12 +20,12 @@ const TabNavigator = () => {
         tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarStyle: styles.tabBarStyle,
+        tabBarStyle: css.tabBarStyle,
         tabBarBackground: () => (
           <BlurView
             overlayColor=""
             blurAmount={10}
-            style={styles.BlurViewStyles}
+            style={css.BlurViewStyles}
           />
         ),
       }}>
@@ -55,13 +56,6 @@ const TabNavigator = () => {
                 focused ? COLORS.primaryOrangeHex : COLORS.secondaryLightGreyHex
               }
             />
-            // <CustomIcon
-            //   name="cart"
-            //   size={28}
-            //   color={
-            //     focused ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex
-            //   }
-            // />
           ),
         }}></Tab.Screen>
         <Tab.Screen
@@ -79,7 +73,7 @@ const TabNavigator = () => {
             ),
           }}>
         </Tab.Screen>
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Contact"
           component={ContactPageScreen}
           options={{
@@ -93,7 +87,7 @@ const TabNavigator = () => {
               />
             ),
           }}>
-        </Tab.Screen>
+        </Tab.Screen> */}
         <Tab.Screen
           name="Profile"
           component={ProfilePageScreen}
@@ -109,54 +103,8 @@ const TabNavigator = () => {
             ),
           }}>
         </Tab.Screen>
-      {/* <Tab.Screen
-        name="Favorite"
-        component={FavoritesScreen}
-        options={{
-          tabBarIcon: ({focused, color, size}) => (
-            <CustomIcon
-              name="like"
-              size={28}
-              color={
-                focused ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex
-              }
-            />
-          ),
-        }}></Tab.Screen>
-      <Tab.Screen
-        name="History"
-        component={OrderHistoryScreen}
-        options={{
-          tabBarIcon: ({focused, color, size}) => (
-            <CustomIcon
-              name="bell"
-              size={28}
-              color={
-                focused ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex
-              }
-            />
-          ),
-        }}></Tab.Screen> */}
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  tabBarStyle: {
-    height: 65,
-    position: 'absolute',
-    backgroundColor: COLORS.thirdBlackRGBA,
-    borderTopWidth: 0,
-    elevation: 0,
-    borderTopColor: 'transparent',
-  },
-  BlurViewStyles: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-});
 
 export default TabNavigator;

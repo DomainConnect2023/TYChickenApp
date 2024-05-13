@@ -9,31 +9,16 @@ import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/th
 import HeaderBar from '../components/HeaderBar';
 import {FlatList} from 'react-native';
 import { css } from '../theme/CSS';
-
-const ChickenSampleData = {
-        index: 0,
-        id: 'C1',
-        name: 'Chicken Wing',
-        roasted: 'Medium Roasted',
-        imagelink_square: require('../assets/chicken_assets/wing.jpg'),
-        special_ingredient: 'With Wing',
-        price: [
-            {size: 'S', price: '1000', currency: '$'},
-            {size: 'M', price: '1150', currency: '$'},
-            {size: 'L', price: '1400', currency: '$'},
-        ],
-        average_rating: 5.0,
-        type: 'Part',
-        buttonPressHandler: {}
-}
+import { addData, createTable, db, selectData, updateData } from '../data/SQLiteFile';
+import PopUpAnimation from '../components/PopUpAnimation';
+import { ProductData, currencyFormat } from '../components/Objects';
 
 const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
     const route = useRoute();
+    const { key, name, price, type, picture, description } = route.params as ProductData;
     const [processData, setProcessData] = useState(false);
-    // const { key, name, price, type } = route.params as ProductData;
-    const [lootData, setLootData] = useState(false);
-    const priceItem = ChickenSampleData.price.find(price => price.size === 'M');
-    const [quantity, setQuantity] = useState("10");
+    const [showAnimation, setShowAnimation] = useState(false);
+    const [quantity, setQuantity] = useState("1");
     const [countItem, setCountItem] = useState<number>(0);
 
     const ListRef: any = useRef<FlatList>();
@@ -41,11 +26,40 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
 
     useEffect(()=> {
         (async()=> {
+            // console.log(route);
+            await createTable();
+            await checkCartNum();
             await fetchedDataAPI();
         })();
     }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            createTable();
+            checkCartNum();
+        }, [])
+    );
+
+    const checkCartNum = async () => {
+        try {
+            let sql = "SELECT * FROM Carts GROUP BY id";
+            db.transaction((tx) => {
+                tx.executeSql(sql, [], async (tx, resultSet) => {
+                    var length = resultSet.rows.length;
+                    setCountItem(length);
+                }, (error) => {
+                    console.log("Error", error);
+                })
+            });
+        }catch (error: any) {
+            Snackbar.show({
+              text: error.message,
+              duration: Snackbar.LENGTH_SHORT,
+            });
+        }
+    };
     
-      const fetchedDataAPI = async() => {
+    const fetchedDataAPI = async() => {
         setProcessData(true);
         try {
           
@@ -57,6 +71,40 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
         }
         setProcessData(false);
     };
+
+    const addToCartApi = async(originid: number, name: string, type: string, picture: any, price: number, quantity: number) => {
+        if(Number.isNaN(quantity) || quantity<=0){
+            Snackbar.show({
+                text: "Your item quantity can't be empty. ",
+                duration: Snackbar.LENGTH_SHORT,
+            });
+        }else{
+            try {
+                const { checkLength, numberOfQuantity } = await selectData(originid);
+                if(checkLength>0){
+                    let submitTotal = numberOfQuantity+quantity;
+                    await updateData(originid, submitTotal);
+                    setShowAnimation(true);
+                    setTimeout(() => {
+                        setShowAnimation(false);
+                    }, 800);
+                    // Snackbar.show({
+                    //     text: "Add to Cart Successfully.",
+                    //     duration: Snackbar.LENGTH_SHORT,
+                    // });
+                }else{
+                    await addData(originid,name, type, picture, price, quantity);
+                    setShowAnimation(true);
+                    setTimeout(() => {
+                        setShowAnimation(false);
+                    }, 800);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+            await checkCartNum();
+        }
+    }
     
 
     return (
@@ -64,8 +112,17 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={css.ScrollViewFlex}>
                 {/* App Header */}
-                <HeaderBar title="" checkBackBttn={true} />
+                <HeaderBar title="" checkBackBttn={true} badgeNumber={countItem} />
                 <View style={css.LineContainer}></View>
+
+            {showAnimation ? (
+                <PopUpAnimation
+                    style={{flex: 1}}
+                    source={require('../animationPart/AddSuccess.json')}
+                />
+            ) : (
+                <></>
+            )}
             
             {processData==true ? (
                 <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
@@ -75,27 +132,28 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                 <View style={{flex: 1}}>
                     <Image
                         style={css.DetailImage}
-                        source={ChickenSampleData.imagelink_square}
+                        source={picture}
                     />
 
                     <View style={css.cardContainer}>
                         <View style={{marginTop: 10}}>
                             <Text style={css.ScreenTitle}>
-                                {ChickenSampleData.name}
+                                {name}
                             </Text>
                         </View>
                         <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', marginBottom: SPACING.space_30}}>
                             <View>
                                 <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
-                                    RM {ChickenSampleData.price.find(price => price.size === 'M')?.price || ''}
+                                    RM {currencyFormat(price)}
                                 </Text>
                             </View>
                             <View style={{flexDirection: "row", marginHorizontal: SPACING.space_10}}>
                                 <Pressable
                                     style={css.plusButton}
                                     onPress={async () => {
-                                        if(parseInt(quantity)>10){
-                                            let newVar = parseInt(quantity)-10;
+                                        console.log(parseInt(quantity));
+                                        if(parseInt(quantity)>1){
+                                            let newVar = parseInt(quantity)-1;
                                             setQuantity(newVar.toString());
                                         }
                                     }}
@@ -107,12 +165,16 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                     mode="outlined"
                                     keyboardType = 'numeric'
                                     value={quantity}
-                                    onChangeText={setQuantity}
+                                    onChangeText={(text)=>{
+                                        if(parseInt(text)>0){
+                                            setQuantity(text.toString());
+                                        }
+                                    }}
                                 />
                                 <Pressable
                                     style={css.plusButton}
                                     onPress={async () => {
-                                        let newVar = parseInt(quantity)+10;
+                                        let newVar = parseInt(quantity)+1;
                                         setQuantity(newVar.toString());
                                     }}
                                 >
@@ -210,14 +272,34 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                 Description
                             </Text>
                             <Text style={css.DescriptionText}>
-                                {ChickenSampleData.special_ingredient} asdA fasd asdf asdA fasd asdf asdasdA fasd asdf asdA fasd A fasd aA fasd asdf sdA fasdsdA fasd asdf asdA fasd asdf asdA fasd asdf asdA fasd asdf a asdf aasd asdf a
+                                {description} asdA fasd asdf asdA fasd asdf asdasdA fasd asdf asdA fasd A fasd aA fasd asdf sdA fasdsdA fasd asdf asdA fasd asdf asdA fasd asdf asdA fasd asdf a asdf aasd asdf a
                             </Text>
                         </View>
                     </View>
                     <View style={css.CartFooter}>
                         <Pressable
                             style={css.AddtoCartButton}
-                            onPress={async () => {}}
+                            onPress={async () => {
+                                let categorySelected;
+                                categoryIndex.index === 1 ? (
+                                    categorySelected="10"
+                                ) : (
+                                    categoryIndex.index === 2 ? (
+                                        categorySelected="50"
+                                    ) : (
+                                        categorySelected="100"
+                                    )
+                                );
+
+                                addToCartApi(
+                                    key, 
+                                    name, 
+                                    categorySelected, 
+                                    '../assets/chicken_assets/cartPic.png', 
+                                    price, 
+                                    parseInt(quantity)
+                                )
+                            }}
                         >
                             <Text style={css.AddtoCartText}>Add to Cart</Text>
                         </Pressable>

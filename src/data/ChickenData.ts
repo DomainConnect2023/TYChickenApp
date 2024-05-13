@@ -1,4 +1,4 @@
-import { ChickenCardProps } from "../components/ChickenCard";
+import { ChickenCardProps, HistoryCardProps } from "../components/Objects";
 
 export const ChickenData = {
     "itemList": [
@@ -146,6 +146,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
         ],
         average_rating: 5.0,
         type: 'Part',
+        quantity: 1,
         buttonPressHandler: {}
     },
     {
@@ -162,6 +163,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
         ],
         average_rating: 5.0,
         type: 'Part',
+        quantity: 1,
         buttonPressHandler: {}
     },
     {
@@ -178,6 +180,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
         ],
         average_rating: 5.0,
         type: 'Part',
+        quantity: 1,
         buttonPressHandler: {}
     },
     {
@@ -194,6 +197,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
       ],
       average_rating: 5.0,
       type: 'Part',
+      quantity: 1,
       buttonPressHandler: {}
   },
   {
@@ -210,6 +214,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
       ],
       average_rating: 5.0,
       type: 'Part',
+      quantity: 1,
       buttonPressHandler: {}
 },
     ]
@@ -231,6 +236,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             ],
             average_rating: 5.0,
             type: 'Part',
+            quantity: 1,
             buttonPressHandler: {}
         },
         {
@@ -247,6 +253,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             ],
             average_rating: 5.0,
             type: 'Part',
+            quantity: 1,
             buttonPressHandler: {}
         },
         {
@@ -263,6 +270,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             ],
             average_rating: 5.0,
             type: 'Part',
+            quantity: 1,
             buttonPressHandler: {}
         },
         {
@@ -279,6 +287,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             ],
             average_rating: 5.0,
             type: 'Part',
+            quantity: 1,
             buttonPressHandler: {}
         },
         {
@@ -295,6 +304,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             ],
             average_rating: 5.0,
             type: 'Part',
+            quantity: 1,
             buttonPressHandler: {}
         },
         {
@@ -311,7 +321,58 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             ],
             average_rating: 5.0,
             type: 'Part',
+            quantity: 1,
             buttonPressHandler: {}
+        },
+    ]
+}
+
+export const HistoryData : { itemList: HistoryCardProps[];} = {
+    "itemList": [
+        {
+            id: "1",
+            DOnumber: "DO10012",
+            date: "2024-05-10",
+            totalWeight: 150100,
+            totalPrice: 190223,
+            currency: "RM",
+            status: 0,
+        },
+        {
+            id: "2",
+            DOnumber: "DO10011",
+            date: "2024-05-09",
+            totalWeight: 140100,
+            totalPrice: 180123,
+            currency: "RM",
+            status: 0,
+        },
+        {
+            id: "3",
+            DOnumber: "DO10010",
+            date: "2024-05-08",
+            totalWeight: 90100,
+            totalPrice: 80223,
+            currency: "RM",
+            status: 0,
+        },
+        {
+            id: "4",
+            DOnumber: "DO10009",
+            date: "2024-05-07",
+            totalWeight: 80310,
+            totalPrice: 40119,
+            currency: "RM",
+            status: 0,
+        },
+        {
+            id: "5",
+            DOnumber: "DO10008",
+            date: "2024-05-06",
+            totalWeight: 105200,
+            totalPrice: 93980,
+            currency: "RM",
+            status: 0,
         },
     ]
 }

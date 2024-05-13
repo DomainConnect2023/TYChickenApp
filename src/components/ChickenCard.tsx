@@ -1,38 +1,10 @@
 import React from 'react';
-import {
-  ImageBackground,
-  ImageProps,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {
-  COLORS,
-  FONTSIZE,
-} from '../theme/theme';
-import BGIcon from './BGIcon';
+import { ImageBackground, Text, TouchableOpacity, View, } from 'react-native';
+import { COLORS, FONTSIZE, } from '../theme/theme';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { css } from '../theme/CSS';
-
-export interface HistoryCardProps {
-  id: string;
-  date: string;
-  totalPrice: string;
-}
-
-export interface ChickenCardProps {
-  id: string;
-  index: number;
-  type: string;
-  roasted: string;
-  imagelink_square: ImageProps;
-  name: string;
-  special_ingredient: string;
-  average_rating: number;
-  price: any;
-  buttonPressHandler: any;
-}
+import { ChickenCardProps, currencyFormat } from './Objects';
 
 export const ChickenCard: React.FC<ChickenCardProps> = ({
   id,
@@ -51,10 +23,10 @@ export const ChickenCard: React.FC<ChickenCardProps> = ({
       start={{x: 0, y: 0}}
       end={{x: 1, y: 1}}
       style={css.CardLinearGradientContainer}
-      colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}>
+      colors={[COLORS.primaryGreyHex, COLORS.primaryGreyHex]}>
       <ImageBackground
         source={imagelink_square}
-        style={css.CardImageBG}
+        style={[css.CardImageBG]}
         resizeMode="cover">
         <View style={css.CardRatingContainer}>
           <Icon
@@ -69,7 +41,7 @@ export const ChickenCard: React.FC<ChickenCardProps> = ({
       <Text style={css.CardSubtitle}>{special_ingredient}</Text>
       <View style={css.CardFooterRow}>
         <Text style={css.CardPriceCurrency}>
-          $ <Text style={css.CardPrice}>{price.price}</Text>
+          RM <Text style={css.CardPrice}>{currencyFormat(parseInt(price.price))}</Text>
         </Text>
         <TouchableOpacity
           onPress={() => {
@@ -84,12 +56,6 @@ export const ChickenCard: React.FC<ChickenCardProps> = ({
               prices: [{...price, quantity: 1}],
             });
           }}>
-          <BGIcon
-            color={COLORS.primaryWhiteHex}
-            name={'add'}
-            BGColor={COLORS.primaryOrangeHex}
-            size={FONTSIZE.size_10}
-          />
         </TouchableOpacity>
       </View>
     </LinearGradient>

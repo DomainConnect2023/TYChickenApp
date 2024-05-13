@@ -40,6 +40,10 @@ const LoginScreen = ({navigation}: any) => {
             setUserName("");
             setPassword("");
             navigation.navigate("CustomDrawer", { screen: 'Home'});
+        }else if(username=="driver"){
+            setUserName("");
+            setPassword("");
+            navigation.navigate("TabDriver", { screen: 'Home'});
         }else{
             setUserName("");
             setPassword("");
@@ -68,7 +72,7 @@ const LoginScreen = ({navigation}: any) => {
                     </View>
                     <View style={[css.widthAndAdjustment, css.cardShadow]}>
                         <View style={[css.cardContainer, {padding: 30}]}>
-                            <View style={{flexDirection: "column"}}>
+                            <View style={{flexDirection: "column", marginTop: SPACING.space_20}}>
                                 <Text style={css.titleTextInput}> User Name </Text>
                                 <TextInput
                                     style={css.loginTextInput}
@@ -80,7 +84,7 @@ const LoginScreen = ({navigation}: any) => {
                                 />
                             </View>
 
-                            <View style={{flexDirection: "column"}}>
+                            <View style={{flexDirection: "column", marginTop: SPACING.space_20}}>
                                 <TouchableOpacity style={css.showPasswordButton}
                                     onPress={() => {
                                         if (ishide == (true)) {
@@ -96,7 +100,7 @@ const LoginScreen = ({navigation}: any) => {
                                         <Octicons name="eye-closed" size={FONTSIZE.size_30} style={css.showPasswordIcon} />
                                     )}
                                 </TouchableOpacity>
-                                <Text style={css.titleTextInput}> Passwordn </Text>
+                                <Text style={css.titleTextInput}> Password </Text>
                                 <TextInput
                                     secureTextEntry={ishide}
                                     style={css.loginTextInput}
