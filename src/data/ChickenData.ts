@@ -314,7 +314,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             average_rating: 5.0,
             type: 'Part',
             quantity: 1,
-            status: true,
+            status: false,
             buttonPressHandler: {}
         },
         {

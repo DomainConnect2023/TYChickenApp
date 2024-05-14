@@ -31,7 +31,7 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
 
     const [fetchedData, setFetchedData] = useState<ChickenCardProps[]>([]);
 
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(true);
 
     useEffect(()=> {
         (async()=> {
@@ -95,12 +95,13 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
 
     const showChickenCard = ({ item }: { item: ChickenCardProps }) => {
         return (
-            <TouchableOpacity onPress={() => {onToggleSwitch(item.id, item.status)}} >
+            <TouchableOpacity onPress={() => {
+                onToggleSwitch(item.id, item.status);
+            }} >
                 <View style={{flexDirection: "row", width: Dimensions.get("screen").width*95/100, backgroundColor: COLORS.secondaryVeryLightGreyHex, margin: 5, borderRadius: 20}}>
                     <ImageBackground
                     source={item.imagelink_square}
                     style={[css.CardImageBG, {width: CARD_WIDTH*1.15, height: CARD_WIDTH*1.15,margin: 10}]}
-                    // blurRadius={20}
                     resizeMode="cover">
                         <View style={css.CardRatingContainer}>
                             <Icon
@@ -109,7 +110,6 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
                             size={FONTSIZE.size_16}
                             />
                             <Text style={[styles.CardRatingText,{color:COLORS.primaryGreyHex}]}>{item.average_rating}</Text>
-                            {/* <Text style={{color:COLORS.primaryRedHex,fontSize: 24,fontWeight: 'bold',}}>Sold Out</Text> */}
                         </View>
                     </ImageBackground>
 
@@ -120,7 +120,7 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
                         <View style={{ flex: 1, flexDirection: 'row', width: CARD_WIDTH, justifyContent: "flex-end", alignItems: "flex-end"}}>
                             <Switch 
                                 style={styles.switch} 
-                                value={isDarkMode} 
+                                value={item.status} 
                                 onValueChange={()=>{onToggleSwitch(item.id, item.status)}} 
                                 trackColor={{false: COLORS.primaryVeryLightGreyHex, true: "#7CB778"}}
                                 color={COLORS.primaryVeryLightGreyHex}

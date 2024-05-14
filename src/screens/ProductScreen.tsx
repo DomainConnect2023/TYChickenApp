@@ -130,22 +130,31 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
     const showChickenCard = ({ item }: { item: ChickenCardProps }) => {
         return (
             <TouchableOpacity onPress={() => {
-                navigation.navigate('ProductDetail', {
-                    key: item.index, 
-                    name: item.name, 
-                    type: item.type, 
-                    price: parseInt(item.price[1].price),
-                    picture: item.imagelink_square, 
-                    description: item.special_ingredient
-                });
+                if(item.status==true){
+                    navigation.navigate('ProductDetail', {
+                        key: item.index, 
+                        name: item.name, 
+                        type: item.type, 
+                        price: parseInt(item.price[1].price),
+                        picture: item.imagelink_square, 
+                        description: item.special_ingredient
+                    });
+                }
             }} >
-                <View style={{flexDirection: "row", width: Dimensions.get("screen").width*95/100, backgroundColor: COLORS.secondaryVeryLightGreyHex, margin: 5, borderRadius: 20}}>
+                <View style={{
+                    flexDirection: "row", 
+                    width: Dimensions.get("screen").width*95/100, 
+                    backgroundColor: COLORS.secondaryVeryLightGreyHex, 
+                    margin: 5, 
+                    borderRadius: 20,
+                }}>
                     <ImageBackground
                     source={item.imagelink_square}
                     style={[css.CardImageBG, {width: CARD_WIDTH*1.15, height: CARD_WIDTH*1.15,margin: 10}]}
                     // style={[css.CardImageBG, {width: CARD_WIDTH*0.8, height: CARD_WIDTH*0.8,margin: 10}]}
-                    // blurRadius={20}
+                    blurRadius={item.status ? 0 : 20}
                     resizeMode="cover">
+                    {item.status ? (
                         <View style={css.CardRatingContainer}>
                             <Icon
                             name={'star'}
@@ -153,18 +162,25 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                             size={FONTSIZE.size_16}
                             />
                             <Text style={[styles.CardRatingText,{color:COLORS.primaryGreyHex}]}>{item.average_rating}</Text>
-                            {/* <Text style={{color:COLORS.primaryRedHex,fontSize: 24,fontWeight: 'bold',}}>Sold Out</Text> */}
                         </View>
+                    ) : (
+                        <View style={css.CardRatingContainer}>
+                            <Text style={{color:COLORS.primaryRedHex,fontSize: 24,fontWeight: 'bold',}}>Sold Out</Text>
+                        </View>
+                    )}
                     </ImageBackground>
 
-                    <View style={{flexDirection: "column", justifyContent: "flex-start", margin: 20}}>
+                    {item.status==true ? (
+                        <View style={{flexDirection: "column", justifyContent: "flex-start", margin: 20}}>
                         <Text style={styles.CardTitle}>{item.name}</Text>
                         <Text style={styles.CardSubtitle}>RM {currencyFormat(parseInt(item.price.find((price: { size: string; }) => price.size === 'M').price))}</Text>
 
-                        <View style={{flexDirection: "row", justifyContent: 'space-between',}}>
+                        <View style={{
+                            flexDirection: "row", 
+                            justifyContent: 'space-between',
+                        }}>
                             <Pressable
                                 style={css.miniPlusButton}
-                                // disabled={true}
                                 onPress={async () => {
                                     if (item.quantity>1) {
                                         let newVar = item.quantity-1;
@@ -185,7 +201,6 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                                 mode="outlined"
                                 keyboardType = 'numeric'
                                 value={item.quantity.toString()}
-                                // disabled={true}
                                 onChangeText={(text)=>{
                                     if(parseInt(text)>0){
                                         const updatedData = fetchedData.map((data) => {
@@ -200,7 +215,6 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                             />
                             <Pressable
                                 style={css.miniPlusButton}
-                                // disabled={true}
                                 onPress={async () => {
                                     let newVar = item.quantity+1;
                                     const updatedData = fetchedData.map((data) => {
@@ -221,7 +235,6 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                                 Add to Cart
                             </Text>
                             <TouchableOpacity 
-                                // disabled={true} 
                                 onPress={() => {
                                     addToCartApi(
                                         item.index, 
@@ -241,6 +254,9 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                             </TouchableOpacity>
                         </View>
                     </View>
+                    ) : (
+                        <></>
+                    )}
                 </View>
             </TouchableOpacity>
         );
