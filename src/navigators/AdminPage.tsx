@@ -134,7 +134,6 @@ const AdminPage = ({navigation}: {navigation:any}) => {
                 </View>
             ) : (
             <View style={{flex: 1}}>    
-
                 {userID == "admin" ? (
                     <></>
                 ) : (

@@ -8,7 +8,9 @@ interface CategoryListProps {
     id: number;
     value: string;
     currentChoosing: number;
-  }
+    quantity: number;
+    price: number;
+}
 
 const CategoryListCard: React.FC<CategoryListProps> = ({
     id,
@@ -17,15 +19,15 @@ const CategoryListCard: React.FC<CategoryListProps> = ({
 }) => {
     return (
         <View style={{margin: SPACING.space_5,}}>
-        {currentChoosing == id ? (
-            <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryRedHex,}]}>
-                <Text style={[css.CategoryText, {color: COLORS.primaryWhiteHex,}]}>{value}</Text>
-            </View>
-        ) : (
-            <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex,}]}>
-                <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>{value}</Text>
-            </View>
-        )}
+            {currentChoosing == id ? (
+                <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryRedHex,}]}>
+                    <Text style={[css.CategoryText, {color: COLORS.primaryWhiteHex,}]}>{value}</Text>
+                </View>
+            ) : (
+                <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex,}]}>
+                    <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>{value}</Text>
+                </View>
+            )}
         </View>
     );
 };

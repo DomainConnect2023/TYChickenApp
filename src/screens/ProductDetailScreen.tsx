@@ -143,7 +143,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                 {name}
                             </Text>
                         </View>
-                        <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', marginBottom: SPACING.space_30}}>
+                        <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', marginBottom: SPACING.space_10}}>
                             <View>
                                 <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
                                     RM {currencyFormat(price)}
@@ -206,8 +206,9 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                             <CategoryListCard 
                                                 id={item.id}
                                                 value={item.value}
-                                                currentChoosing={categoryIndex.index}
-                                            />
+                                                currentChoosing={categoryIndex.index} 
+                                                quantity={0} 
+                                                price={0}                                            />
                                         </TouchableOpacity>
                                     ))}
                                 </View>

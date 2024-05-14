@@ -57,6 +57,7 @@ export const css = StyleSheet.create({
         elevation: SPACING.space_10,
     },
     cardContainer: {
+        flex: 1,
         backgroundColor: COLORS.primaryWhiteHex,
         borderRadius: BORDERRADIUS.radius_16,
         overflow: 'hidden',
@@ -108,6 +109,7 @@ export const css = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
+        alignSelf: "flex-end",
         marginTop: SPACING.space_15,
         width: CARD_WIDTH,
     },
@@ -283,7 +285,7 @@ export const css = StyleSheet.create({
     },
     CategoryScrollViewStyle: {
         paddingHorizontal: SPACING.space_4,
-        paddingVertical: SPACING.space_12,
+        paddingVertical: SPACING.space_8,
     },
     CategoryScrollViewContainer: {
         flexDirection: "row"

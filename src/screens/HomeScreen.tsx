@@ -191,6 +191,7 @@ const HomeScreen = ({navigation}: any) => {
                   average_rating={5.0}
                   price={{size: 'M', price: '1500', currency: 'RM'}}
                   quantity={0}
+                  status={true}
                   buttonPressHandler={{}}
                 />
               </TouchableOpacity>
@@ -216,6 +217,7 @@ const HomeScreen = ({navigation}: any) => {
                     average_rating={5.0}
                     price={{ size: 'M', price: '1400', currency: 'RM' }}
                     quantity={0}
+                    status={true}
                     buttonPressHandler={{}}
                   />
               </TouchableOpacity>

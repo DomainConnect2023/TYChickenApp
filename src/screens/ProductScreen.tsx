@@ -143,6 +143,7 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                     <ImageBackground
                     source={item.imagelink_square}
                     style={[css.CardImageBG, {width: CARD_WIDTH*1.15, height: CARD_WIDTH*1.15,margin: 10}]}
+                    // style={[css.CardImageBG, {width: CARD_WIDTH*0.8, height: CARD_WIDTH*0.8,margin: 10}]}
                     // blurRadius={20}
                     resizeMode="cover">
                         <View style={css.CardRatingContainer}>

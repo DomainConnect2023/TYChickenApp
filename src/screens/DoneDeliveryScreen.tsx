@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { View, ScrollView, StatusBar, TouchableOpacity, Platform, PermissionsAndroid, ActivityIndicator } from "react-native";
+import { View, ScrollView, StatusBar, TouchableOpacity, Platform, PermissionsAndroid, ActivityIndicator, Image, Pressable } from "react-native";
 import HeaderBar from '../components/HeaderBar';
 import { COLORS, FONTSIZE, SPACING } from '../theme/theme';
 import { css } from '../theme/CSS';
@@ -162,17 +162,25 @@ const DoneDeliveryPageScreen = ({navigation}: {navigation:any}) => {
                                 </View>
 
                                 <View style={css.LineContainer}></View>
-
-                                {fetchedData.length>0 ? (
-                                    <Text style={css.DescriptionText}>{"File Name1, File Name2, ...."}</Text>
-                                ) : (
-                                    <Text style={css.DescriptionText}>No Image Uploaded</Text>
-                                )}
-
+                                
+                                {response?.assets &&
+                                    response?.assets.map(({uri}: {uri: string}) => (
+                                        <View key={uri} style={{marginVertical: 24, alignItems: 'center',}}>
+                                            <Pressable onPress={()=>{}}>
+                                                <Image
+                                                    resizeMode="cover"
+                                                    resizeMethod="scale"
+                                                    style={{ width: 250, height: 250, borderRadius: SPACING.space_20 }}
+                                                    source={{uri: uri}}
+                                                />
+                                            </Pressable>
+                                        </View>
+                                    ))
+                                }
                             </View>
 
                             <TouchableOpacity style={[css.LoginButton]} onPress={() => {
-
+                                console.log(response.assets);
                             }}>
                                 <Text style={css.LoginButtonText}> Submit </Text>
                             </TouchableOpacity>
