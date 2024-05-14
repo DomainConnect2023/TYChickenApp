@@ -51,7 +51,7 @@ const AdminPage = ({navigation}: {navigation:any}) => {
                     }}
                 />
             ),
-            title: "Personal Access Control",
+            title: "Access Control",
             navigate: "",
         },
         {

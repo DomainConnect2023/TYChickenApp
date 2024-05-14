@@ -88,7 +88,11 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
         deleteAllData();
         setTimeout(() => {
             setShowAnimation(false);
-            // navigation.navigate('Home');
+            if(userID=="admin"){
+                navigation.navigate('User Page' as never);
+            }else{
+                navigation.navigate('Tab' as never);
+            }
         }, 2000);
     };
 
