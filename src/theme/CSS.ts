@@ -452,11 +452,9 @@ export const css = StyleSheet.create({
     },
     TextDeliveryStatus: {
         fontSize: FONTSIZE.size_18,
-        lineHeight: SPACING.space_22,
         fontWeight: 'bold',
-        letterSpacing: 0.25,
+        letterSpacing: 0.4,
         color: COLORS.primaryLightGreyHex, 
-        paddingTop: SPACING.space_10, 
         paddingHorizontal: SPACING.space_10, 
     },
     HistoryCardContainer: {

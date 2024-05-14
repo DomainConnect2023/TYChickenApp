@@ -138,9 +138,19 @@ const HomeDriverScreen = ({navigation}: {navigation:any}) => {
                 <View style={css.LineContainer}></View>
 
                 <View style={{flex: 1}}>
-                    <Text style={[css.TextDeliveryStatus]}> 
-                        Today Goods: 
-                    </Text>
+                    <View style={{flexDirection:"row", justifyContent: "space-between"}}>
+                        <Text style={[css.TextDeliveryStatus]}> 
+                            Today Goods: 
+                        </Text>
+                        <TouchableOpacity
+                            onPress={async () => {
+                                
+                            }}>
+                            <Text style={[css.TextDeliveryStatus,{color: COLORS.primaryOrangeHex,fontSize: FONTSIZE.size_14}]}> 
+                                --History--
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
 
                     {( showNoItemImg == false ) ? (
                         <View style={{flex: 1}}>

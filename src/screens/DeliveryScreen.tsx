@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { View, StatusBar, StyleSheet, Text, FlatList, TouchableOpacity, ScrollView, Animated, RefreshControl } from "react-native";
+import { View, StatusBar, StyleSheet, Text, FlatList, TouchableOpacity, ScrollView, Animated, RefreshControl, TextInput, Dimensions } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,6 +21,7 @@ const DeliveryPageScreen = ({navigation}: {navigation:any}) => {
     const [showNoItemImg, setShowNoItemImg] = useState(false);
     const [itemFinish, setItemFinish] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [searchText, setSearchText] = useState('');
 
     const [scrollY] = useState(new Animated.Value(0));
     const [showHeader, setShowHeader] = useState(true);
@@ -117,26 +118,55 @@ const DeliveryPageScreen = ({navigation}: {navigation:any}) => {
                 </View>
             ) : (
             <View style={{flex: 1}}>
-                <HeaderDriverBar title="Delivery Part" checkBackBttn={true} />
+                <HeaderDriverBar title="Today Delivery" checkBackBttn={true} />
                 <View style={css.LineContainer}></View>
                 
-                {showHeader && (
-                    <View style={{flexDirection: "row", 
-                    justifyContent: "space-between", 
-                    padding: SPACING.space_5,}}>
-                        <Text style={css.TextDeliveryStatus}>Today Goods: </Text>
-                        <TouchableOpacity onPress={() => {
-                            navigation.navigate('SearchDO');      
-                        }} >
+                {showHeader && (                     
+                    <View style={[css.InputContainerComponent, {backgroundColor: COLORS.secondaryVeryLightGreyHex, borderWidth: 1, marginTop: -SPACING.space_5, marginBottom: 0}]}>
+                        <TouchableOpacity
+                            onPress={async () => {
+                                // setSearchText(textValue);
+                                await fetchedDataAPI(HistoryData);
+                            }}>
                             <Icon
-                                style={[css.InputIcon, ]}
-                                name="search"
-                                size={FONTSIZE.size_24}
-                                color={
-                                    COLORS.primaryLightGreyHex
-                                }
+                            style={css.InputIcon}
+                            name="search"
+                            size={FONTSIZE.size_18}
+                            color={
+                                searchText.length > 0
+                                ? COLORS.primaryOrangeHex
+                                : COLORS.primaryLightGreyHex
+                            }
                             />
                         </TouchableOpacity>
+                        <TextInput
+                            placeholder="Search DO...."
+                            value={searchText}
+                            onChangeText={async text => {
+                                setSearchText(text);
+                            }}
+                            placeholderTextColor={COLORS.primaryLightGreyHex}
+                            style={[css.TextInputContainer, {height: SPACING.space_20 * 2,}]}
+                            onEndEditing={async () => {
+                                fetchedDataAPI(HistoryData);
+                            }}
+                        />
+                        {searchText.length > 0 ? (
+                            <TouchableOpacity
+                            onPress={async () => {
+                                setSearchText("");
+                                fetchedDataAPI(HistoryData);
+                            }}>
+                            <Icon
+                                style={css.InputIcon}
+                                name="close"
+                                size={FONTSIZE.size_16}
+                                color={COLORS.primaryLightGreyHex}
+                            />
+                            </TouchableOpacity>
+                        ) : (
+                            <></>
+                        )}
                     </View>
                 )}
 

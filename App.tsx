@@ -23,7 +23,6 @@ import AdminPage from './src/navigators/AdminPage';
 import ProductAdjustPageScreen from './src/screens/ProductAdjust';
 import DeliveryPageScreen from './src/screens/DeliveryScreen';
 import DeliveryDetailPageScreen from './src/screens/DeliveryDetailScreen';
-import SearchDOPageScreen from './src/screens/SearchDOScreen';
 import ReportListScreen from './src/screens/ReportListScreen';
 
 const Stack = createNativeStackNavigator();
@@ -68,7 +67,6 @@ const App = () => {
         <Stack.Screen name="TabDriver" component={TabDriverNavigator} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="CustomDrawer" component={CustomDrawer} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Search" component={SearchPageScreen} options={{animation: 'slide_from_bottom'}} />
-        <Stack.Screen name="SearchDO" component={SearchDOPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Product" component={ProductPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Cart" component={CartPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="ProductDetail" component={ProductDetailPageScreen} options={{animation: 'slide_from_bottom'}} />

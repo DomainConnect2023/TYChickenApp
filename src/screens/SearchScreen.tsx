@@ -23,7 +23,7 @@ const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 const Item = ({ title }: { title: any }) => (
     <View style={[css.CategoryScrollViewContainer, {marginVertical: SPACING.space_10}]}>
         <TouchableOpacity onPress={() => { }}>
-            <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex, borderWidth: 2}]}>
+            <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex, borderWidth: 2, margin: SPACING.space_5}]}>
                 <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>{title}</Text>
             </View>
         </TouchableOpacity>
