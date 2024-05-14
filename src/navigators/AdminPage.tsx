@@ -14,6 +14,7 @@ const AdminPage = ({navigation}: {navigation:any}) => {
     const list = [
         {
             id: 1,
+            index: 1,
             icon: (
                 <Image
                     style={{ width: 80, height: 80 }}
@@ -27,6 +28,7 @@ const AdminPage = ({navigation}: {navigation:any}) => {
         },
         {
             id: 2,
+            index: 2,
             icon: (
                 <Image
                     style={{ width: 80, height: 80 }}
@@ -40,6 +42,7 @@ const AdminPage = ({navigation}: {navigation:any}) => {
         },
         {
             id: 3,
+            index: 3,
             icon: (
                 <Image
                     style={{ width: 80, height: 80 }}
@@ -53,6 +56,7 @@ const AdminPage = ({navigation}: {navigation:any}) => {
         },
         {
             id: 4,
+            index: 4,
             icon: (
                 <Image
                     style={{ width: 80, height: 80 }}
@@ -62,10 +66,11 @@ const AdminPage = ({navigation}: {navigation:any}) => {
                 />
             ),
             title: "Report",
-            navigate: "",
+            navigate: "ReportList",
         },
         {
             id: 5,
+            index: 5,
             icon: (
                 <Image
                     style={{ width: 80, height: 80 }}
@@ -79,6 +84,7 @@ const AdminPage = ({navigation}: {navigation:any}) => {
         },
         {
             id: 6,
+            index: 6,
             icon: (
                 <Image
                     style={{ width: 80, height: 80 }}
@@ -89,6 +95,20 @@ const AdminPage = ({navigation}: {navigation:any}) => {
             ),
             title: "Driver Page",
             navigate: "Driver Page",
+        },
+        {
+            id: 7,
+            index: 7,
+            icon: (
+                <Image
+                    style={{ width: 80, height: 80 }}
+                    source={{
+                        uri: "https://icons.iconarchive.com/icons/graphicloads/business/256/profile-icon.png"
+                    }}
+                />
+            ),
+            title: "Person Profile",
+            navigate: "Person Profile",
         },
     ];
 
@@ -121,13 +141,16 @@ const AdminPage = ({navigation}: {navigation:any}) => {
                     <HeaderBar title="Admin" checkBackBttn={false} />
                 )}
                 <View style={css.LineContainer}></View>
+                
                 <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={css.ScrollViewFlex}>
 
                     <View style={css.IconList}>
-                        {list.slice(0, 6).map((item, index) => (
-                            <TouchableOpacity onPress={() => {
+                        {list.slice(0, 10).map((item) => (
+                            <TouchableOpacity 
+                            key={item.id}
+                            onPress={() => {
                                 if(item.navigate!=""){
                                     if(item.navigate==item.title){
                                         navigation.navigate('CustomDrawer', { screen: item.navigate });
@@ -136,7 +159,7 @@ const AdminPage = ({navigation}: {navigation:any}) => {
                                     }
                                 }
                             }} >
-                                <GridItem key={index} icon={item.icon} title={item.title ?? ""} />
+                                <GridItem icon={item.icon} title={item.title ?? ""} />
                             </TouchableOpacity>
                         ))}
                     </View>

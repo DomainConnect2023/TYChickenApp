@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { View, Alert, ScrollView, StatusBar, StyleSheet, Text, FlatList, TouchableOpacity, Dimensions, Pressable } from "react-native";
+import { View, Alert, ScrollView, StatusBar, StyleSheet, Text, FlatList, TouchableOpacity, Dimensions, Pressable, RefreshControl } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
@@ -15,6 +15,7 @@ import { ActivityIndicator } from 'react-native-paper';
 import EmptyListAnimation from '../components/EmptyListAnimation';
 import { HistoryCardProps, currencyFormat } from '../components/Objects';
 import HistoryCard from '../components/HistoryCard';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 const HistoryPageScreen = ({navigation}: {navigation:any}) => {
     const [processData, setProcessData] = useState(false);
@@ -24,6 +25,7 @@ const HistoryPageScreen = ({navigation}: {navigation:any}) => {
     const [showNoItemImg, setShowNoItemImg] = useState(false);
     const [countItem, setCountItem] = useState<number>(0);
     const [todayDate, setTodayDate] = useState(new Date().toISOString().split('T')[0]);
+    const [refreshing, setRefreshing] = useState(false);
 
     const [limitedDate, setLimitedDate] = 
     useState(new Date(new Date().setDate(new Date().getDate()-1)).toISOString().split('T')[0]);
@@ -65,6 +67,15 @@ const HistoryPageScreen = ({navigation}: {navigation:any}) => {
         }
     };
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+        setProcessData(true);
+        setTimeout(() => {
+            setProcessData(false);
+        }, 1000);
+        setRefreshing(false);
+    };
+
     const fetchedDataAPI = async(newData: { itemList: HistoryCardProps[] }) => {
         setProcessData(true);
         setUserID(await AsyncStorage.getItem('UserID') ?? "");
@@ -92,7 +103,16 @@ const HistoryPageScreen = ({navigation}: {navigation:any}) => {
             <TouchableOpacity onPress={() => {
                 if(item.id == "1" || item.id == "2"){
                 // if(item.date >= limitedDate){
-                    navigation.navigate('HistoryReturn');
+                    navigation.navigate('HistoryReturn', {
+                        id: item.id, 
+                        DOnumber: item.DOnumber, 
+                        customerName: item.customerName, 
+                        date: item.date, 
+                        totalWeight: item.totalWeight, 
+                        totalPrice: item.totalPrice, 
+                        currency: item.currency, 
+                        status: item.status, 
+                    });
                 }else{
                     Snackbar.show({
                         text: "Only can choose today or yesterday.",
@@ -104,6 +124,7 @@ const HistoryPageScreen = ({navigation}: {navigation:any}) => {
                     id={item.id}
                     date={item.date}
                     DOnumber={item.DOnumber}
+                    customerName={item.customerName}
                     currency={item.currency}
                     totalPrice={item.totalPrice}
                     totalWeight={item.totalWeight}
@@ -117,8 +138,8 @@ const HistoryPageScreen = ({navigation}: {navigation:any}) => {
         <View style={css.ScreenContainer}>
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
             {processData==true ? (
-                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
-                    <ActivityIndicator size="large" />
+                <View style={{alignSelf:"center",}}>
+                    <LoadingAnimation />
                 </View>
             ) : (
             <View style={{flex: 1}}>
@@ -142,13 +163,17 @@ const HistoryPageScreen = ({navigation}: {navigation:any}) => {
                     </Text>
 
                     {( showNoItemImg == false ) ? (
-                            <FlatList
-                                data={fetchedData}
-                                renderItem={showHistoryCard}
-                                keyExtractor={(item) => item.id}
-                                removeClippedSubviews={false}
-                                style={{marginBottom: tabBarHeight}}
-                            />
+                        <FlatList
+                            data={fetchedData}
+                            renderItem={showHistoryCard}
+                            keyExtractor={(item) => item.id}
+                            removeClippedSubviews={false}
+                            style={{marginBottom: tabBarHeight}}
+                            refreshControl={<RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                            />}
+                        />
                     ) : (
                         <View style={{alignSelf:"center",}}>
                             <EmptyListAnimation title={'Ops. No Record here.'} />

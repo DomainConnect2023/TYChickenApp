@@ -24,6 +24,7 @@ import ProductAdjustPageScreen from './src/screens/ProductAdjust';
 import DeliveryPageScreen from './src/screens/DeliveryScreen';
 import DeliveryDetailPageScreen from './src/screens/DeliveryDetailScreen';
 import SearchDOPageScreen from './src/screens/SearchDOScreen';
+import ReportListScreen from './src/screens/ReportListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -81,6 +82,7 @@ const App = () => {
         <Stack.Screen name="ProductAdjust" component={ProductAdjustPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Delivery" component={DeliveryPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="DeliveryDetail" component={DeliveryDetailPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="ReportList" component={ReportListScreen} options={{animation: 'slide_from_bottom'}} />
       </Stack.Navigator>
     </NavigationContainer>
     )}

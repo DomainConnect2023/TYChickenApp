@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { View, Text, Dimensions, FlatList, TouchableOpacity, Alert, StatusBar, StyleSheet, ImageBackground, Image, Pressable, ScrollView } from "react-native";
+import { View, Text, Dimensions, FlatList, TouchableOpacity, Alert, StatusBar, StyleSheet, ImageBackground, Image, Pressable, ScrollView, RefreshControl } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
@@ -15,6 +15,7 @@ import { addData, createTable, db, selectData, updateData } from '../data/SQLite
 import EmptyListAnimation from '../components/EmptyListAnimation';
 import PopUpAnimation from '../components/PopUpAnimation';
 import { ChickenCardProps, currencyFormat } from '../components/Objects';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
@@ -25,6 +26,7 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
     const [userID, setUserID] = useState('');
     const [showNoItemImg, setShowNoItemImg] = useState(false);
     const [countItem, setCountItem] = useState<number>(0);
+    const [refreshing, setRefreshing] = useState(false);
 
     const [fetchedData, setFetchedData] = useState<ChickenCardProps[]>([]);
 
@@ -61,6 +63,15 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                 duration: Snackbar.LENGTH_SHORT,
             });
         }
+    };
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        setProcessData(true);
+        setTimeout(() => {
+            setProcessData(false);
+        }, 1000);
+        setRefreshing(false);
     };
 
     const fetchedDataAPI = async(newData: { itemList: ChickenCardProps[] }) => {
@@ -248,8 +259,8 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
             )}
             
             {processData==true ? (
-                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
-                    <ActivityIndicator size="large" />
+                <View style={{alignSelf:"center",}}>
+                    <LoadingAnimation />
                 </View>
             ) : (
             <View style={{flex: 1, marginBottom: tabBarHeight}}>
@@ -268,6 +279,10 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                             renderItem={showChickenCard}
                             keyExtractor={(item) => item.id}
                             removeClippedSubviews={false}
+                            refreshControl={<RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                            />}
                         />
                     </View>
                 ) : (

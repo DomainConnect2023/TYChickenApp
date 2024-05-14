@@ -1,5 +1,5 @@
 import {Alert, Dimensions, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {COLORS, FONTSIZE} from '../theme/theme';
 import GradientBGIcon from './GradientBGIcon';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { css } from '../theme/CSS';
 import { deleteAllData } from '../data/SQLiteFile';
 import Snackbar from 'react-native-snackbar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface HeaderBarProps {
   title?: string;
@@ -16,6 +17,13 @@ interface HeaderBarProps {
 
 const HeaderBar: React.FC<HeaderBarProps> = ({title, checkBackBttn, badgeNumber}) => {
   const navigation = useNavigation();
+  const [userID, setUserID] = useState('');
+
+  useEffect(()=> {
+    (async()=> {
+      setUserID(await AsyncStorage.getItem('UserID') ?? "");
+    })();
+}, []);
   
   return (
     checkBackBttn==true ? (
@@ -67,7 +75,11 @@ const HeaderBar: React.FC<HeaderBarProps> = ({title, checkBackBttn, badgeNumber}
                             text: "You have deleted all the items in your cart successfully. ",
                             duration: Snackbar.LENGTH_SHORT,
                         });
-                        navigation.navigate('Tab' as never);
+                        if(userID=="admin"){
+                          navigation.navigate('User Page' as never);
+                        }else{
+                          navigation.navigate('Tab' as never);
+                        }
                     } }
                 ],
                 { cancelable: false }

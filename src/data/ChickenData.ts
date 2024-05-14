@@ -147,6 +147,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
         average_rating: 5.0,
         type: 'Part',
         quantity: 1,
+        status: true,
         buttonPressHandler: {}
     },
     {
@@ -164,6 +165,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
         average_rating: 5.0,
         type: 'Part',
         quantity: 1,
+        status: true,
         buttonPressHandler: {}
     },
     {
@@ -181,6 +183,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
         average_rating: 5.0,
         type: 'Part',
         quantity: 1,
+        status: true,
         buttonPressHandler: {}
     },
     {
@@ -198,6 +201,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
       average_rating: 5.0,
       type: 'Part',
       quantity: 1,
+      status: true,
       buttonPressHandler: {}
   },
   {
@@ -215,6 +219,7 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
       average_rating: 5.0,
       type: 'Part',
       quantity: 1,
+      status: true,
       buttonPressHandler: {}
 },
     ]
@@ -237,6 +242,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             average_rating: 5.0,
             type: 'Part',
             quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
         {
@@ -254,6 +260,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             average_rating: 5.0,
             type: 'Part',
             quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
         {
@@ -271,6 +278,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             average_rating: 5.0,
             type: 'Part',
             quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
         {
@@ -288,6 +296,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             average_rating: 5.0,
             type: 'Part',
             quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
         {
@@ -305,6 +314,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             average_rating: 5.0,
             type: 'Part',
             quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
         {
@@ -322,6 +332,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             average_rating: 5.0,
             type: 'Part',
             quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
     ]
@@ -332,6 +343,7 @@ export const HistoryData : { itemList: HistoryCardProps[];} = {
         {
             id: "1",
             DOnumber: "DO10012",
+            customerName: "ABC",
             date: "2024-05-10",
             totalWeight: 150100,
             totalPrice: 190223,
@@ -341,6 +353,7 @@ export const HistoryData : { itemList: HistoryCardProps[];} = {
         {
             id: "2",
             DOnumber: "DO10011",
+            customerName: "Halooooo",
             date: "2024-05-09",
             totalWeight: 140100,
             totalPrice: 180123,
@@ -350,6 +363,7 @@ export const HistoryData : { itemList: HistoryCardProps[];} = {
         {
             id: "3",
             DOnumber: "DO10010",
+            customerName: "Testing123",
             date: "2024-05-08",
             totalWeight: 90100,
             totalPrice: 80223,
@@ -359,6 +373,7 @@ export const HistoryData : { itemList: HistoryCardProps[];} = {
         {
             id: "4",
             DOnumber: "DO10009",
+            customerName: "Domain Connect",
             date: "2024-05-07",
             totalWeight: 80310,
             totalPrice: 40119,
@@ -368,6 +383,7 @@ export const HistoryData : { itemList: HistoryCardProps[];} = {
         {
             id: "5",
             DOnumber: "DO10008",
+            customerName: "DFC",
             date: "2024-05-06",
             totalWeight: 105200,
             totalPrice: 93980,
@@ -376,3 +392,26 @@ export const HistoryData : { itemList: HistoryCardProps[];} = {
         },
     ]
 }
+
+export const CategoryList = [
+    {
+        id: 1,
+        value: "Without Cut",
+    },
+    {
+        id: 2,
+        value: "Cut 2 Piece",
+    },
+    {
+        id: 3,
+        value: "Cut 4 Piece",
+    },
+    {
+        id: 4,
+        value: "Cut 6 Piece",
+    },
+    {
+        id: 5,
+        value: "Cut 8 Piece",
+    },
+];

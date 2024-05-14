@@ -16,6 +16,7 @@ import { css } from '../theme/CSS';
 import { useFocusEffect } from '@react-navigation/native';
 import { createTable, db } from '../data/SQLiteFile';
 import { ChickenCardProps, currencyFormat } from '../components/Objects';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 const HomeScreen = ({navigation}: any) => {
   const tabBarHeight = useBottomTabBarHeight();
@@ -136,8 +137,8 @@ const HomeScreen = ({navigation}: any) => {
     <View style={css.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
       {processData==true ? (
-        <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
-          <ActivityIndicator size="large" />
+        <View style={{alignSelf:"center",}}>
+          <LoadingAnimation />
         </View>
       ): (
         <View style={{marginBottom: tabBarHeight}}>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { View, Text, Dimensions, FlatList, TouchableOpacity, Alert, StatusBar, StyleSheet, ImageBackground, Image, Pressable, ScrollView, TextInput } from "react-native";
+import { View, Text, Dimensions, FlatList, TouchableOpacity, Alert, StatusBar, StyleSheet, ImageBackground, Image, Pressable, ScrollView, TextInput, Animated, RefreshControl } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
@@ -9,12 +9,13 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ChickenData3 } from '../data/ChickenData';
 import { ActivityIndicator, Switch } from 'react-native-paper';
-import { css } from '../theme/CSS';
+import { HIDE_HEIGHT, css } from '../theme/CSS';
 import { useFocusEffect } from '@react-navigation/native';
 import { addData, createTable, db, selectData, updateData } from '../data/SQLiteFile';
 import EmptyListAnimation from '../components/EmptyListAnimation';
 import PopUpAnimation from '../components/PopUpAnimation';
 import { ChickenCardProps, currencyFormat } from '../components/Objects';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
@@ -22,10 +23,15 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
     const [processData, setProcessData] = useState(false);
     const [userID, setUserID] = useState('');
     const [showNoItemImg, setShowNoItemImg] = useState(false);
-    const [isDarkMode, setIsDarkMode] = useState(true);
     const [searchText, setSearchText] = useState('');
+    const [refreshing, setRefreshing] = useState(false);
+
+    const [scrollY] = useState(new Animated.Value(0));
+    const [showSearchInput, setShowSearchInput] = useState(true);
 
     const [fetchedData, setFetchedData] = useState<ChickenCardProps[]>([]);
+
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
     useEffect(()=> {
         (async()=> {
@@ -58,22 +64,38 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
         setProcessData(false);
     };
 
-    const onToggleSwitch = () => {
+    const onToggleSwitch = (id: string, status: boolean) => {
+        console.log(id+" "+status);
         setIsDarkMode(!isDarkMode);
+    };
+
+    const handleScroll = Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        {
+            useNativeDriver: false,
+            listener: (event: any) => {
+                const offsetY = event.nativeEvent.contentOffset.y;
+                if (offsetY > HIDE_HEIGHT) {
+                    setShowSearchInput(false);
+                } else {
+                    setShowSearchInput(true);
+                }
+            }
+        }
+    );
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        setProcessData(true);
+        setTimeout(() => {
+            setProcessData(false);
+        }, 1000);
+        setRefreshing(false);
     };
 
     const showChickenCard = ({ item }: { item: ChickenCardProps }) => {
         return (
-            <TouchableOpacity onPress={() => {
-                navigation.navigate('ProductDetail', {
-                    key: item.index, 
-                    name: item.name, 
-                    type: item.type, 
-                    price: parseInt(item.price[1].price),
-                    picture: item.imagelink_square, 
-                    description: item.special_ingredient
-                });
-            }} >
+            <TouchableOpacity onPress={() => {onToggleSwitch(item.id, item.status)}} >
                 <View style={{flexDirection: "row", width: Dimensions.get("screen").width*95/100, backgroundColor: COLORS.secondaryVeryLightGreyHex, margin: 5, borderRadius: 20}}>
                     <ImageBackground
                     source={item.imagelink_square}
@@ -99,7 +121,7 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
                             <Switch 
                                 style={styles.switch} 
                                 value={isDarkMode} 
-                                onValueChange={onToggleSwitch} 
+                                onValueChange={()=>{onToggleSwitch(item.id, item.status)}} 
                                 trackColor={{false: COLORS.primaryVeryLightGreyHex, true: "#7CB778"}}
                                 color={COLORS.primaryVeryLightGreyHex}
                             />
@@ -115,8 +137,8 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
             
             {processData==true ? (
-                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
-                    <ActivityIndicator size="large" />
+                <View style={{alignSelf:"center",}}>
+                    <LoadingAnimation />
                 </View>
             ) : (
             <View style={{flex: 1}}>
@@ -124,49 +146,51 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
 
                 <View style={css.LineContainer}></View>
 
-                <View style={[css.InputContainerComponent, {backgroundColor: COLORS.secondaryVeryLightGreyHex, borderWidth: 1, marginTop: -SPACING.space_5}]}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            // setSearchText(textValue);
-                        }}>
-                        <Icon
-                        style={css.InputIcon}
-                        name="search"
-                        size={FONTSIZE.size_18}
-                        color={
-                            searchText.length > 0
-                            ? COLORS.primaryOrangeHex
-                            : COLORS.primaryLightGreyHex
-                        }
-                        />
-                    </TouchableOpacity>
-                    <TextInput
-                        placeholder="Find Your Chicken...."
-                        value={searchText}
-                        onChangeText={text => {
-                            setSearchText(text);
-                        }}
-                        placeholderTextColor={COLORS.primaryLightGreyHex}
-                        style={[css.TextInputContainer, {height: SPACING.space_20 * 2,}]}
-                    />
-                    {searchText.length > 0 ? (
+                {showSearchInput && (
+                    <View style={[css.InputContainerComponent, {backgroundColor: COLORS.secondaryVeryLightGreyHex, borderWidth: 1, marginTop: -SPACING.space_5}]}>
                         <TouchableOpacity
-                        onPress={() => {
-                            // resetSearchCoffee();
-                            // setTexValue("");
-                            setSearchText("");
-                        }}>
-                        <Icon
+                            onPress={() => {
+                                // setSearchText(textValue);
+                            }}>
+                            <Icon
                             style={css.InputIcon}
-                            name="close"
-                            size={FONTSIZE.size_16}
-                            color={COLORS.primaryLightGreyHex}
-                        />
+                            name="search"
+                            size={FONTSIZE.size_18}
+                            color={
+                                searchText.length > 0
+                                ? COLORS.primaryOrangeHex
+                                : COLORS.primaryLightGreyHex
+                            }
+                            />
                         </TouchableOpacity>
-                    ) : (
-                        <></>
-                    )}
-                </View>
+                        <TextInput
+                            placeholder="Find Your Chicken...."
+                            value={searchText}
+                            onChangeText={text => {
+                                setSearchText(text);
+                            }}
+                            placeholderTextColor={COLORS.primaryLightGreyHex}
+                            style={[css.TextInputContainer, {height: SPACING.space_20 * 2,}]}
+                        />
+                        {searchText.length > 0 ? (
+                            <TouchableOpacity
+                            onPress={() => {
+                                // resetSearchCoffee();
+                                // setTexValue("");
+                                setSearchText("");
+                            }}>
+                            <Icon
+                                style={css.InputIcon}
+                                name="close"
+                                size={FONTSIZE.size_16}
+                                color={COLORS.primaryLightGreyHex}
+                            />
+                            </TouchableOpacity>
+                        ) : (
+                            <></>
+                        )}
+                    </View>
+                )}
 
                 {( showNoItemImg == false ) ? (
                     <View style={{flex: 1}}>
@@ -174,7 +198,12 @@ const ProductAdjustPageScreen = ({navigation}: {navigation:any}) => {
                             data={fetchedData}
                             renderItem={showChickenCard}
                             keyExtractor={(item) => item.id}
+                            onScroll={handleScroll}
                             removeClippedSubviews={false}
+                            refreshControl={<RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                            />}
                         />
                     </View>
                 ) : (

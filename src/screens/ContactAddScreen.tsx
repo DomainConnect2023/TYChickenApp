@@ -72,9 +72,8 @@ const ContactAddPageScreen = ({navigation}: {navigation:any}) => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={css.ScrollViewFlex}>
                 {/* height: Dimensions.get("screen").height/100*90 */}
-            <View style={{}}>
                 <View style={{ flex: 1 }}>
-                    <View style={[css.widthAndAdjustment, {marginVertical: SPACING.space_10}]}>
+                    {/* <View style={[css.widthAndAdjustment, {marginVertical: SPACING.space_10}]}>
                         <Image 
                         source={require('../assets/chicken_assets/logo2.png')} 
                         style={{ 
@@ -83,7 +82,7 @@ const ContactAddPageScreen = ({navigation}: {navigation:any}) => {
                             resizeMode: 'contain', 
                             alignSelf: "center",
                         }} />
-                    </View>
+                    </View> */}
                     <View style={[css.widthAndAdjustment, css.cardShadow]}>
                         <View style={[css.cardContainer, {padding: 30}]}>
                             <View style={{flexDirection: "column"}}>
@@ -171,7 +170,6 @@ const ContactAddPageScreen = ({navigation}: {navigation:any}) => {
                         </View>
                     </View>    
                 </View>
-            </View>
             </ScrollView>
         </View>
     );

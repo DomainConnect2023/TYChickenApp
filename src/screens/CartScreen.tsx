@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { View, Text, Dimensions, FlatList, TouchableOpacity, Pressable, Alert, StatusBar, StyleSheet, ImageBackground, Image } from "react-native";
+import { View, Text, Dimensions, FlatList, TouchableOpacity, Pressable, Alert, StatusBar, StyleSheet, ImageBackground, Image, RefreshControl } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
@@ -12,15 +12,19 @@ import { createTable, db, deleteAllData, deleteDB, updateData } from '../data/SQ
 import PopUpAnimation from '../components/PopUpAnimation';
 import EmptyListAnimation from '../components/EmptyListAnimation';
 import { CartItem, currencyFormat } from '../components/Objects';
+import LoadingAnimation from '../components/LoadingAnimation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
 const CartPageScreen = ({navigation}: {navigation:any}) => {
     const [processData, setProcessData] = useState(false);
+    const [userID, setUserID] = useState('');
     const [showAnimation, setShowAnimation] = useState(false);
     const [showNoItemImg, setShowNoItemImg] = useState(false);
     const [totalPrice, setTotalPrice] = useState<number>(0);
     const [fetchedData, setFetchedData] = useState<CartItem[]>([]);
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(()=> {
         (async()=> {
@@ -33,6 +37,7 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
     // newData: { itemList: ChickenCardProps[] }
     const fetchedDataAPI = async() => {
         setProcessData(true);
+        setUserID(await AsyncStorage.getItem('UserID') ?? "");
         setFetchedData([]);
         try {
             let sql = "SELECT *, SUM(quantity) as totalQuantity FROM Carts GROUP BY originid";
@@ -85,7 +90,16 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
             setShowAnimation(false);
             // navigation.navigate('Home');
         }, 2000);
-      };
+    };
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        setProcessData(true);
+        setTimeout(() => {
+            setProcessData(false);
+        }, 1000);
+        setRefreshing(false);
+    };
 
     const showChickenCard = ({ item }: { item: CartItem }) => {
         return (
@@ -226,9 +240,9 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
             )}
 
             {processData==true ? (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
-                <ActivityIndicator size="large" />
-            </View>
+                <View style={{alignSelf:"center",}}>
+                    <LoadingAnimation />
+                </View>
             ): (
             <View style={{flex: 1}}>
                 <HeaderBar title="Cart" checkBackBttn={true} />
@@ -242,6 +256,10 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
                             keyExtractor={(item) => item.id.toString()}
                             style={{marginBottom: Dimensions.get("screen").height/100*12}}
                             removeClippedSubviews={false}
+                            refreshControl={<RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                            />}
                         />
 
                         <View style={css.CheckOutContainer}>

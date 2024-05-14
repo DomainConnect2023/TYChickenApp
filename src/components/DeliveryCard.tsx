@@ -7,6 +7,7 @@ import { HistoryCardProps, currencyFormat } from './Objects';
 const DeliveryCard: React.FC<HistoryCardProps> = ({
     date,
     DOnumber,
+    customerName,
     totalWeight,
     status,
 }) => {
@@ -24,7 +25,7 @@ const DeliveryCard: React.FC<HistoryCardProps> = ({
                     Customer: {' '}
 
                     <Text style={styles.CardTextHightlight}>
-                        DOMAIN CONNECT SDN BHD
+                        {customerName}
                     </Text>
                 </Text>
 

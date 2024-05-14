@@ -3,6 +3,8 @@ import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from "./theme";
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
+export const HIDE_HEIGHT = 100;
+
 export const css = StyleSheet.create({
     ScreenContainer: {
         flex: 1,
@@ -36,6 +38,12 @@ export const css = StyleSheet.create({
         left: 0,
         right: 0,
     },
+    // ActivityIndicatorCSS: {
+    //     justifyContent: 'center', 
+    //     alignItems: 'center', 
+    //     marginVertical: SPACING.space_10, 
+    //     padding: SPACING.space_20,
+    // },
     cardShadow: {
         borderRadius: BORDERRADIUS.radius_16,
         backgroundColor: 'transparent',
@@ -275,16 +283,16 @@ export const css = StyleSheet.create({
     },
     CategoryScrollViewStyle: {
         paddingHorizontal: SPACING.space_4,
-        paddingVertical: SPACING.space_20,
+        paddingVertical: SPACING.space_12,
     },
     CategoryScrollViewContainer: {
-        paddingHorizontal: SPACING.space_12,
+        flexDirection: "row"
     },
     CategoryScrollViewItem: {
         alignItems: 'center',
     },
     CategoryContainer: {
-        width: CARD_WIDTH*0.72,
+        width: CARD_WIDTH*1.05,
         height: SPACING.space_50,
         borderRadius: SPACING.space_10,
     },

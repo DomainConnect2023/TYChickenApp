@@ -116,15 +116,16 @@ export function CustomDrawer() {
                         size={FONTSIZE.size_36}
                         style={{marginHorizontal: 5}}
                     />
-                    <View style={css.badgeContainer}>
+                    {/* <View style={css.badgeContainer}>
                         <Text style={css.badge}>{countItem}</Text>
-                    </View>
+                    </View> */}
                 </View>
             </TouchableOpacity>
           </View>
         ),
       }} />
       <Drawer.Screen name={"Driver Page"} component={TabDriverNavigator} />
+      <Drawer.Screen name={"Person Profile"} component={ProfilePageScreen} />
     </Drawer.Navigator>
   );
 }

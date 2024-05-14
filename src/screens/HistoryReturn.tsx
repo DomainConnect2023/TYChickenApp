@@ -7,8 +7,12 @@ import { css } from '../theme/CSS';
 import { Text, TextInput } from 'react-native-paper';
 import * as ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute } from '@react-navigation/native';
+import { HistoryCardProps } from '../components/Objects';
 
 const HistoryReturnPageScreen = ({navigation}: {navigation:any}) => {
+    const route = useRoute();
+    const { id, DOnumber, customerName, date, totalWeight, totalPrice, currency, status } = route.params as HistoryCardProps;
     const [userID, setUserID] = useState('');
     const [feedback, setFeedback] = useState('');
     const [fetchedData, setFetchedData] = useState("aaa");
@@ -71,22 +75,21 @@ const HistoryReturnPageScreen = ({navigation}: {navigation:any}) => {
             <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={css.ScrollViewFlex}>
-                {/* height: Dimensions.get("screen").height/100*90 */}
-            <View style={{}}>
-                <View style={{ flex: 1 }}>
-                    <View style={[css.widthAndAdjustment, {marginVertical: SPACING.space_10}]}>
-                        <Image 
-                        source={require('../assets/chicken_assets/logo2.png')} 
-                        style={{ 
-                            height: Dimensions.get("screen").height / 100 * 20, 
-                            width: Dimensions.get("screen").width, 
-                            resizeMode: 'contain', 
-                            alignSelf: "center",
-                        }} />
-                    </View>
+                <View style={{ flex: 1, paddingVertical: SPACING.space_30 }}>
+                    
                     <View style={[css.widthAndAdjustment, css.cardShadow]}>
-                        <View style={[css.cardContainer, {padding: 30}]}>
-                            <View style={{flexDirection: "column"}}>
+                        <View style={[css.cardContainer, {padding: SPACING.space_30}]}>
+                            <View style={{flexDirection: "row"}}>
+                                <Text style={css.titleTextInput}> DO Number </Text>
+                                <Text style={[css.titleTextInput,{fontSize:FONTSIZE.size_14,color:COLORS.primaryRedHex}]}>{DOnumber}</Text>
+                            </View>
+
+                            <View style={{flexDirection: "row", marginTop: SPACING.space_20,}}>
+                                <Text style={css.titleTextInput}> Customer </Text>
+                                <Text style={[css.titleTextInput,{fontSize:FONTSIZE.size_14,color:COLORS.primaryRedHex}]}>{customerName}</Text>
+                            </View>
+
+                            <View style={{flexDirection: "column", marginTop: SPACING.space_20,}}>
                                 <Text style={css.titleTextInput}> Chicken Type </Text>
                                 <TextInput
                                     // style={{height: Dimensions.get("screen").height/100*15}}
@@ -182,7 +185,6 @@ const HistoryReturnPageScreen = ({navigation}: {navigation:any}) => {
                         </View>
                     </View>    
                 </View>
-            </View>
             </ScrollView>
         </View>
     );

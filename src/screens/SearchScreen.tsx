@@ -1,24 +1,21 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { View, Text, Dimensions, FlatList, TouchableOpacity, StatusBar, Image, ImageBackground, StyleSheet, Pressable, TextInput } from "react-native";
+import { View, Text, Dimensions, FlatList, TouchableOpacity, StatusBar, Image, ImageBackground, StyleSheet, Pressable, TextInput, Animated, RefreshControl } from "react-native";
 import HeaderBar from '../components/HeaderBar';
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { css } from '../theme/CSS';
+import { HIDE_HEIGHT, css } from '../theme/CSS';
 import { ActivityIndicator, TextInput as TextPaperInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Snackbar from 'react-native-snackbar';
 import { ChickenData3 } from '../data/ChickenData';
 import { addData, createTable, selectData, updateData } from '../data/SQLiteFile';
 import { ChickenCardProps, currencyFormat } from '../components/Objects';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 const CategoryList = [
     { id: '1', title: 'Frozen' },
     { id: '2', title: 'Fresh' },
-    { id: '3', title: 'Part' },
-    { id: '4', title: 'Box' },
-    { id: '5', title: 'Bag' },
-    { id: '6', title: 'Piece' },
 ];
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.36;
@@ -41,6 +38,10 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
     // const [textValue, setTexValue] = useState('');
     const [searchText, setSearchText] = useState('');
     const [fetchedData, setFetchedData] = useState<ChickenCardProps[]>([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const [scrollY] = useState(new Animated.Value(0));
+    const [showSearchInput, setShowSearchInput] = useState(true);
 
     useEffect(()=> {
         (async()=> {
@@ -73,6 +74,30 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
         }
         setProcessData(false);
     };
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        setProcessData(true);
+        setTimeout(() => {
+            setProcessData(false);
+        }, 1000);
+        setRefreshing(false);
+    };
+
+    const handleScroll = Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        {
+            useNativeDriver: false,
+            listener: (event: any) => {
+                const offsetY = event.nativeEvent.contentOffset.y;
+                if (offsetY > HIDE_HEIGHT) {
+                    setShowSearchInput(false);
+                } else {
+                    setShowSearchInput(true);
+                }
+            }
+        }
+    );
 
     const addToCartApi = async(originid: number, name: string, type: string, picture: any, price: number, quantity: number) => {
         if(Number.isNaN(quantity) || quantity<=0){
@@ -219,53 +244,55 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
             <HeaderBar title="Search Here..." checkBackBttn={true} />
                 
-            <View style={[css.InputContainerComponent, {backgroundColor: COLORS.secondaryVeryLightGreyHex, borderWidth: 2,}]}>
-                <TouchableOpacity
-                    onPress={() => {
-                        // setSearchText(textValue);
-                    }}>
-                    <Icon
-                    style={css.InputIcon}
-                    name="search"
-                    size={FONTSIZE.size_18}
-                    color={
-                        searchText.length > 0
-                        ? COLORS.primaryOrangeHex
-                        : COLORS.primaryLightGreyHex
-                    }
-                    />
-                </TouchableOpacity>
-                <TextInput
-                    placeholder="Find Your Chicken...."
-                    value={searchText}
-                    onChangeText={text => {
-                        setSearchText(text);
-                    }}
-                    placeholderTextColor={COLORS.primaryLightGreyHex}
-                    style={css.TextInputContainer}
-                />
-                {searchText.length > 0 ? (
+            {showSearchInput && (
+                <View style={[css.InputContainerComponent, {backgroundColor: COLORS.secondaryVeryLightGreyHex, borderWidth: 2,}]}>
                     <TouchableOpacity
-                    onPress={() => {
-                        // resetSearchCoffee();
-                        // setTexValue("");
-                        setSearchText("");
-                    }}>
-                    <Icon
+                        onPress={() => {
+                            // setSearchText(textValue);
+                        }}>
+                        <Icon
                         style={css.InputIcon}
-                        name="close"
-                        size={FONTSIZE.size_16}
-                        color={COLORS.primaryLightGreyHex}
-                    />
+                        name="search"
+                        size={FONTSIZE.size_18}
+                        color={
+                            searchText.length > 0
+                            ? COLORS.primaryOrangeHex
+                            : COLORS.primaryLightGreyHex
+                        }
+                        />
                     </TouchableOpacity>
-                ) : (
-                    <></>
-                )}
-            </View>
+                    <TextInput
+                        placeholder="Find Your Chicken...."
+                        value={searchText}
+                        onChangeText={text => {
+                            setSearchText(text);
+                        }}
+                        placeholderTextColor={COLORS.primaryLightGreyHex}
+                        style={css.TextInputContainer}
+                    />
+                    {searchText.length > 0 ? (
+                        <TouchableOpacity
+                        onPress={() => {
+                            // resetSearchCoffee();
+                            // setTexValue("");
+                            setSearchText("");
+                        }}>
+                        <Icon
+                            style={css.InputIcon}
+                            name="close"
+                            size={FONTSIZE.size_16}
+                            color={COLORS.primaryLightGreyHex}
+                        />
+                        </TouchableOpacity>
+                    ) : (
+                        <></>
+                    )}
+                </View>
+            )}
 
             {processData==true ? (
-                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
-                    <ActivityIndicator size="large" />
+                <View style={{alignSelf:"center",}}>
+                    <LoadingAnimation />
                 </View>
             ) : (
                 ( showNoItemImg == false ) ? (
@@ -276,7 +303,12 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
                                 data={fetchedData}
                                 renderItem={showChickenCard}
                                 keyExtractor={(item) => item.id}
+                                onScroll={handleScroll}
                                 removeClippedSubviews={false}
+                                refreshControl={<RefreshControl
+                                    refreshing={refreshing}
+                                    onRefresh={onRefresh}
+                                />}
                             />
                         </View>
                     ) : (

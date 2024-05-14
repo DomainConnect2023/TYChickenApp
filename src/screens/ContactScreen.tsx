@@ -4,7 +4,6 @@ import { View, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
 import { COLORS, FONTSIZE } from '../theme/theme';
-import { HistoryCardProps } from '../components/ChickenCard';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { css } from '../theme/CSS';
@@ -13,6 +12,8 @@ import { ActivityIndicator } from 'react-native-paper';
 import { createTable, db } from '../data/SQLiteFile';
 import { useFocusEffect } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
+import { HistoryCardProps } from '../components/Objects';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 const ContactPageScreen = ({navigation}: {navigation:any}) => {
     const tabBarHeight = useBottomTabBarHeight();
@@ -76,8 +77,8 @@ const ContactPageScreen = ({navigation}: {navigation:any}) => {
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
 
             {processData==true ? (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
-                <ActivityIndicator size="large" />
+            <View style={{alignSelf:"center",}}>
+                <LoadingAnimation />
             </View>
             ): (
             <View style={{flex: 1, marginBottom: tabBarHeight}}>

@@ -8,6 +8,7 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
     id,
     date,
     DOnumber,
+    customerName,
     currency,
     totalPrice,
     totalWeight,
@@ -37,6 +38,16 @@ const HistoryCard: React.FC<HistoryCardProps> = ({
             </View>
             
             <View style={css.HistoryCardContent}>
+                <Text style={[styles.CardSubtitle, id == "1"
+                ? {color: COLORS.secondaryVeryLightGreyHex}
+                : {},]}>
+                    Customer: {' '}
+
+                    <Text style={[styles.CardTextHightlight, id == "1"
+                    ? {color: COLORS.primaryWhiteHex, fontWeight: "bold"}
+                    : {},]}>{customerName}</Text>
+                </Text>
+
                 <Text style={[styles.CardSubtitle, id == "1"
                 ? {color: COLORS.secondaryVeryLightGreyHex}
                 : {},]}>

@@ -12,6 +12,9 @@ import { css } from '../theme/CSS';
 import { addData, createTable, db, selectData, updateData } from '../data/SQLiteFile';
 import PopUpAnimation from '../components/PopUpAnimation';
 import { ProductData, currencyFormat } from '../components/Objects';
+import LoadingAnimation from '../components/LoadingAnimation';
+import { CategoryList } from '../data/ChickenData';
+import CategoryListCard from '../components/CategoryList';
 
 const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
     const route = useRoute();
@@ -110,10 +113,9 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
     return (
         <View style={css.ScreenContainer}>
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
+            <HeaderBar title="" checkBackBttn={true} badgeNumber={countItem} />
+            <View style={css.LineContainer}></View>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={css.ScrollViewFlex}>
-                {/* App Header */}
-                <HeaderBar title="" checkBackBttn={true} badgeNumber={countItem} />
-                <View style={css.LineContainer}></View>
 
             {showAnimation ? (
                 <PopUpAnimation
@@ -125,8 +127,8 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
             )}
             
             {processData==true ? (
-                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
-                    <ActivityIndicator size="large" />
+                <View style={{alignSelf:"center",}}>
+                    <LoadingAnimation />
                 </View>
             ): (
                 <View style={{flex: 1}}>
@@ -189,78 +191,25 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                             <ScrollView horizontal 
                                 showsHorizontalScrollIndicator={false} 
                                 contentContainerStyle={css.CategoryScrollViewStyle}>
-                                <View
-                                    key={1}
-                                    style={css.CategoryScrollViewContainer}
-                                    >
-                                    <TouchableOpacity
-                                    style={css.CategoryScrollViewItem}
-                                    onPress={() => {
-                                        ListRef?.current?.scrollToOffset({
-                                        animated: true,
-                                        offset: 0,
-                                        });
-                                        setCategoryIndex({ index: 1 });
-                                    }}>
-                                    {categoryIndex.index === 1 ? (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryRedHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryWhiteHex,}]}>10 KG</Text>
-                                        </View>
-                                    ) : (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex,}]}>
-                                    
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>10 KG</Text>
-                                        </View>
-                                    )}
-                                    </TouchableOpacity>
-                                </View>
 
-                                <View
-                                    key={2}
-                                    style={css.CategoryScrollViewContainer}>
-                                    <TouchableOpacity
-                                    style={css.CategoryScrollViewItem}
-                                    onPress={() => {
-                                        ListRef?.current?.scrollToOffset({
-                                        animated: true,
-                                        offset: 0,
-                                        });
-                                        setCategoryIndex({ index: 2 });
-                                    }}>
-                                    {categoryIndex.index === 2 ? (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryRedHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryWhiteHex,}]}>50 KG</Text>
-                                        </View>
-                                    ) : (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>50 KG</Text>
-                                        </View>
-                                    )}
-                                    </TouchableOpacity>
-                                </View>
-
-                                <View
-                                    key={3}
-                                    style={css.CategoryScrollViewContainer}>
-                                    <TouchableOpacity
-                                    style={css.CategoryScrollViewItem}
-                                    onPress={() => {
-                                        ListRef?.current?.scrollToOffset({
-                                        animated: true,
-                                        offset: 0,
-                                        });
-                                        setCategoryIndex({ index: 3 });
-                                    }}>
-                                    {categoryIndex.index === 3 ? (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryRedHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryWhiteHex,}]}>100 KG</Text>
-                                        </View>
-                                    ) : (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>100 KG</Text>
-                                        </View>
-                                    )}
-                                    </TouchableOpacity>
+                                <View style={css.CategoryScrollViewContainer} >
+                                    {CategoryList.map((item) => (
+                                        <TouchableOpacity
+                                        style={css.CategoryScrollViewItem}
+                                        onPress={() => {
+                                            ListRef?.current?.scrollToOffset({
+                                            animated: true,
+                                            offset: 0,
+                                            });
+                                            setCategoryIndex({ index: item.id });
+                                        }}>
+                                            <CategoryListCard 
+                                                id={item.id}
+                                                value={item.value}
+                                                currentChoosing={categoryIndex.index}
+                                            />
+                                        </TouchableOpacity>
+                                    ))}
                                 </View>
                             </ScrollView>
                         </View>

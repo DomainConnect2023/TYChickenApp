@@ -24,6 +24,7 @@ export interface CartItem {
 export interface HistoryCardProps {
     id: string;
     DOnumber: string;
+    customerName: string;
     date: string;
     totalWeight: number;
     totalPrice: number;
@@ -42,6 +43,7 @@ export interface ChickenCardProps {
     average_rating: number;
     price: any;
     quantity: number;
+    status: boolean;
     buttonPressHandler: any;
 }
 
