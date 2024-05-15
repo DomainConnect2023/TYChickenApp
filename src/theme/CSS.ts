@@ -288,7 +288,7 @@ export const css = StyleSheet.create({
         paddingVertical: SPACING.space_8,
     },
     CategoryScrollViewContainer: {
-        flexDirection: "row"
+        flexDirection: "column",
     },
     CategoryScrollViewItem: {
         alignItems: 'center',

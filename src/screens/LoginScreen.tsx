@@ -70,7 +70,7 @@ const LoginScreen = ({navigation}: any) => {
                             alignSelf: "center",
                         }} />
                     </View>
-                    <View style={[css.widthAndAdjustment, css.cardShadow]}>
+                    <View style={[css.widthAndAdjustment, css.cardShadow, {flex: 1}]}>
                         <View style={[css.cardContainer, {padding: 30}]}>
                             <View style={{flexDirection: "column", marginTop: SPACING.space_20}}>
                                 <Text style={css.titleTextInput}> User Name </Text>

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { View, Alert, ScrollView, StatusBar, StyleSheet, Text, FlatList, TouchableOpacity, Dimensions, Pressable, RefreshControl } from "react-native";
+import { View, StatusBar, Text, FlatList, TouchableOpacity, RefreshControl } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
-import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
+import { COLORS, SPACING } from '../theme/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { css } from '../theme/CSS';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,22 +11,20 @@ import { createTable, db } from '../data/SQLiteFile';
 import DeliveryStatusAnimation from '../components/DeliveryStatusContainer';
 import { HistoryData } from '../data/ChickenData';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { ActivityIndicator } from 'react-native-paper';
 import EmptyListAnimation from '../components/EmptyListAnimation';
-import { HistoryCardProps, currencyFormat } from '../components/Objects';
+import { HistoryCardProps } from '../components/Objects';
 import HistoryCard from '../components/HistoryCard';
 import LoadingAnimation from '../components/LoadingAnimation';
 
 const HistoryPageScreen = ({navigation}: {navigation:any}) => {
     const [processData, setProcessData] = useState(false);
-    const [showAnimation, setShowAnimation] = useState(false);
     const tabBarHeight = useBottomTabBarHeight();
     const [userID, setUserID] = useState('');
     const [showNoItemImg, setShowNoItemImg] = useState(false);
     const [countItem, setCountItem] = useState<number>(0);
-    const [todayDate, setTodayDate] = useState(new Date().toISOString().split('T')[0]);
     const [refreshing, setRefreshing] = useState(false);
 
+    const [todayDate, setTodayDate] = useState(new Date().toISOString().split('T')[0]);
     const [limitedDate, setLimitedDate] = 
     useState(new Date(new Date().setDate(new Date().getDate()-1)).toISOString().split('T')[0]);
 
@@ -37,7 +35,6 @@ const HistoryPageScreen = ({navigation}: {navigation:any}) => {
             await createTable();
             await checkCartNum();
             await fetchedDataAPI(HistoryData);
-            // console.log(userID);
         })();
     }, []);
 

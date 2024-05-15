@@ -14,6 +14,7 @@ import PopUpAnimation from '../components/PopUpAnimation';
 import { ProductData, currencyFormat } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
 import { CategoryList } from '../data/ChickenData';
+import CategoryListCard from '../components/CategoryList';
 
 const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
     const route = useRoute();
@@ -23,7 +24,6 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
     const [quantity, setQuantity] = useState("1");
     const [countItem, setCountItem] = useState<number>(0);
 
-    const [categories, setCategories] = useState(CategoryList);
     const ListRef: any = useRef<FlatList>();
     const [categoryIndex, setCategoryIndex] = useState({ index: 1 });
 
@@ -42,54 +42,6 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
             checkCartNum();
         }, [])
     );
-
-    const updateQuantity = (id: any, newQuantity: any) => {
-        console.log(id+" "+newQuantity);
-        const updatedData = CategoryList.map((data) => {
-            if (data.id === id) {
-                return { ...data, quantity: newQuantity };
-            }
-            return data;
-        });
-        setCategories(updatedData);
-    };
-
-    const CategoryListCard = ({ item, updateQuantity }: {item: any, updateQuantity: any}) => {
-        return (
-            <View style={styles.CategoryContainer}>
-                <Text style={styles.CategoryText}>{item.value}</Text>
-                <View style={{ flexDirection: "row", marginHorizontal: SPACING.space_10, alignSelf: "center" }}>
-                    <Pressable
-                        style={css.plusButton}
-                        onPress={() => {
-                            if (item.quantity > 0) {
-                                let newQuantity = item.quantity-1;
-                                updateQuantity(item.id, newQuantity);
-                            }
-                        }}
-                    >
-                        <Text style={css.buttonText}>-</Text>
-                    </Pressable>
-                    <TextInput
-                        style={css.NumberOfOrder}
-                        mode="outlined"
-                        keyboardType='numeric'
-                        value={item.quantity.toString()}
-                        onChangeText={() => { }}
-                    />
-                    <Pressable
-                        style={css.plusButton}
-                        onPress={() => {
-                            let newQuantity = item.quantity+1;
-                            updateQuantity(item.id, newQuantity);
-                        }}
-                    >
-                        <Text style={css.buttonText}>+</Text>
-                    </Pressable>
-                </View>
-            </View>
-        );
-    };
 
     const checkCartNum = async () => {
         try {
@@ -197,7 +149,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                     RM {currencyFormat(price)}
                                 </Text>
                             </View>
-                            {/* <View style={{flexDirection: "row", marginHorizontal: SPACING.space_10}}>
+                            <View style={{flexDirection: "row", marginHorizontal: SPACING.space_10}}>
                                 <Pressable
                                     style={css.plusButton}
                                     onPress={async () => {
@@ -229,29 +181,13 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                 >
                                     <Text style={css.buttonText}>+</Text>
                                 </Pressable>
-                            </View> */}
+                            </View>
                         </View>
                         <View>
-                            {/* <Text style={css.DetailTitle}>
+                            <Text style={css.DetailTitle}>
                                 Select Category
-                            </Text> */}
-                            <View style={[css.CategoryScrollViewContainer, {alignSelf: "flex-start"}]}>
-                                {categories.map((item) => (
-                                    // <TouchableOpacity
-                                    // key={item.id}
-                                    // style={css.CategoryScrollViewItem}
-                                    // onPress={() => {
-                                    //     ListRef?.current?.scrollToOffset({
-                                    //     animated: true,
-                                    //     offset: 0,
-                                    //     });
-                                    //     setCategoryIndex({ index: item.id });
-                                    // }}>
-                                        <CategoryListCard  key={item.id} item={item} updateQuantity={updateQuantity}                                           />
-                                    // </TouchableOpacity>
-                                ))}
-                            </View>
-                            {/* <ScrollView horizontal 
+                            </Text>
+                            <ScrollView horizontal 
                                 showsHorizontalScrollIndicator={false} 
                                 contentContainerStyle={css.CategoryScrollViewStyle}>
 
@@ -276,7 +212,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                         </TouchableOpacity>
                                     ))}
                                 </View>
-                            </ScrollView> */}
+                            </ScrollView>
                         </View>
 
                         <View style={css.LineContainer}></View>
@@ -294,27 +230,25 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                         <Pressable
                             style={css.AddtoCartButton}
                             onPress={async () => {
-                                console.log(categories);
+                                let categorySelected;
+                                categoryIndex.index === 1 ? (
+                                    categorySelected="10"
+                                ) : (
+                                    categoryIndex.index === 2 ? (
+                                        categorySelected="50"
+                                    ) : (
+                                        categorySelected="100"
+                                    )
+                                );
 
-                                // let categorySelected;
-                                // categoryIndex.index === 1 ? (
-                                //     categorySelected="10"
-                                // ) : (
-                                //     categoryIndex.index === 2 ? (
-                                //         categorySelected="50"
-                                //     ) : (
-                                //         categorySelected="100"
-                                //     )
-                                // );
-
-                                // addToCartApi(
-                                //     key, 
-                                //     name, 
-                                //     categorySelected, 
-                                //     '../assets/chicken_assets/cartPic.png', 
-                                //     price, 
-                                //     parseInt(quantity)
-                                // );
+                                addToCartApi(
+                                    key, 
+                                    name, 
+                                    categorySelected, 
+                                    '../assets/chicken_assets/cartPic.png', 
+                                    price, 
+                                    parseInt(quantity)
+                                );
                             }}
                         >
                             <Text style={css.AddtoCartText}>Add to Cart</Text>
