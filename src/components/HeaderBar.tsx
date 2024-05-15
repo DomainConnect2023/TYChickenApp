@@ -23,7 +23,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({title, checkBackBttn, badgeNumber}
     (async()=> {
       setUserID(await AsyncStorage.getItem('UserID') ?? "");
     })();
-}, []);
+  }, []);
   
   return (
     checkBackBttn==true ? (

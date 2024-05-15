@@ -179,7 +179,17 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                                 mode="outlined"
                                                 keyboardType='numeric'
                                                 value={item.quantity.toString()}
-                                                onChangeText={() => { }}
+                                                onChangeText={(text)=>{
+                                                    if(parseInt(text)>0){
+                                                        const updatedData = fetchedData.map((data) => {
+                                                            if (data.id === item.id) {
+                                                                return { ...data, quantity: parseInt(text) };
+                                                            }
+                                                            return data;
+                                                        });
+                                                        setFetchedData(updatedData);
+                                                    }
+                                                }}
                                             />
                                             <Pressable
                                                 style={css.plusButton}
@@ -256,7 +266,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent:"space-between",
         width: Dimensions.get("screen").width*90/100, 
-        margin: SPACING.space_10,
+        marginHorizontal: SPACING.space_10,
+        marginVertical: SPACING.space_5,
         padding: SPACING.space_5,
         borderRadius: BORDERRADIUS.radius_20,
     },

@@ -236,7 +236,11 @@ const HomeScreen = ({navigation}: any) => {
               </TouchableOpacity>
             </View>
 
-            <View style={[css.FlatListContainer,{flexDirection: "row",}]}>
+            <View style={[
+              css.FlatListContainer, 
+              userID != "admin" ? {marginBottom: tabBarHeight} : {}, 
+              {flexDirection: "row", }
+            ]}>
               <FlatList
                 data={fetchedData}
                 renderItem={showChickenCard}

@@ -140,7 +140,7 @@ const HomeDriverScreen = ({navigation}: {navigation:any}) => {
                 <View style={{flex: 1}}>
                     <View style={{flexDirection:"row", justifyContent: "space-between"}}>
                         <Text style={[css.TextDeliveryStatus]}> 
-                            Today Goods: 
+                            Today Goods Delivery: 
                         </Text>
                         <TouchableOpacity
                             onPress={async () => {

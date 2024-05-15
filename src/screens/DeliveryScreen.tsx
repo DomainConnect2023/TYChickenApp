@@ -118,7 +118,7 @@ const DeliveryPageScreen = ({navigation}: {navigation:any}) => {
                 </View>
             ) : (
             <View style={{flex: 1}}>
-                <HeaderDriverBar title="Today Delivery" checkBackBttn={true} />
+                <HeaderDriverBar title="Goods Delivery" checkBackBttn={true} />
                 <View style={css.LineContainer}></View>
                 
                 {showHeader && (                     
