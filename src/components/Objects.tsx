@@ -52,6 +52,12 @@ export interface ItemProps {
     title: string;
 }
 
+export interface CategoryProps {
+    id: number;
+    value: string;
+    quantity: number
+}
+
 export const GridItem = ({ icon, title }: ItemProps) => {
     return (
         <View style={css.gridCSS}>

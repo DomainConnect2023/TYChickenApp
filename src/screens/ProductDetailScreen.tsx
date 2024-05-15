@@ -11,28 +11,26 @@ import {FlatList} from 'react-native';
 import { css } from '../theme/CSS';
 import { addData, createTable, db, selectData, updateData } from '../data/SQLiteFile';
 import PopUpAnimation from '../components/PopUpAnimation';
-import { ProductData, currencyFormat } from '../components/Objects';
+import { CategoryProps, ProductData, currencyFormat } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
 import { CategoryList } from '../data/ChickenData';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
     const route = useRoute();
     const { key, name, price, type, picture, description } = route.params as ProductData;
     const [processData, setProcessData] = useState(false);
+    const [userID, setUserID] = useState('');
     const [showAnimation, setShowAnimation] = useState(false);
-    const [quantity, setQuantity] = useState("1");
     const [countItem, setCountItem] = useState<number>(0);
 
-    const [categories, setCategories] = useState(CategoryList);
-    const ListRef: any = useRef<FlatList>();
-    const [categoryIndex, setCategoryIndex] = useState({ index: 1 });
+    const [fetchedData, setFetchedData] = useState<CategoryProps[]>([]);
 
     useEffect(()=> {
         (async()=> {
-            // console.log(route);
             await createTable();
             await checkCartNum();
-            await fetchedDataAPI();
+            await fetchedDataAPI(CategoryList);
         })();
     }, []);
 
@@ -42,54 +40,6 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
             checkCartNum();
         }, [])
     );
-
-    const updateQuantity = (id: any, newQuantity: any) => {
-        console.log(id+" "+newQuantity);
-        const updatedData = CategoryList.map((data) => {
-            if (data.id === id) {
-                return { ...data, quantity: newQuantity };
-            }
-            return data;
-        });
-        setCategories(updatedData);
-    };
-
-    const CategoryListCard = ({ item, updateQuantity }: {item: any, updateQuantity: any}) => {
-        return (
-            <View style={styles.CategoryContainer}>
-                <Text style={styles.CategoryText}>{item.value}</Text>
-                <View style={{ flexDirection: "row", marginHorizontal: SPACING.space_10, alignSelf: "center" }}>
-                    <Pressable
-                        style={css.plusButton}
-                        onPress={() => {
-                            if (item.quantity > 0) {
-                                let newQuantity = item.quantity-1;
-                                updateQuantity(item.id, newQuantity);
-                            }
-                        }}
-                    >
-                        <Text style={css.buttonText}>-</Text>
-                    </Pressable>
-                    <TextInput
-                        style={css.NumberOfOrder}
-                        mode="outlined"
-                        keyboardType='numeric'
-                        value={item.quantity.toString()}
-                        onChangeText={() => { }}
-                    />
-                    <Pressable
-                        style={css.plusButton}
-                        onPress={() => {
-                            let newQuantity = item.quantity+1;
-                            updateQuantity(item.id, newQuantity);
-                        }}
-                    >
-                        <Text style={css.buttonText}>+</Text>
-                    </Pressable>
-                </View>
-            </View>
-        );
-    };
 
     const checkCartNum = async () => {
         try {
@@ -110,9 +60,13 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
         }
     };
     
-    const fetchedDataAPI = async() => {
+    const fetchedDataAPI = async(newData: { itemList: CategoryProps[] }) => {
         setProcessData(true);
+        setUserID(await AsyncStorage.getItem('UserID') ?? "");
+        setFetchedData([]);
         try {
+            const { itemList } = newData;
+            setFetchedData(itemList);
           
         }catch (error: any) {
             Snackbar.show({
@@ -139,10 +93,6 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                     setTimeout(() => {
                         setShowAnimation(false);
                     }, 800);
-                    // Snackbar.show({
-                    //     text: "Add to Cart Successfully.",
-                    //     duration: Snackbar.LENGTH_SHORT,
-                    // });
                 }else{
                     await addData(originid,name, type, picture, price, quantity);
                     setShowAnimation(true);
@@ -197,86 +147,59 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                     RM {currencyFormat(price)}
                                 </Text>
                             </View>
-                            {/* <View style={{flexDirection: "row", marginHorizontal: SPACING.space_10}}>
-                                <Pressable
-                                    style={css.plusButton}
-                                    onPress={async () => {
-                                        if(parseInt(quantity)>1){
-                                            let newVar = parseInt(quantity)-1;
-                                            setQuantity(newVar.toString());
-                                        }
-                                    }}
-                                >
-                                    <Text style={css.buttonText}>-</Text>
-                                </Pressable>
-                                <TextInput
-                                    style={css.NumberOfOrder}
-                                    mode="outlined"
-                                    keyboardType = 'numeric'
-                                    value={quantity}
-                                    onChangeText={(text)=>{
-                                        if(parseInt(text)>0){
-                                            setQuantity(text.toString());
-                                        }
-                                    }}
-                                />
-                                <Pressable
-                                    style={css.plusButton}
-                                    onPress={async () => {
-                                        let newVar = parseInt(quantity)+1;
-                                        setQuantity(newVar.toString());
-                                    }}
-                                >
-                                    <Text style={css.buttonText}>+</Text>
-                                </Pressable>
-                            </View> */}
                         </View>
                         <View>
                             {/* <Text style={css.DetailTitle}>
                                 Select Category
                             </Text> */}
                             <View style={[css.CategoryScrollViewContainer, {alignSelf: "flex-start"}]}>
-                                {categories.map((item) => (
-                                    // <TouchableOpacity
-                                    // key={item.id}
-                                    // style={css.CategoryScrollViewItem}
-                                    // onPress={() => {
-                                    //     ListRef?.current?.scrollToOffset({
-                                    //     animated: true,
-                                    //     offset: 0,
-                                    //     });
-                                    //     setCategoryIndex({ index: item.id });
-                                    // }}>
-                                        <CategoryListCard  key={item.id} item={item} updateQuantity={updateQuantity}                                           />
-                                    // </TouchableOpacity>
+                                {fetchedData.map((item) => (
+                                    <View style={styles.CategoryContainer} key={item.id}>
+                                        <Text style={styles.CategoryText}>{item.value}</Text>
+                                        <View style={{ flexDirection: "row", marginHorizontal: SPACING.space_10, alignSelf: "center" }}>
+                                            <Pressable
+                                                style={css.plusButton}
+                                                onPress={() => {
+                                                    if (item.quantity > 0) {
+                                                        let newQuantity = item.quantity-1;
+                                                        const updatedData = fetchedData.map((data) => {
+                                                            if (data.id === item.id) {
+                                                                return { ...data, quantity: newQuantity };
+                                                            }
+                                                            return data;
+                                                        });
+                                                        setFetchedData(updatedData);
+                                                    }
+                                                }}
+                                            >
+                                                <Text style={css.buttonText}>-</Text>
+                                            </Pressable>
+                                            <TextInput
+                                                style={css.NumberOfOrder}
+                                                mode="outlined"
+                                                keyboardType='numeric'
+                                                value={item.quantity.toString()}
+                                                onChangeText={() => { }}
+                                            />
+                                            <Pressable
+                                                style={css.plusButton}
+                                                onPress={() => {
+                                                    let newQuantity = item.quantity+1;
+                                                    const updatedData = fetchedData.map((data) => {
+                                                        if (data.id === item.id) {
+                                                            return { ...data, quantity: newQuantity };
+                                                        }
+                                                        return data;
+                                                    });
+                                                    setFetchedData(updatedData);
+                                                }}
+                                            >
+                                                <Text style={css.buttonText}>+</Text>
+                                            </Pressable>
+                                        </View>
+                                    </View>
                                 ))}
                             </View>
-                            {/* <ScrollView horizontal 
-                                showsHorizontalScrollIndicator={false} 
-                                contentContainerStyle={css.CategoryScrollViewStyle}>
-
-                                <View style={css.CategoryScrollViewContainer} >
-                                    {CategoryList.map((item) => (
-                                        <TouchableOpacity
-                                        key={item.id}
-                                        style={css.CategoryScrollViewItem}
-                                        onPress={() => {
-                                            ListRef?.current?.scrollToOffset({
-                                            animated: true,
-                                            offset: 0,
-                                            });
-                                            setCategoryIndex({ index: item.id });
-                                        }}>
-                                            <CategoryListCard 
-                                                id={item.id}
-                                                value={item.value}
-                                                currentChoosing={categoryIndex.index} 
-                                                quantity={0} 
-                                                price={0}                                            />
-                                        </TouchableOpacity>
-                                    ))}
-                                </View>
-                            </ScrollView> */}
                         </View>
 
                         <View style={css.LineContainer}></View>
@@ -294,7 +217,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                         <Pressable
                             style={css.AddtoCartButton}
                             onPress={async () => {
-                                console.log(categories);
+                                console.log(fetchedData);
 
                                 // let categorySelected;
                                 // categoryIndex.index === 1 ? (

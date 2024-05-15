@@ -393,30 +393,32 @@ export const HistoryData : { itemList: HistoryCardProps[];} = {
     ]
 }
 
-export const CategoryList = [
-    {
-        id: 1,
-        value: "Without Cut",
-        quantity: 0,
-    },
-    {
-        id: 2,
-        value: "Cut 2 Piece",
-        quantity: 0,
-    },
-    {
-        id: 3,
-        value: "Cut 4 Piece",
-        quantity: 0,
-    },
-    {
-        id: 4,
-        value: "Cut 6 Piece",
-        quantity: 0,
-    },
-    {
-        id: 5,
-        value: "Cut 8 Piece",
-        quantity: 0,
-    },
-];
+export const CategoryList = {
+    "itemList": [
+        {
+            id: 1,
+            value: "Without Cut",
+            quantity: 0,
+        },
+        {
+            id: 2,
+            value: "Cut 2 Piece",
+            quantity: 0,
+        },
+        {
+            id: 3,
+            value: "Cut 4 Piece",
+            quantity: 0,
+        },
+        {
+            id: 4,
+            value: "Cut 6 Piece",
+            quantity: 0,
+        },
+        {
+            id: 5,
+            value: "Cut 8 Piece",
+            quantity: 0,
+        },
+    ]
+}
