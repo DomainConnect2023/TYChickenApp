@@ -240,7 +240,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
                 {size: 'L', price: '1400', currency: '$'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Fresh',
             quantity: 1,
             status: true,
             buttonPressHandler: {}
@@ -258,7 +258,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
                 {size: 'L', price: '1400', currency: '$'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Fresh',
             quantity: 1,
             status: true,
             buttonPressHandler: {}
@@ -276,7 +276,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
                 {size: 'L', price: '1900', currency: '$'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Frozen',
             quantity: 1,
             status: true,
             buttonPressHandler: {}
@@ -294,7 +294,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
                 {size: 'L', price: '1400', currency: '$'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Frozen',
             quantity: 1,
             status: true,
             buttonPressHandler: {}
@@ -312,7 +312,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
                 {size: 'L', price: '1400', currency: '$'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Fresh',
             quantity: 1,
             status: false,
             buttonPressHandler: {}
@@ -330,7 +330,43 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
                 {size: 'L', price: '1900', currency: '$'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Frozen',
+            quantity: 1,
+            status: true,
+            buttonPressHandler: {}
+        },
+        {
+            index: 6,
+            id: 'C7',
+            name: 'Frozen Chicken',
+            roasted: 'Medium Roasted',
+            imagelink_square: require('../assets/chicken_assets/FrozenChicken.jpg'),
+            special_ingredient: 'Can keep 3 to 5 months.',
+            price: [
+                {size: 'S', price: '1550', currency: '$'},
+                {size: 'M', price: '1750', currency: '$'},
+                {size: 'L', price: '1950', currency: '$'},
+            ],
+            average_rating: 5.0,
+            type: 'Frozen',
+            quantity: 1,
+            status: true,
+            buttonPressHandler: {}
+        },
+        {
+            index: 7,
+            id: 'C8',
+            name: 'Fresh Chicken',
+            roasted: 'Medium Roasted',
+            imagelink_square: require('../assets/chicken_assets/FullChicken.jpg'),
+            special_ingredient: 'Can keep 3 to 5 months.',
+            price: [
+                {size: 'S', price: '1600', currency: '$'},
+                {size: 'M', price: '1800', currency: '$'},
+                {size: 'L', price: '2000', currency: '$'},
+            ],
+            average_rating: 5.0,
+            type: 'Fresh',
             quantity: 1,
             status: true,
             buttonPressHandler: {}
@@ -422,3 +458,31 @@ export const CategoryList = {
         },
     ]
 }
+
+export const CategoryListTest = [
+    {
+        id: 1,
+        value: "Without Cut",
+        quantity: 0,
+    },
+    {
+        id: 2,
+        value: "Cut 2 Piece",
+        quantity: 0,
+    },
+    {
+        id: 3,
+        value: "Cut 4 Piece",
+        quantity: 0,
+    },
+    {
+        id: 4,
+        value: "Cut 6 Piece",
+        quantity: 0,
+    },
+    {
+        id: 5,
+        value: "Cut 8 Piece",
+        quantity: 0,
+    },
+]

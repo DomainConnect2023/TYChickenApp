@@ -283,7 +283,7 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
                     </View>
                 ) : (
                     <View style={{alignSelf:"center",}}>
-                        <EmptyListAnimation title={'Please add something to cart.'} />
+                        <EmptyListAnimation title={`Ops, empty here.`} />
                     </View>
                 )}
             </View>

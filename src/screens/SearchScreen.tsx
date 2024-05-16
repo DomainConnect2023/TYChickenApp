@@ -12,6 +12,7 @@ import { ChickenData3 } from '../data/ChickenData';
 import { addData, createTable, selectData, updateData } from '../data/SQLiteFile';
 import { ChickenCardProps, currencyFormat } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
+import { useRoute } from '@react-navigation/native';
 
 const CategoryList = [
     { id: '1', title: 'Frozen' },
@@ -20,23 +21,15 @@ const CategoryList = [
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
-const Item = ({ title }: { title: any }) => (
-    <View style={[css.CategoryScrollViewContainer, {marginVertical: SPACING.space_10}]}>
-        <TouchableOpacity onPress={() => { }}>
-            <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex, borderWidth: 2, margin: SPACING.space_5}]}>
-                <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>{title}</Text>
-            </View>
-        </TouchableOpacity>
-    </View>
-);
-
 const SearchPageScreen = ({navigation}: {navigation:any}) => {
+    const route = useRoute();
+    const { filterValue } = route.params as { filterValue: string };
     const [processData, setProcessData] = useState(false);
     const [userID, setUserID] = useState('');
     const [showNoItemImg, setShowNoItemImg] = useState(false);
     
     // const [textValue, setTexValue] = useState('');
-    const [searchText, setSearchText] = useState('');
+    const [searchText, setSearchText] = useState(filterValue);
     const [fetchedData, setFetchedData] = useState<ChickenCardProps[]>([]);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -46,24 +39,35 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
     useEffect(()=> {
         (async()=> {
             await createTable();
-            // setFetchedData([]);
-            await fetchedDataAPI(ChickenData3);
+            await fetchedDataAPI(ChickenData3, searchText);
             // console.log(userID);
         })();
     }, []);
 
-    const fetchedDataAPI = async(newData: { itemList: ChickenCardProps[] }) => {
+    const fetchedDataAPI = async(newData: { itemList: ChickenCardProps[] }, searchValue: any) => {
         setProcessData(true);
         setUserID(await AsyncStorage.getItem('UserID') ?? "");
         setFetchedData([]);
+
         try {
             const { itemList } = newData;
 
-            if(itemList.length == 0){
-                setShowNoItemImg(true);
+            if(searchValue!=""){
+                const filteredItemList = itemList.filter(item => item.type === searchValue);
+                if(filteredItemList.length == 0){
+                    setShowNoItemImg(true);
+                }else{
+                    setShowNoItemImg(false);
+                    setFetchedData(filteredItemList);
+                }
+
             }else{
-                setShowNoItemImg(false);
-                setFetchedData(itemList);
+                if(itemList.length == 0){
+                    setShowNoItemImg(true);
+                }else{
+                    setShowNoItemImg(false);
+                    setFetchedData(itemList);
+                }
             }
 
         }catch (error: any) {
@@ -126,6 +130,19 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
 
     const showGridFlatlist = ({ item }: { item: any }) => (
         <Item title={item.title} />
+    );
+
+    const Item = ({ title }: { title: any }) => (
+        <View style={[css.CategoryScrollViewContainer, {marginVertical: SPACING.space_10}]}>
+            <TouchableOpacity onPress={async () => { 
+                setSearchText(title);
+                await fetchedDataAPI(ChickenData3, title);
+            }}>
+                <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex, borderWidth: 2, margin: SPACING.space_5}]}>
+                    <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>{title}</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
     );
 
     const showChickenCard = ({ item }: { item: ChickenCardProps }) => {
@@ -297,7 +314,6 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
             ) : (
                 ( showNoItemImg == false ) ? (
                     (searchText.length>0) ? (
-                    // (fetchedData.length>0) ? (
                         <View style={{flex: 1}}>
                             <FlatList
                                 data={fetchedData}
@@ -309,6 +325,7 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
                                     refreshing={refreshing}
                                     onRefresh={onRefresh}
                                 />}
+                                style={{marginBottom: SPACING.space_20}}
                             />
                         </View>
                     ) : (

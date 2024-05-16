@@ -14,8 +14,15 @@ import { createTable, db } from '../data/SQLiteFile';
 import Snackbar from 'react-native-snackbar';
 import TabDriverNavigator from '../navigators/TabDriverNavigator';
 import AdminPage from '../navigators/AdminPage';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 const Drawer = createDrawerNavigator();
+
+type RootStackParamList = {
+  Search: { filterValue: string };
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, 'Search'>;
 
 function CustomDrawerContent(props: any) {
     const navigation = useNavigation();
@@ -36,6 +43,7 @@ function CustomDrawerContent(props: any) {
 export function CustomDrawer() {
 
   const navigation = useNavigation();
+  const navigation2SearchPage = useNavigation<NavigationProp>();
   const [refreshKey, setRefreshKey] = useState(0);
   const [initialRoute, setInitialRoute] = React.useState("Admin Page");
 
@@ -97,7 +105,8 @@ export function CustomDrawer() {
         headerRight: () => (
           <View style={{flexDirection: "row"}}>
             <TouchableOpacity onPress={async () => {
-                navigation.navigate("Search" as never)
+                const filterValue = "";
+                navigation2SearchPage.navigate("Search", { filterValue })
             }}>
                 <Icon
                 name="search"

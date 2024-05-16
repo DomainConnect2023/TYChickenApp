@@ -111,90 +111,54 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
     return (
         <View style={css.ScreenContainer}>
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
-            <HeaderBar title="" checkBackBttn={true} badgeNumber={countItem} />
-            <View style={css.LineContainer}></View>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={css.ScrollViewFlex}>
-
-            {showAnimation ? (
-                <PopUpAnimation
-                    style={{flex: 1}}
-                    source={require('../animationPart/AddSuccess.json')}
-                />
-            ) : (
-                <></>
-            )}
-            
             {processData==true ? (
                 <View style={{alignSelf:"center",}}>
                     <LoadingAnimation />
                 </View>
             ): (
-                <View style={{flex: 1}}>
-                    <Image
-                        style={css.DetailImage}
-                        source={picture}
-                    />
+            <View style={{flex: 1}}>   
+                <HeaderBar title="" checkBackBttn={true} badgeNumber={countItem} />
+                <View style={css.LineContainer}></View>
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={css.ScrollViewFlex}>
 
-                    <View style={[css.cardContainer, {marginBottom: 60}]}>
-                        <View style={{marginTop: 10}}>
-                            <Text style={css.ScreenTitle}>
-                                {name}
+                {showAnimation ? (
+                    <PopUpAnimation
+                        style={{flex: 1}}
+                        source={require('../animationPart/AddSuccess.json')}
+                    />
+                ) : (
+                    <></>
+                )}
+            
+                <Image
+                    style={css.DetailImage}
+                    source={picture}
+                />
+
+                <View style={[css.cardContainer, {marginBottom: 60}]}>
+                    <View style={{marginTop: 10}}>
+                        <Text style={css.ScreenTitle}>
+                            {name}
+                        </Text>
+                    </View>
+                    <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', marginBottom: SPACING.space_10}}>
+                        <View>
+                            <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
+                                RM {currencyFormat(price)}
                             </Text>
                         </View>
-                        <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', marginBottom: SPACING.space_10}}>
-                            <View>
-                                <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
-                                    RM {currencyFormat(price)}
-                                </Text>
-                            </View>
-                        </View>
-                        <View>
-                            {/* <Text style={css.DetailTitle}>
-                                Select Category
-                            </Text> */}
-                            <View style={[css.CategoryScrollViewContainer, {alignSelf: "flex-start"}]}>
-                                {fetchedData.map((item) => (
-                                    <View style={styles.CategoryContainer} key={item.id}>
-                                        <Text style={styles.CategoryText}>{item.value}</Text>
-                                        <View style={{ flexDirection: "row", marginHorizontal: SPACING.space_10, alignSelf: "center" }}>
-                                            <Pressable
-                                                style={css.plusButton}
-                                                onPress={() => {
-                                                    if (item.quantity > 0) {
-                                                        let newQuantity = item.quantity-1;
-                                                        const updatedData = fetchedData.map((data) => {
-                                                            if (data.id === item.id) {
-                                                                return { ...data, quantity: newQuantity };
-                                                            }
-                                                            return data;
-                                                        });
-                                                        setFetchedData(updatedData);
-                                                    }
-                                                }}
-                                            >
-                                                <Text style={css.buttonText}>-</Text>
-                                            </Pressable>
-                                            <TextInput
-                                                style={css.NumberOfOrder}
-                                                mode="outlined"
-                                                keyboardType='numeric'
-                                                value={item.quantity.toString()}
-                                                onChangeText={(text)=>{
-                                                    if(parseInt(text)>0){
-                                                        const updatedData = fetchedData.map((data) => {
-                                                            if (data.id === item.id) {
-                                                                return { ...data, quantity: parseInt(text) };
-                                                            }
-                                                            return data;
-                                                        });
-                                                        setFetchedData(updatedData);
-                                                    }
-                                                }}
-                                            />
-                                            <Pressable
-                                                style={css.plusButton}
-                                                onPress={() => {
-                                                    let newQuantity = item.quantity+1;
+                    </View>
+                    <View>
+                        <View style={[css.CategoryScrollViewContainer, {alignSelf: "flex-start"}]}>
+                            {fetchedData.map((item) => (
+                                <View style={styles.CategoryContainer} key={item.id}>
+                                    <Text style={styles.CategoryText}>{item.value}</Text>
+                                    <View style={{ flexDirection: "row", marginHorizontal: SPACING.space_10, alignSelf: "center" }}>
+                                        <Pressable
+                                            style={css.plusButton}
+                                            onPress={() => {
+                                                if (item.quantity > 0) {
+                                                    let newQuantity = item.quantity-1;
                                                     const updatedData = fetchedData.map((data) => {
                                                         if (data.id === item.id) {
                                                             return { ...data, quantity: newQuantity };
@@ -202,60 +166,94 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                                         return data;
                                                     });
                                                     setFetchedData(updatedData);
-                                                }}
-                                            >
-                                                <Text style={css.buttonText}>+</Text>
-                                            </Pressable>
-                                        </View>
+                                                }
+                                            }}
+                                        >
+                                            <Text style={css.buttonText}>-</Text>
+                                        </Pressable>
+                                        <TextInput
+                                            style={css.NumberOfOrder}
+                                            mode="outlined"
+                                            keyboardType='numeric'
+                                            value={item.quantity.toString()}
+                                            onChangeText={(text)=>{
+                                                if(parseInt(text)>0){
+                                                    const updatedData = fetchedData.map((data) => {
+                                                        if (data.id === item.id) {
+                                                            return { ...data, quantity: parseInt(text) };
+                                                        }
+                                                        return data;
+                                                    });
+                                                    setFetchedData(updatedData);
+                                                }
+                                            }}
+                                        />
+                                        <Pressable
+                                            style={css.plusButton}
+                                            onPress={() => {
+                                                let newQuantity = item.quantity+1;
+                                                const updatedData = fetchedData.map((data) => {
+                                                    if (data.id === item.id) {
+                                                        return { ...data, quantity: newQuantity };
+                                                    }
+                                                    return data;
+                                                });
+                                                setFetchedData(updatedData);
+                                            }}
+                                        >
+                                            <Text style={css.buttonText}>+</Text>
+                                        </Pressable>
                                     </View>
-                                ))}
-                            </View>
-                        </View>
-
-                        <View style={css.LineContainer}></View>
-                        
-                        <View>
-                            <Text style={css.DetailTitle}>
-                                Description
-                            </Text>
-                            <Text style={css.DescriptionText}>
-                                {description} asdA fasd asdf asdA fasd asdf asdasdA fasd asdf asdA fasd A fasd aA fasd asdf sdA fasdsdA fasd asdf asdA fasd asdf asdA fasd asdf asdA fasd asdf a asdf aasd asdf a
-                            </Text>
+                                </View>
+                            ))}
                         </View>
                     </View>
-                    <View style={css.CartFooter}>
-                        <Pressable
-                            style={css.AddtoCartButton}
-                            onPress={async () => {
-                                console.log(fetchedData);
 
-                                // let categorySelected;
-                                // categoryIndex.index === 1 ? (
-                                //     categorySelected="10"
-                                // ) : (
-                                //     categoryIndex.index === 2 ? (
-                                //         categorySelected="50"
-                                //     ) : (
-                                //         categorySelected="100"
-                                //     )
-                                // );
-
-                                // addToCartApi(
-                                //     key, 
-                                //     name, 
-                                //     categorySelected, 
-                                //     '../assets/chicken_assets/cartPic.png', 
-                                //     price, 
-                                //     parseInt(quantity)
-                                // );
-                            }}
-                        >
-                            <Text style={css.AddtoCartText}>Add to Cart</Text>
-                        </Pressable>
+                    <View style={css.LineContainer}></View>
+                    
+                    <View>
+                        <Text style={css.DetailTitle}>
+                            Description
+                        </Text>
+                        <Text style={css.DescriptionText}>
+                            {description} asdA fasd asdf asdA fasd asdf asdasdA fasd asdf asdA fasd A fasd aA fasd asdf sdA fasdsdA fasd asdf asdA fasd asdf asdA fasd asdf asdA fasd asdf a asdf aasd asdf a
+                        </Text>
                     </View>
                 </View>
+                <View style={css.CartFooter}>
+                    <Pressable
+                        style={css.AddtoCartButton}
+                        onPress={async () => {
+                            console.log(fetchedData);
+
+                            // let categorySelected;
+                            // categoryIndex.index === 1 ? (
+                            //     categorySelected="10"
+                            // ) : (
+                            //     categoryIndex.index === 2 ? (
+                            //         categorySelected="50"
+                            //     ) : (
+                            //         categorySelected="100"
+                            //     )
+                            // );
+
+                            // addToCartApi(
+                            //     key, 
+                            //     name, 
+                            //     categorySelected, 
+                            //     '../assets/chicken_assets/cartPic.png', 
+                            //     price, 
+                            //     parseInt(quantity)
+                            // );
+                        }}
+                    >
+                        <Text style={css.AddtoCartText}>Add to Cart</Text>
+                    </Pressable>
+                </View>
+            
+                </ScrollView>
+            </View>
             )}
-            </ScrollView>
         </View>
     );
 };

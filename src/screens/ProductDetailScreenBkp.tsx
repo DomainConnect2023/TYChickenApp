@@ -13,7 +13,7 @@ import { addData, createTable, db, selectData, updateData } from '../data/SQLite
 import PopUpAnimation from '../components/PopUpAnimation';
 import { ProductData, currencyFormat } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
-import { CategoryList } from '../data/ChickenData';
+import { CategoryListTest } from '../data/ChickenData';
 import CategoryListCard from '../components/CategoryList';
 
 const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
@@ -192,7 +192,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                 contentContainerStyle={css.CategoryScrollViewStyle}>
 
                                 <View style={css.CategoryScrollViewContainer} >
-                                    {CategoryList.map((item) => (
+                                    {CategoryListTest.map((item) => (
                                         <TouchableOpacity
                                         key={item.id}
                                         style={css.CategoryScrollViewItem}

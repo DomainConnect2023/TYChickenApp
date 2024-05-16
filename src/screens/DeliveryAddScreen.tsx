@@ -68,8 +68,8 @@ const DeliveryAddPageScreen = ({navigation}: {navigation:any}) => {
                                     style={{}}
                                     mode="outlined"
                                     label="Item List"
-                                    value={customer}
-                                    onChangeText={setCustomer}
+                                    value={Item}
+                                    onChangeText={setItem}
                                     ref={inputRef2}
                                 />
                             </View>

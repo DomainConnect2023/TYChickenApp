@@ -171,13 +171,8 @@ const HomeScreen = ({navigation}: any) => {
 
             <View style={[css.FlatListContainer,{flexDirection: "row", width: Dimensions.get("screen").width/100*95, marginBottom: SPACING.space_18}]}>
               <TouchableOpacity onPress={() => {
-                navigation.navigate('ProductDetail', {
-                  key: 10, 
-                  name: "Frozen Chicken", 
-                  type: "", 
-                  price: 1500,
-                  picture: require('../assets/chicken_assets/FrozenChicken.jpg'), 
-                  description: "Can keep 3 to 5 months."
+                navigation.navigate('Search', {
+                  filterValue: "Frozen", 
                 });
               }} >
                 <ChickenCard
@@ -197,13 +192,8 @@ const HomeScreen = ({navigation}: any) => {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => {
-                navigation.navigate('ProductDetail', {
-                  key: 20, 
-                  name: "Fresh Chicken", 
-                  type: "", 
-                  price: 1400,
-                  picture: require('../assets/chicken_assets/FullChicken.jpg'), 
-                  description: "Can Keep 3 to 5 Days."
+                navigation.navigate('Search', {
+                  filterValue: "Fresh", 
                 });
               }}>
                 <ChickenCard

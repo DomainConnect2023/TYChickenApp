@@ -8,6 +8,7 @@ import { css } from '../theme/CSS';
 import { deleteAllData } from '../data/SQLiteFile';
 import Snackbar from 'react-native-snackbar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface HeaderBarProps {
   title?: string;
@@ -15,8 +16,15 @@ interface HeaderBarProps {
   badgeNumber?: number;
 }
 
+type RootStackParamList = {
+  Search: { filterValue: string };
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, 'Search'>;
+
 const HeaderBar: React.FC<HeaderBarProps> = ({title, checkBackBttn, badgeNumber}) => {
   const navigation = useNavigation();
+  const navigation2SearchPage = useNavigation<NavigationProp>();
   const [userID, setUserID] = useState('');
 
   useEffect(()=> {
@@ -106,7 +114,8 @@ const HeaderBar: React.FC<HeaderBarProps> = ({title, checkBackBttn, badgeNumber}
         <Text style={css.HeaderText}>{title}</Text>
         <View style={{flexDirection: "row"}}>
           <TouchableOpacity onPress={async () => {
-            navigation.navigate("Search" as never)
+            const filterValue = "";
+            navigation2SearchPage.navigate("Search", { filterValue })
           }}>
             <Icon
               name="search"
