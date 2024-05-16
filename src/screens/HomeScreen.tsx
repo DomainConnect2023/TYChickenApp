@@ -182,9 +182,9 @@ const HomeScreen = ({navigation}: any) => {
                   roasted={""}
                   imagelink_square={require('../assets/chicken_assets/FrozenChicken.jpg')}
                   name={"Frozen Chicken"}
-                  special_ingredient={"Can keep 3 to 5 months."}
+                  special_ingredient={""}
                   average_rating={5.0}
-                  price={{size: 'M', price: '1500', currency: 'RM'}}
+                  price={{size: 'M', price: '', currency: ''}}
                   quantity={0}
                   status={true}
                   buttonPressHandler={{}}
@@ -203,9 +203,9 @@ const HomeScreen = ({navigation}: any) => {
                     roasted={""}
                     imagelink_square={require('../assets/chicken_assets/FullChicken.jpg')}
                     name={"Fresh Chicken"}
-                    special_ingredient={"Can Keep 3 to 5 Days."}
+                    special_ingredient={""}
                     average_rating={5.0}
-                    price={{ size: 'M', price: '1400', currency: 'RM' }}
+                    price={{ size: 'M', price: '', currency: '' }}
                     quantity={0}
                     status={true}
                     buttonPressHandler={{}}

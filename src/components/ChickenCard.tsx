@@ -41,7 +41,7 @@ export const ChickenCard: React.FC<ChickenCardProps> = ({
       <Text style={css.CardSubtitle}>{special_ingredient}</Text>
       <View style={css.CardFooterRow}>
         <Text style={css.CardPriceCurrency}>
-          RM <Text style={css.CardPrice}>{currencyFormat(parseInt(price.price))}</Text>
+          {price.currency} <Text style={css.CardPrice}>{price.price==""? "" : currencyFormat(parseInt(price.price))}</Text>
         </Text>
         <TouchableOpacity
           onPress={() => {

@@ -62,6 +62,13 @@ export const css = StyleSheet.create({
         borderRadius: BORDERRADIUS.radius_16,
         overflow: 'hidden',
     },
+    CardContainerTitle: {
+        flexDirection: "row", 
+        alignItems: 'center', 
+        justifyContent: 'space-between', 
+        marginVertical: SPACING.space_10, 
+        marginHorizontal: SPACING.space_15,
+    },
     CardLinearGradientContainer: {
         padding: SPACING.space_15,
         borderRadius: BORDERRADIUS.radius_25,

@@ -136,17 +136,16 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                 />
 
                 <View style={[css.cardContainer, {marginBottom: 60}]}>
-                    <View style={{marginTop: 10}}>
+                    <View style={css.CardContainerTitle}>
                         <Text style={css.ScreenTitle}>
                             {name}
                         </Text>
-                    </View>
-                    <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', marginBottom: SPACING.space_10}}>
                         <View>
                             <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
                                 RM {currencyFormat(price)}
                             </Text>
                         </View>
+                        
                     </View>
                     <View>
                         <View style={[css.CategoryScrollViewContainer, {alignSelf: "flex-start"}]}>
@@ -263,7 +262,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.standardGreyHex,
         flexDirection: "row",
         justifyContent:"space-between",
-        width: Dimensions.get("screen").width*90/100, 
+        width: Dimensions.get("screen").width*95/100, 
         marginHorizontal: SPACING.space_10,
         marginVertical: SPACING.space_5,
         padding: SPACING.space_5,
