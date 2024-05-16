@@ -80,7 +80,6 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
         setFetchedData([]);
         try {
             const { itemList } = newData;
-            // const filteredItemList = itemList.filter(item => item.type === 'Frozen');
 
             if(itemList.length == 0){
                 setShowNoItemImg(true);

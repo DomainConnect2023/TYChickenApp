@@ -159,9 +159,9 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
             }} >
                 <View style={{flexDirection: "row", width: Dimensions.get("screen").width*95/100, backgroundColor: COLORS.secondaryVeryLightGreyHex, margin: 5, borderRadius: 20}}>
                     <ImageBackground
-                    source={item.imagelink_square}
-                    style={[css.CardImageBG, {width: CARD_WIDTH*1.15, height: CARD_WIDTH*1.15,margin: 10}]}
-                    resizeMode="cover">
+                        source={item.imagelink_square}
+                        style={[css.CardImageBG, {width: CARD_WIDTH*1.15, height: CARD_WIDTH*1.15,margin: 10}]}
+                        resizeMode="cover">
                         <View style={css.CardRatingContainer}>
                             <Icon
                             name={'star'}
