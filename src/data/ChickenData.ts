@@ -1,4 +1,4 @@
-import { ChickenCardProps } from "../components/ChickenCard";
+import { ChickenCardProps, HistoryCardProps } from "../components/Objects";
 
 export const ChickenData = {
     "itemList": [
@@ -13,9 +13,9 @@ export const ChickenData = {
         ingredients: 'Wing',
         special_ingredient: 'With Wing',
         prices: [
-            {size: 'S', price: '1000', currency: '$'},
-            {size: 'M', price: '1150', currency: '$'},
-            {size: 'L', price: '1400', currency: '$'},
+            {size: 'S', price: '1000', currency: 'RM'},
+            {size: 'M', price: '1150', currency: 'RM'},
+            {size: 'L', price: '1400', currency: 'RM'},
         ],
         average_rating: 5.0,
         ratings_count: '6,879',
@@ -33,9 +33,9 @@ export const ChickenData = {
         ingredients: 'Thigh',
         special_ingredient: 'With Thigh',
         prices: [
-            {size: 'S', price: '1200', currency: '$'},
-            {size: 'M', price: '1300', currency: '$'},
-            {size: 'L', price: '1400', currency: '$'},
+            {size: 'S', price: '1200', currency: 'RM'},
+            {size: 'M', price: '1300', currency: 'RM'},
+            {size: 'L', price: '1400', currency: 'RM'},
         ],
         average_rating: 5.0,
         ratings_count: '6,879',
@@ -53,9 +53,9 @@ export const ChickenData = {
         ingredients: 'Breast',
         special_ingredient: 'With Breast',
         prices: [
-            {size: 'S', price: '1500', currency: '$'},
-            {size: 'M', price: '1700', currency: '$'},
-            {size: 'L', price: '1900', currency: '$'},
+            {size: 'S', price: '1500', currency: 'RM'},
+            {size: 'M', price: '1700', currency: 'RM'},
+            {size: 'L', price: '1900', currency: 'RM'},
         ],
         average_rating: 5.0,
         ratings_count: '6,879',
@@ -78,9 +78,9 @@ export const TestChickenData = {
         "ingredients": 'Wing',
         "special_ingredient": 'With Wing',
         "prices": [
-            {"size": 'S', "price": '1000', "currency": '$'},
-            {"size": 'M', "price": '1150', "currency": '$'},
-            {"size": 'L', "price": '1400', "currency": '$'},
+            {"size": 'S', "price": '1000', "currency": 'RM'},
+            {"size": 'M', "price": '1150', "currency": 'RM'},
+            {"size": 'L', "price": '1400', "currency": 'RM'},
         ],
         "average_rating": 5.0,
         "ratings_count": '6,879',
@@ -98,9 +98,9 @@ export const TestChickenData = {
         "ingredients": 'Thigh',
         "special_ingredient": 'With Thigh',
         "prices": [
-            {"size": 'S', "price": '1200', "currency": '$'},
-            {"size": 'M', "price": '1300', "currency": '$'},
-            {"size": 'L', "price": '1400', "currency": '$'},
+            {"size": 'S', "price": '1200', "currency": 'RM'},
+            {"size": 'M', "price": '1300', "currency": 'RM'},
+            {"size": 'L', "price": '1400', "currency": 'RM'},
         ],
         "average_rating": 5.0,
         "ratings_count": '6,879',
@@ -118,9 +118,9 @@ export const TestChickenData = {
         "ingredients": 'Breast',
         "special_ingredient": 'With Breast',
         "prices": [
-            {"size": 'S', "price": '1500', "currency": '$'},
-            {"size": 'M', "price": '1700', "currency": '$'},
-            {"size": 'L', "price": '1900', "currency": '$'},
+            {"size": 'S', "price": '1500', "currency": 'RM'},
+            {"size": 'M', "price": '1700', "currency": 'RM'},
+            {"size": 'L', "price": '1900', "currency": 'RM'},
         ],
         "average_rating": 5.0,
         "ratings_count": '6,879',
@@ -140,12 +140,14 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
         imagelink_square: require('../assets/chicken_assets/wing.jpg'),
         special_ingredient: 'With Wing',
         price: [
-            {size: 'S', price: '1000', currency: '$'},
-            {size: 'M', price: '1150', currency: '$'},
-            {size: 'L', price: '1400', currency: '$'},
+            {size: 'S', price: '1000', currency: 'RM'},
+            {size: 'M', price: '1150', currency: 'RM'},
+            {size: 'L', price: '1400', currency: 'RM'},
         ],
         average_rating: 5.0,
         type: 'Part',
+        quantity: 1,
+        status: true,
         buttonPressHandler: {}
     },
     {
@@ -156,12 +158,14 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
         imagelink_square: require('../assets/chicken_assets/thigh.jpg'),
         special_ingredient: 'With Thigh',
         price: [
-            {size: 'S', price: '1200', currency: '$'},
-            {size: 'M', price: '1300', currency: '$'},
-            {size: 'L', price: '1400', currency: '$'},
+            {size: 'S', price: '1200', currency: 'RM'},
+            {size: 'M', price: '1300', currency: 'RM'},
+            {size: 'L', price: '1400', currency: 'RM'},
         ],
         average_rating: 5.0,
         type: 'Part',
+        quantity: 1,
+        status: true,
         buttonPressHandler: {}
     },
     {
@@ -172,12 +176,14 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
         imagelink_square: require('../assets/chicken_assets/breast.jpg'),
         special_ingredient: 'With Breast',
         price: [
-            {size: 'S', price: '1500', currency: '$'},
-            {size: 'M', price: '1700', currency: '$'},
-            {size: 'L', price: '1900', currency: '$'},
+            {size: 'S', price: '1500', currency: 'RM'},
+            {size: 'M', price: '1700', currency: 'RM'},
+            {size: 'L', price: '1900', currency: 'RM'},
         ],
         average_rating: 5.0,
         type: 'Part',
+        quantity: 1,
+        status: true,
         buttonPressHandler: {}
     },
     {
@@ -188,12 +194,14 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
       imagelink_square: require('../assets/chicken_assets/thigh.jpg'),
       special_ingredient: 'With Thigh',
       price: [
-          {size: 'S', price: '1200', currency: '$'},
-          {size: 'M', price: '1300', currency: '$'},
-          {size: 'L', price: '1400', currency: '$'},
+          {size: 'S', price: '1200', currency: 'RM'},
+          {size: 'M', price: '1300', currency: 'RM'},
+          {size: 'L', price: '1400', currency: 'RM'},
       ],
       average_rating: 5.0,
       type: 'Part',
+      quantity: 1,
+      status: true,
       buttonPressHandler: {}
   },
   {
@@ -204,12 +212,14 @@ export const ChickenData2 : { itemList: ChickenCardProps[];} = {
       imagelink_square: require('../assets/chicken_assets/breast.jpg'),
       special_ingredient: 'With Breast',
       price: [
-          {size: 'S', price: '1500', currency: '$'},
-          {size: 'M', price: '1700', currency: '$'},
-          {size: 'L', price: '1900', currency: '$'},
+          {size: 'S', price: '1500', currency: 'RM'},
+          {size: 'M', price: '1700', currency: 'RM'},
+          {size: 'L', price: '1900', currency: 'RM'},
       ],
       average_rating: 5.0,
       type: 'Part',
+      quantity: 1,
+      status: true,
       buttonPressHandler: {}
 },
     ]
@@ -225,12 +235,14 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             imagelink_square: require('../assets/chicken_assets/wing.jpg'),
             special_ingredient: 'With Wing',
             price: [
-                {size: 'S', price: '1000', currency: '$'},
-                {size: 'M', price: '1150', currency: '$'},
-                {size: 'L', price: '1400', currency: '$'},
+                {size: 'S', price: '1000', currency: 'RM'},
+                {size: 'M', price: '1150', currency: 'RM'},
+                {size: 'L', price: '1400', currency: 'RM'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Fresh',
+            quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
         {
@@ -241,12 +253,14 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             imagelink_square: require('../assets/chicken_assets/thigh.jpg'),
             special_ingredient: 'With Thigh',
             price: [
-                {size: 'S', price: '1200', currency: '$'},
-                {size: 'M', price: '1300', currency: '$'},
-                {size: 'L', price: '1400', currency: '$'},
+                {size: 'S', price: '1200', currency: 'RM'},
+                {size: 'M', price: '1300', currency: 'RM'},
+                {size: 'L', price: '1400', currency: 'RM'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Fresh',
+            quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
         {
@@ -257,12 +271,14 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             imagelink_square: require('../assets/chicken_assets/breast.jpg'),
             special_ingredient: 'With Breast',
             price: [
-                {size: 'S', price: '1500', currency: '$'},
-                {size: 'M', price: '1700', currency: '$'},
-                {size: 'L', price: '1900', currency: '$'},
+                {size: 'S', price: '1500', currency: 'RM'},
+                {size: 'M', price: '1700', currency: 'RM'},
+                {size: 'L', price: '1900', currency: 'RM'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Frozen',
+            quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
         {
@@ -273,12 +289,14 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             imagelink_square: require('../assets/chicken_assets/wing.jpg'),
             special_ingredient: 'With Wing',
             price: [
-                {size: 'S', price: '1000', currency: '$'},
-                {size: 'M', price: '1150', currency: '$'},
-                {size: 'L', price: '1400', currency: '$'},
+                {size: 'S', price: '1000', currency: 'RM'},
+                {size: 'M', price: '1150', currency: 'RM'},
+                {size: 'L', price: '1400', currency: 'RM'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Frozen',
+            quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
         {
@@ -289,12 +307,14 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             imagelink_square: require('../assets/chicken_assets/thigh.jpg'),
             special_ingredient: 'With Thigh',
             price: [
-                {size: 'S', price: '1200', currency: '$'},
-                {size: 'M', price: '1300', currency: '$'},
-                {size: 'L', price: '1400', currency: '$'},
+                {size: 'S', price: '1200', currency: 'RM'},
+                {size: 'M', price: '1300', currency: 'RM'},
+                {size: 'L', price: '1400', currency: 'RM'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Fresh',
+            quantity: 1,
+            status: false,
             buttonPressHandler: {}
         },
         {
@@ -305,13 +325,164 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             imagelink_square: require('../assets/chicken_assets/breast.jpg'),
             special_ingredient: 'With Breast',
             price: [
-                {size: 'S', price: '1500', currency: '$'},
-                {size: 'M', price: '1700', currency: '$'},
-                {size: 'L', price: '1900', currency: '$'},
+                {size: 'S', price: '1500', currency: 'RM'},
+                {size: 'M', price: '1700', currency: 'RM'},
+                {size: 'L', price: '1900', currency: 'RM'},
             ],
             average_rating: 5.0,
-            type: 'Part',
+            type: 'Frozen',
+            quantity: 1,
+            status: true,
+            buttonPressHandler: {}
+        },
+        {
+            index: 6,
+            id: 'C7',
+            name: 'Frozen Chicken',
+            roasted: 'Medium Roasted',
+            imagelink_square: require('../assets/chicken_assets/FrozenChicken.jpg'),
+            special_ingredient: 'Can keep 3 to 5 months.',
+            price: [
+                {size: 'S', price: '1550', currency: 'RM'},
+                {size: 'M', price: '1750', currency: 'RM'},
+                {size: 'L', price: '1950', currency: 'RM'},
+            ],
+            average_rating: 5.0,
+            type: 'Frozen',
+            quantity: 1,
+            status: true,
+            buttonPressHandler: {}
+        },
+        {
+            index: 7,
+            id: 'C8',
+            name: 'Fresh Chicken',
+            roasted: 'Medium Roasted',
+            imagelink_square: require('../assets/chicken_assets/FullChicken.jpg'),
+            special_ingredient: 'Can keep 3 to 5 months.',
+            price: [
+                {size: 'S', price: '1600', currency: 'RM'},
+                {size: 'M', price: '1800', currency: 'RM'},
+                {size: 'L', price: '2000', currency: 'RM'},
+            ],
+            average_rating: 5.0,
+            type: 'Fresh',
+            quantity: 1,
+            status: true,
             buttonPressHandler: {}
         },
     ]
 }
+
+export const HistoryData : { itemList: HistoryCardProps[];} = {
+    "itemList": [
+        {
+            id: "1",
+            DOnumber: "DO10012",
+            customerName: "ABC",
+            date: "2024-05-10",
+            totalWeight: 150100,
+            totalPrice: 190223,
+            currency: "RM",
+            status: 0,
+        },
+        {
+            id: "2",
+            DOnumber: "DO10011",
+            customerName: "Halooooo",
+            date: "2024-05-09",
+            totalWeight: 140100,
+            totalPrice: 180123,
+            currency: "RM",
+            status: 0,
+        },
+        {
+            id: "3",
+            DOnumber: "DO10010",
+            customerName: "Testing123",
+            date: "2024-05-08",
+            totalWeight: 90100,
+            totalPrice: 80223,
+            currency: "RM",
+            status: 0,
+        },
+        {
+            id: "4",
+            DOnumber: "DO10009",
+            customerName: "Domain Connect",
+            date: "2024-05-07",
+            totalWeight: 80310,
+            totalPrice: 40119,
+            currency: "RM",
+            status: 0,
+        },
+        {
+            id: "5",
+            DOnumber: "DO10008",
+            customerName: "DFC",
+            date: "2024-05-06",
+            totalWeight: 105200,
+            totalPrice: 93980,
+            currency: "RM",
+            status: 0,
+        },
+    ]
+}
+
+export const CategoryList = {
+    "itemList": [
+        {
+            id: 1,
+            value: "Without Cut",
+            quantity: 0,
+        },
+        {
+            id: 2,
+            value: "Cut 2 Piece",
+            quantity: 0,
+        },
+        {
+            id: 3,
+            value: "Cut 4 Piece",
+            quantity: 0,
+        },
+        {
+            id: 4,
+            value: "Cut 6 Piece",
+            quantity: 0,
+        },
+        {
+            id: 5,
+            value: "Cut 8 Piece",
+            quantity: 0,
+        },
+    ]
+}
+
+export const CategoryListTest = [
+    {
+        id: 1,
+        value: "Without Cut",
+        quantity: 0,
+    },
+    {
+        id: 2,
+        value: "Cut 2 Piece",
+        quantity: 0,
+    },
+    {
+        id: 3,
+        value: "Cut 4 Piece",
+        quantity: 0,
+    },
+    {
+        id: 4,
+        value: "Cut 6 Piece",
+        quantity: 0,
+    },
+    {
+        id: 5,
+        value: "Cut 8 Piece",
+        quantity: 0,
+    },
+]

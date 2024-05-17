@@ -1,10 +1,9 @@
 import { Dimensions, StyleSheet } from "react-native";
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from "./theme";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-export const CARD_WIDTH = Dimensions.get('window').width * 0.36;
+const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
-export const tabBarHeight = useBottomTabBarHeight();
+export const HIDE_HEIGHT = 100;
 
 export const css = StyleSheet.create({
     ScreenContainer: {
@@ -24,6 +23,27 @@ export const css = StyleSheet.create({
         backgroundColor: COLORS.primaryLightGreyHex, 
         marginBottom: SPACING.space_10,
     },
+    tabBarStyle: {
+        height: 65,
+        position: 'absolute',
+        backgroundColor: COLORS.thirdBlackRGBA,
+        borderTopWidth: 0,
+        elevation: 0,
+        borderTopColor: 'transparent',
+    },
+    BlurViewStyles: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
+    // ActivityIndicatorCSS: {
+    //     justifyContent: 'center', 
+    //     alignItems: 'center', 
+    //     marginVertical: SPACING.space_10, 
+    //     padding: SPACING.space_20,
+    // },
     cardShadow: {
         borderRadius: BORDERRADIUS.radius_16,
         backgroundColor: 'transparent',
@@ -37,9 +57,17 @@ export const css = StyleSheet.create({
         elevation: SPACING.space_10,
     },
     cardContainer: {
+        flex: 1,
         backgroundColor: COLORS.primaryWhiteHex,
         borderRadius: BORDERRADIUS.radius_16,
         overflow: 'hidden',
+    },
+    CardContainerTitle: {
+        flexDirection: "row", 
+        alignItems: 'center', 
+        justifyContent: 'space-between', 
+        marginVertical: SPACING.space_10, 
+        marginHorizontal: SPACING.space_15,
     },
     CardLinearGradientContainer: {
         padding: SPACING.space_15,
@@ -86,8 +114,9 @@ export const css = StyleSheet.create({
     },
     CardFooterRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         alignItems: 'center',
+        alignSelf: "flex-end",
         marginTop: SPACING.space_15,
         width: CARD_WIDTH,
     },
@@ -95,21 +124,12 @@ export const css = StyleSheet.create({
         fontFamily: FONTFAMILY.poppins_semibold,
         color: COLORS.primaryOrangeHex,
         fontSize: FONTSIZE.size_14,
+        marginHorizontal: SPACING.space_5
     },
     CardPrice: {
         color: COLORS.primaryWhiteHex,
     },
-    plusButton: {
-        backgroundColor: COLORS.primaryWhiteHex,
-        width: SPACING.space_30,
-        height: SPACING.space_30,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 1,
-        borderRadius: SPACING.space_4,
-        elevation: 3, 
-        margin: SPACING.space_5,
-    },
+    
     buttonText: {
         fontSize: FONTSIZE.size_16,
         lineHeight: SPACING.space_22,
@@ -147,8 +167,7 @@ export const css = StyleSheet.create({
         color: COLORS.primaryLightGreyHex,
     },
     titleTextInput: {
-        color: COLORS.primaryDarkGreyHex, 
-        marginTop:20, 
+        color: COLORS.primaryDarkGreyHex,  
         paddingLeft: 5, 
         fontSize: FONTSIZE.size_14, 
         fontWeight: "bold",
@@ -170,7 +189,7 @@ export const css = StyleSheet.create({
     },
     showPasswordIcon: {
         color:COLORS.primaryGreyHex, 
-        marginTop: SPACING.space_24,
+        marginTop: SPACING.space_5,
     },
     forgotPasswordText: {
         textAlign: "right", 
@@ -273,16 +292,16 @@ export const css = StyleSheet.create({
     },
     CategoryScrollViewStyle: {
         paddingHorizontal: SPACING.space_4,
-        paddingVertical: SPACING.space_20,
+        paddingVertical: SPACING.space_8,
     },
     CategoryScrollViewContainer: {
-        paddingHorizontal: SPACING.space_12,
+        flexDirection: "column",
     },
     CategoryScrollViewItem: {
         alignItems: 'center',
     },
     CategoryContainer: {
-        width: CARD_WIDTH*0.75,
+        width: CARD_WIDTH*1.05,
         height: SPACING.space_50,
         borderRadius: SPACING.space_10,
     },
@@ -345,12 +364,45 @@ export const css = StyleSheet.create({
     NumberOfOrder: {
         textAlign:"center", 
         alignSelf: "center", 
-        height: 35, 
-        borderWidth: 0, 
-        fontSize: FONTSIZE.size_18
+        height: SPACING.space_30, 
+        fontSize: FONTSIZE.size_18,
+    },
+    miniNumberOfOrder: {
+        alignSelf: "center", 
+        textAlign: "center",
+        alignItems: 'center',
+        height: SPACING.space_32, 
+        width: SPACING.space_50,
+        fontSize: FONTSIZE.size_18,
+    },
+    plusButton: {
+        backgroundColor: COLORS.primaryWhiteHex,
+        width: SPACING.space_30,
+        height: SPACING.space_30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderRadius: SPACING.space_4,
+        elevation: 3, 
+        margin: SPACING.space_5,
+    },
+    miniPlusButton: {
+        backgroundColor: COLORS.primaryWhiteHex,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderRadius: SPACING.space_4,
+        elevation: SPACING.space_8, 
+        width: SPACING.space_32, 
+        height: SPACING.space_32,
+        margin: SPACING.space_5,
     },
     CheckOutContainer: {
-        borderRadius: 10, position: 'absolute', bottom: 0, left: 0, right: 0,
+        borderRadius: 10, 
+        position: 'absolute', 
+        bottom: 0, 
+        left: 0, 
+        right: 0,
     },
     CheckOutPressable: {
         backgroundColor: COLORS.primaryWhiteHex, 
@@ -358,7 +410,6 @@ export const css = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: SPACING.space_8,
         elevation: SPACING.space_10,
-        marginTop: SPACING.space_10,
     },
     CheckOutButton: {
         backgroundColor: COLORS.primaryRedHex, 
@@ -366,7 +417,6 @@ export const css = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: SPACING.space_15,
-        paddingHorizontal: SPACING.space_32,
         borderRadius: SPACING.space_10,
         elevation: SPACING.space_10,
         marginTop: SPACING.space_10,
@@ -374,15 +424,15 @@ export const css = StyleSheet.create({
     CheckOutText: {
         color: COLORS.primaryWhiteHex, 
         fontFamily: FONTFAMILY.poppins_medium,
-        fontSize: FONTSIZE.size_20,
-        lineHeight: SPACING.space_20,
+        fontSize: FONTSIZE.size_18,
+        lineHeight: SPACING.space_18,
         fontWeight: 'bold',
         letterSpacing: 0.25,
     },
     CartTotalPriceText: {
         color:COLORS.primaryGreyHex,
         fontFamily: FONTFAMILY.poppins_medium,
-        fontSize: FONTSIZE.size_24, 
+        fontSize: FONTSIZE.size_18, 
         fontWeight: "bold",
     },
     CardContainer: {
@@ -392,6 +442,11 @@ export const css = StyleSheet.create({
         margin: SPACING.space_5, 
         borderRadius: BORDERRADIUS.radius_20,
     },
+    ContactContainer: {
+        position: 'absolute',
+        bottom: SPACING.space_20,
+        right: SPACING.space_20,
+    },
     ContactIconButton: {
         backgroundColor:COLORS.primaryLightGreyHex,
         borderRadius: BORDERRADIUS.radius_25, 
@@ -399,12 +454,69 @@ export const css = StyleSheet.create({
         height: SPACING.space_50, 
         justifyContent: 'center', 
         alignItems: 'center',
-        bottom: -70, 
-        right: 30,
-        position: "absolute",
-        elevation: 5,
+        elevation: SPACING.space_5,
     },
     MenuIcon: {
-        marginHorizontal: SPACING.space_10
+        marginHorizontal: SPACING.space_10,
     },
+    TextDeliveryStatus: {
+        fontSize: FONTSIZE.size_18,
+        fontWeight: 'bold',
+        letterSpacing: 0.4,
+        color: COLORS.primaryLightGreyHex, 
+        paddingHorizontal: SPACING.space_10, 
+    },
+    HistoryCardContainer: {
+        flexDirection: "column", 
+        alignSelf:"center",
+        width: Dimensions.get("screen").width, 
+        backgroundColor: COLORS.primaryWhiteHex, 
+        padding: SPACING.space_10, 
+        marginVertical: SPACING.space_8,
+        borderRadius: SPACING.space_20,
+    },
+    HistoryTitleContainer: {
+        flexDirection: "row", 
+        justifyContent: "space-between", 
+        padding: SPACING.space_5,
+    },
+    HistoryCardContent: {
+        flexDirection: "column", 
+        padding: SPACING.space_5,
+    },
+    HistoryCardFooter: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        marginTop: SPACING.space_15,
+    },
+    IconList: {
+        marginHorizontal: "auto",
+        width: Dimensions.get("screen").width,
+        flexDirection: "row",
+        flexWrap: "wrap",
+        margin: SPACING.space_10,
+        justifyContent: 'center',
+    },
+    gridCSS: {
+        flex: 1,
+        minWidth: 160,
+        maxWidth: 160,
+        height: 180,
+        justifyContent: "center",
+        alignItems: "center",
+        margin: SPACING.space_5,
+        backgroundColor: "rgba(249, 180, 45, 0.2)",
+        borderWidth: 1.5,
+        borderColor: COLORS.primaryWhiteHex,
+        borderRadius: BORDERRADIUS.radius_20,
+    },
+    gridTitle: {
+        textAlign: "center", 
+        justifyContent: "center", 
+        color: COLORS.primaryGreyHex,
+        fontSize: FONTSIZE.size_14,
+        fontFamily: FONTFAMILY.poppins_medium,
+        fontWeight: "bold",
+    }
 });

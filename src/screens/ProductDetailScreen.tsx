@@ -9,45 +9,64 @@ import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/th
 import HeaderBar from '../components/HeaderBar';
 import {FlatList} from 'react-native';
 import { css } from '../theme/CSS';
-
-const ChickenSampleData = {
-        index: 0,
-        id: 'C1',
-        name: 'Chicken Wing',
-        roasted: 'Medium Roasted',
-        imagelink_square: require('../assets/chicken_assets/wing.jpg'),
-        special_ingredient: 'With Wing',
-        price: [
-            {size: 'S', price: '1000', currency: '$'},
-            {size: 'M', price: '1150', currency: '$'},
-            {size: 'L', price: '1400', currency: '$'},
-        ],
-        average_rating: 5.0,
-        type: 'Part',
-        buttonPressHandler: {}
-}
+import { addData, createTable, db, selectData, updateData } from '../data/SQLiteFile';
+import PopUpAnimation from '../components/PopUpAnimation';
+import { CategoryProps, ProductData, currencyFormat } from '../components/Objects';
+import LoadingAnimation from '../components/LoadingAnimation';
+import { CategoryList } from '../data/ChickenData';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
     const route = useRoute();
+    const { key, name, price, type, picture, description } = route.params as ProductData;
     const [processData, setProcessData] = useState(false);
-    // const { key, name, price, type } = route.params as ProductData;
-    const [lootData, setLootData] = useState(false);
-    const priceItem = ChickenSampleData.price.find(price => price.size === 'M');
-    const [quantity, setQuantity] = useState("10");
+    const [userID, setUserID] = useState('');
+    const [showAnimation, setShowAnimation] = useState(false);
     const [countItem, setCountItem] = useState<number>(0);
 
-    const ListRef: any = useRef<FlatList>();
-    const [categoryIndex, setCategoryIndex] = useState({ index: 1 });
+    const [fetchedData, setFetchedData] = useState<CategoryProps[]>([]);
 
     useEffect(()=> {
         (async()=> {
-            await fetchedDataAPI();
+            await createTable();
+            await checkCartNum();
+            await fetchedDataAPI(CategoryList);
         })();
     }, []);
-    
-      const fetchedDataAPI = async() => {
-        setProcessData(true);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            createTable();
+            checkCartNum();
+        }, [])
+    );
+
+    const checkCartNum = async () => {
         try {
+            let sql = "SELECT * FROM Carts GROUP BY id";
+            db.transaction((tx) => {
+                tx.executeSql(sql, [], async (tx, resultSet) => {
+                    var length = resultSet.rows.length;
+                    setCountItem(length);
+                }, (error) => {
+                    console.log("Error", error);
+                })
+            });
+        }catch (error: any) {
+            Snackbar.show({
+              text: error.message,
+              duration: Snackbar.LENGTH_SHORT,
+            });
+        }
+    };
+    
+    const fetchedDataAPI = async(newData: { itemList: CategoryProps[] }) => {
+        setProcessData(true);
+        setUserID(await AsyncStorage.getItem('UserID') ?? "");
+        setFetchedData([]);
+        try {
+            const { itemList } = newData;
+            setFetchedData(itemList);
           
         }catch (error: any) {
             Snackbar.show({
@@ -57,177 +76,207 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
         }
         setProcessData(false);
     };
+
+    const addToCartApi = async(originid: number, name: string, type: string, picture: any, price: number, quantity: number) => {
+        if(Number.isNaN(quantity) || quantity<=0){
+            Snackbar.show({
+                text: "Your item quantity can't be empty. ",
+                duration: Snackbar.LENGTH_SHORT,
+            });
+        }else{
+            try {
+                const { checkLength, numberOfQuantity } = await selectData(originid);
+                if(checkLength>0){
+                    let submitTotal = numberOfQuantity+quantity;
+                    await updateData(originid, submitTotal);
+                    setShowAnimation(true);
+                    setTimeout(() => {
+                        setShowAnimation(false);
+                    }, 800);
+                }else{
+                    await addData(originid,name, type, picture, price, quantity);
+                    setShowAnimation(true);
+                    setTimeout(() => {
+                        setShowAnimation(false);
+                    }, 800);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+            await checkCartNum();
+        }
+    }
     
 
     return (
         <View style={css.ScreenContainer}>
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={css.ScrollViewFlex}>
-                {/* App Header */}
-                <HeaderBar title="" checkBackBttn={true} />
-                <View style={css.LineContainer}></View>
-            
             {processData==true ? (
-                <View style={{justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 20,}}>
-                    <ActivityIndicator size="large" />
+                <View style={{alignSelf:"center",}}>
+                    <LoadingAnimation />
                 </View>
             ): (
-                <View style={{flex: 1}}>
-                    <Image
-                        style={css.DetailImage}
-                        source={ChickenSampleData.imagelink_square}
+            <View style={{flex: 1}}>   
+                <HeaderBar title="" checkBackBttn={true} badgeNumber={countItem} />
+                <View style={css.LineContainer}></View>
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={css.ScrollViewFlex}>
+
+                {showAnimation ? (
+                    <PopUpAnimation
+                        style={{flex: 1}}
+                        source={require('../animationPart/AddSuccess.json')}
                     />
+                ) : (
+                    <></>
+                )}
+            
+                <Image
+                    style={css.DetailImage}
+                    source={picture}
+                />
 
-                    <View style={css.cardContainer}>
-                        <View style={{marginTop: 10}}>
-                            <Text style={css.ScreenTitle}>
-                                {ChickenSampleData.name}
-                            </Text>
-                        </View>
-                        <View style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', marginBottom: SPACING.space_30}}>
-                            <View>
-                                <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
-                                    RM {ChickenSampleData.price.find(price => price.size === 'M')?.price || ''}
-                                </Text>
-                            </View>
-                            <View style={{flexDirection: "row", marginHorizontal: SPACING.space_10}}>
-                                <Pressable
-                                    style={css.plusButton}
-                                    onPress={async () => {
-                                        if(parseInt(quantity)>10){
-                                            let newVar = parseInt(quantity)-10;
-                                            setQuantity(newVar.toString());
-                                        }
-                                    }}
-                                >
-                                    <Text style={css.buttonText}>-</Text>
-                                </Pressable>
-                                <TextInput
-                                    style={css.NumberOfOrder}
-                                    mode="outlined"
-                                    keyboardType = 'numeric'
-                                    value={quantity}
-                                    onChangeText={setQuantity}
-                                />
-                                <Pressable
-                                    style={css.plusButton}
-                                    onPress={async () => {
-                                        let newVar = parseInt(quantity)+10;
-                                        setQuantity(newVar.toString());
-                                    }}
-                                >
-                                    <Text style={css.buttonText}>+</Text>
-                                </Pressable>
-                            </View>
-                        </View>
+                <View style={[css.cardContainer, {marginBottom: 60}]}>
+                    <View style={css.CardContainerTitle}>
+                        <Text style={css.ScreenTitle}>
+                            {name}
+                        </Text>
                         <View>
-                            <Text style={css.DetailTitle}>
-                                Select Category
+                            <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
+                                RM {currencyFormat(price)}
                             </Text>
-                            <ScrollView horizontal 
-                                showsHorizontalScrollIndicator={false} 
-                                contentContainerStyle={css.CategoryScrollViewStyle}>
-                                <View
-                                    key={1}
-                                    style={css.CategoryScrollViewContainer}
-                                    >
-                                    <TouchableOpacity
-                                    style={css.CategoryScrollViewItem}
-                                    onPress={() => {
-                                        ListRef?.current?.scrollToOffset({
-                                        animated: true,
-                                        offset: 0,
-                                        });
-                                        setCategoryIndex({ index: 1 });
-                                    }}>
-                                    {categoryIndex.index === 1 ? (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryRedHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryWhiteHex,}]}>10 KG</Text>
-                                        </View>
-                                    ) : (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex,}]}>
-                                    
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>10 KG</Text>
-                                        </View>
-                                    )}
-                                    </TouchableOpacity>
-                                </View>
-
-                                <View
-                                    key={2}
-                                    style={css.CategoryScrollViewContainer}>
-                                    <TouchableOpacity
-                                    style={css.CategoryScrollViewItem}
-                                    onPress={() => {
-                                        ListRef?.current?.scrollToOffset({
-                                        animated: true,
-                                        offset: 0,
-                                        });
-                                        setCategoryIndex({ index: 2 });
-                                    }}>
-                                    {categoryIndex.index === 2 ? (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryRedHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryWhiteHex,}]}>50 KG</Text>
-                                        </View>
-                                    ) : (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>50 KG</Text>
-                                        </View>
-                                    )}
-                                    </TouchableOpacity>
-                                </View>
-
-                                <View
-                                    key={3}
-                                    style={css.CategoryScrollViewContainer}>
-                                    <TouchableOpacity
-                                    style={css.CategoryScrollViewItem}
-                                    onPress={() => {
-                                        ListRef?.current?.scrollToOffset({
-                                        animated: true,
-                                        offset: 0,
-                                        });
-                                        setCategoryIndex({ index: 3 });
-                                    }}>
-                                    {categoryIndex.index === 3 ? (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryRedHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryWhiteHex,}]}>100 KG</Text>
-                                        </View>
-                                    ) : (
-                                        <View style={[css.CategoryContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex,}]}>
-                                            <Text style={[css.CategoryText, {color: COLORS.primaryGreyHex,}]}>100 KG</Text>
-                                        </View>
-                                    )}
-                                    </TouchableOpacity>
-                                </View>
-                            </ScrollView>
                         </View>
-
-                        <View style={css.LineContainer}></View>
                         
-                        <View>
-                            <Text style={css.DetailTitle}>
-                                Description
-                            </Text>
-                            <Text style={css.DescriptionText}>
-                                {ChickenSampleData.special_ingredient} asdA fasd asdf asdA fasd asdf asdasdA fasd asdf asdA fasd A fasd aA fasd asdf sdA fasdsdA fasd asdf asdA fasd asdf asdA fasd asdf asdA fasd asdf a asdf aasd asdf a
-                            </Text>
+                    </View>
+                    <View>
+                        <View style={[css.CategoryScrollViewContainer, {alignSelf: "flex-start"}]}>
+                            {fetchedData.map((item) => (
+                                <View style={styles.CategoryContainer} key={item.id}>
+                                    <Text style={styles.CategoryText}>{item.value}</Text>
+                                    <View style={{ flexDirection: "row", marginHorizontal: SPACING.space_10, alignSelf: "center" }}>
+                                        <Pressable
+                                            style={css.plusButton}
+                                            onPress={() => {
+                                                if (item.quantity > 0) {
+                                                    let newQuantity = item.quantity-1;
+                                                    const updatedData = fetchedData.map((data) => {
+                                                        if (data.id === item.id) {
+                                                            return { ...data, quantity: newQuantity };
+                                                        }
+                                                        return data;
+                                                    });
+                                                    setFetchedData(updatedData);
+                                                }
+                                            }}
+                                        >
+                                            <Text style={css.buttonText}>-</Text>
+                                        </Pressable>
+                                        <TextInput
+                                            style={css.NumberOfOrder}
+                                            mode="outlined"
+                                            keyboardType='numeric'
+                                            value={item.quantity.toString()}
+                                            onChangeText={(text)=>{
+                                                if(parseInt(text)>0){
+                                                    const updatedData = fetchedData.map((data) => {
+                                                        if (data.id === item.id) {
+                                                            return { ...data, quantity: parseInt(text) };
+                                                        }
+                                                        return data;
+                                                    });
+                                                    setFetchedData(updatedData);
+                                                }
+                                            }}
+                                        />
+                                        <Pressable
+                                            style={css.plusButton}
+                                            onPress={() => {
+                                                let newQuantity = item.quantity+1;
+                                                const updatedData = fetchedData.map((data) => {
+                                                    if (data.id === item.id) {
+                                                        return { ...data, quantity: newQuantity };
+                                                    }
+                                                    return data;
+                                                });
+                                                setFetchedData(updatedData);
+                                            }}
+                                        >
+                                            <Text style={css.buttonText}>+</Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
+                            ))}
                         </View>
                     </View>
-                    <View style={css.CartFooter}>
-                        <Pressable
-                            style={css.AddtoCartButton}
-                            onPress={async () => {}}
-                        >
-                            <Text style={css.AddtoCartText}>Add to Cart</Text>
-                        </Pressable>
+
+                    <View style={css.LineContainer}></View>
+                    
+                    <View>
+                        <Text style={css.DetailTitle}>
+                            Description
+                        </Text>
+                        <Text style={css.DescriptionText}>
+                            {description} asdA fasd asdf asdA fasd asdf asdasdA fasd asdf asdA fasd A fasd aA fasd asdf sdA fasdsdA fasd asdf asdA fasd asdf asdA fasd asdf asdA fasd asdf a asdf aasd asdf a
+                        </Text>
                     </View>
                 </View>
+                <View style={css.CartFooter}>
+                    <Pressable
+                        style={css.AddtoCartButton}
+                        onPress={async () => {
+                            console.log(fetchedData);
+
+                            // let categorySelected;
+                            // categoryIndex.index === 1 ? (
+                            //     categorySelected="10"
+                            // ) : (
+                            //     categoryIndex.index === 2 ? (
+                            //         categorySelected="50"
+                            //     ) : (
+                            //         categorySelected="100"
+                            //     )
+                            // );
+
+                            // addToCartApi(
+                            //     key, 
+                            //     name, 
+                            //     categorySelected, 
+                            //     '../assets/chicken_assets/cartPic.png', 
+                            //     price, 
+                            //     parseInt(quantity)
+                            // );
+                        }}
+                    >
+                        <Text style={css.AddtoCartText}>Add to Cart</Text>
+                    </Pressable>
+                </View>
+            
+                </ScrollView>
+            </View>
             )}
-            </ScrollView>
         </View>
-        
     );
 };
+
+const styles = StyleSheet.create({
+    CategoryContainer: {
+        backgroundColor: COLORS.standardGreyHex,
+        flexDirection: "row",
+        justifyContent:"space-between",
+        width: Dimensions.get("screen").width*95/100, 
+        marginHorizontal: SPACING.space_10,
+        marginVertical: SPACING.space_5,
+        padding: SPACING.space_5,
+        borderRadius: BORDERRADIUS.radius_20,
+    },
+    CategoryText: {
+        textAlignVertical: 'center',
+        height: SPACING.space_50,
+        fontSize: FONTSIZE.size_16,
+        fontFamily: FONTFAMILY.poppins_semibold,
+        fontWeight: "bold",
+        color: COLORS.primaryLightGreyHex,
+        marginHorizontal: SPACING.space_20,
+    },
+});
 
 export default ProductDetailPageScreen;

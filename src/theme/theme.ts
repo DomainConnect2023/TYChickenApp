@@ -15,6 +15,7 @@ interface Spacing {
   space_30: number;
   space_32: number;
   space_36: number;
+  space_40: number;
   space_50: number;
   space_60: number;
 }
@@ -36,12 +37,14 @@ export const SPACING: Spacing = {
   space_30: 30,
   space_32: 32,
   space_36: 36,
+  space_40: 40,
   space_50: 50,
   space_60: 60,
 };
 
 interface Color {
   primaryRedHex: string;
+  secondaryRedHex: string;
   primaryOrangeHex: string;
   primaryBlackHex: string;
   primaryDarkGreyHex: string;
@@ -55,6 +58,7 @@ interface Color {
   secondaryBlackRGBA: string;
   primaryVeryLightGreyHex: string;
   secondaryVeryLightGreyHex: string;
+  standardGreyHex: string;
   normalLightGreyHex: string;
   thirdBlackRGBA: string;
   headerColor: string;
@@ -62,6 +66,7 @@ interface Color {
 
 export const COLORS: Color = {
   primaryRedHex: '#DC3535',
+  secondaryRedHex: '#FFDADA',
   primaryOrangeHex: '#D17842',
   primaryBlackHex: '#0C0F14',
   primaryDarkGreyHex: '#141921',
@@ -72,6 +77,7 @@ export const COLORS: Color = {
   secondaryLightGreyHex: '#AEAEAE',
   primaryVeryLightGreyHex: "#E7E7E7",
   secondaryVeryLightGreyHex: "#F5F5F5",
+  standardGreyHex: "#F3F3F3",
   normalLightGreyHex: "#C2C2C2",
   primaryWhiteHex: '#FFFFFF',
   primaryBlackRGBA: 'rgba(12,15,20,0.5)',
