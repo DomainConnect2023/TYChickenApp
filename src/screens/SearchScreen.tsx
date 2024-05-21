@@ -13,6 +13,8 @@ import { addData, createTable, selectData, updateData } from '../data/SQLiteFile
 import { ChickenCardProps, currencyFormat } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
 import { useRoute } from '@react-navigation/native';
+import ShoppingListCard from '../components/ShoppingList';
+import PopUpAnimation from '../components/PopUpAnimation';
 
 const CategoryList = [
     { id: '1', title: 'Frozen' },
@@ -25,6 +27,7 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
     const route = useRoute();
     const { filterValue } = route.params as { filterValue: string };
     const [processData, setProcessData] = useState(false);
+    const [showAnimation, setShowAnimation] = useState(false);
     const [userID, setUserID] = useState('');
     const [showNoItemImg, setShowNoItemImg] = useState(false);
     
@@ -103,7 +106,44 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
         }
     );
 
-    const addToCartApi = async(originid: number, name: string, type: string, picture: any, price: number, quantity: number) => {
+    const addQuantity = async ({index, quantity}: any) => {
+        
+        let newVar = quantity+1;
+        const updatedData = fetchedData.map((data) => {
+            if (data.index === index) {
+                return { ...data, quantity: newVar };
+            }
+            return data;
+        });
+        setFetchedData(updatedData);
+    }
+
+    const lessQuantity = async ({index, quantity}: any) => {
+        if (quantity>1) {
+            let newVar = quantity-1;
+            const updatedData = fetchedData.map((data) => {
+                if (data.index === index) {
+                    return { ...data, quantity: newVar };
+                }
+                return data;
+            });
+            setFetchedData(updatedData);
+        }
+    }
+
+    const adjustQuantity = async ({index, text}: any) => {
+        if(parseInt(text)>0){
+            const updatedData = fetchedData.map((data) => {
+                if (data.index === index) {
+                    return { ...data, quantity: parseInt(text) };
+                }
+                return data;
+            });
+            setFetchedData(updatedData);
+        }
+    }
+
+    const addToCartApi = async({index, name, type, picture, price, quantity}: any) => {
         if(Number.isNaN(quantity) || quantity<=0){
             Snackbar.show({
                 text: "Your item quantity can't be empty. ",
@@ -111,16 +151,20 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
             });
         }else{
             try {
-                const { checkLength, numberOfQuantity } = await selectData(originid);
+                const { checkLength, numberOfQuantity } = await selectData(index);
                 if(checkLength>0){
                     let submitTotal = numberOfQuantity+quantity;
-                    await updateData(originid, submitTotal);
-                    Snackbar.show({
-                        text: "Add to Cart Successfully.",
-                        duration: Snackbar.LENGTH_SHORT,
-                    });
+                    await updateData(index, submitTotal);
+                    setShowAnimation(true);
+                    setTimeout(() => {
+                        setShowAnimation(false);
+                    }, 800);
                 }else{
-                    await addData(originid,name, type, picture, price, quantity);
+                    await addData(index, name, type, picture, price, quantity);
+                    setShowAnimation(true);
+                    setTimeout(() => {
+                        setShowAnimation(false);
+                    }, 800);
                 }
             } catch (error) {
                 console.error("Error:", error);
@@ -157,101 +201,23 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
                     description: item.special_ingredient
                 });
             }} >
-                <View style={{flexDirection: "row", width: Dimensions.get("screen").width*95/100, backgroundColor: COLORS.secondaryVeryLightGreyHex, margin: 5, borderRadius: 20}}>
-                    <ImageBackground
-                        source={item.imagelink_square}
-                        style={[css.CardImageBG, {width: CARD_WIDTH*1.15, height: CARD_WIDTH*1.15,margin: 10}]}
-                        resizeMode="cover">
-                        <View style={css.CardRatingContainer}>
-                            <Icon
-                            name={'star'}
-                            color={COLORS.primaryOrangeHex}
-                            size={FONTSIZE.size_16}
-                            />
-                            <Text style={[styles.CardRatingText,{color:COLORS.primaryGreyHex}]}>{item.average_rating}</Text>
-                        </View>
-                    </ImageBackground>
-
-                    <View style={{flexDirection: "column", justifyContent: "flex-start", margin: 20}}>
-                        <Text style={styles.CardTitle}>{item.name}</Text>
-                        <Text style={styles.CardSubtitle}>RM {currencyFormat(parseInt(item.price.find((price: { size: string; }) => price.size === 'M').price))}</Text>
-
-                        <View style={{flexDirection: "row", justifyContent: 'space-between',}}>
-                            <Pressable
-                                style={css.miniPlusButton}
-                                onPress={async () => {
-                                    if (item.quantity>1) {
-                                        let newVar = item.quantity-1;
-                                        const updatedData = fetchedData.map((data) => {
-                                            if (data.index === item.index) {
-                                                return { ...data, quantity: newVar };
-                                            }
-                                            return data;
-                                        });
-                                        setFetchedData(updatedData);
-                                    }
-                                }}
-                            >
-                                <Text style={css.buttonText}>-</Text>
-                            </Pressable>
-                            <TextPaperInput
-                                style={css.miniNumberOfOrder}
-                                mode="outlined"
-                                keyboardType = 'numeric'
-                                value={item.quantity.toString()}
-                                onChangeText={(text)=>{
-                                    if(parseInt(text)>0){
-                                        const updatedData = fetchedData.map((data) => {
-                                            if (data.index === item.index) {
-                                                return { ...data, quantity: parseInt(text) };
-                                            }
-                                            return data;
-                                        });
-                                        setFetchedData(updatedData);
-                                    }
-                                }}
-                            />
-                            <Pressable
-                                style={css.miniPlusButton}
-                                onPress={async () => {
-                                    let newVar = item.quantity+1;
-                                    const updatedData = fetchedData.map((data) => {
-                                        if (data.index === item.index) {
-                                            return { ...data, quantity: newVar };
-                                        }
-                                        return data;
-                                    });
-                                    setFetchedData(updatedData);
-                                }}
-                            >
-                                <Text style={css.buttonText}>+</Text>
-                            </Pressable>
-                        </View>
-
-                        <View style={css.CardFooterRow}>
-                            <Text style={css.CardPriceCurrency}>
-                                Add to Cart
-                            </Text>
-                            <TouchableOpacity onPress={() => {
-                                addToCartApi(
-                                    item.index, 
-                                    item.name, 
-                                    item.type, 
-                                    '../assets/chicken_assets/cartPic.png', 
-                                    parseInt(item.price[1].price), 
-                                    item.quantity,
-                                )
-                            }}>
-                                <Icon
-                                    color={COLORS.primaryWhiteHex}
-                                    name={'add'}
-                                    size={FONTSIZE.size_28}
-                                    style={{backgroundColor: COLORS.primaryOrangeHex}}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
+                <ShoppingListCard 
+                    id={item.id} 
+                    index={item.index} 
+                    type={item.type} 
+                    roasted={item.type} 
+                    imagelink_square={item.imagelink_square} 
+                    name={item.name} 
+                    special_ingredient={item.special_ingredient} 
+                    average_rating={item.average_rating} 
+                    price={item.price[1].price} 
+                    quantity={item.quantity} 
+                    status={item.status} 
+                    buttonAddPressHandler={addQuantity} 
+                    buttonLessPressHandler={lessQuantity} 
+                    adjustQuantityHandler={adjustQuantity}
+                    buttonaddtoCartPressHandler={addToCartApi} 
+                />
             </TouchableOpacity>
         );
     };
@@ -307,6 +273,15 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
                 </View>
             )}
 
+            {showAnimation ? (
+                <PopUpAnimation
+                    style={{flex: 1}}
+                    source={require('../animationPart/AddSuccess.json')}
+                />
+            ) : (
+                <></>
+            )}
+
             {processData==true ? (
                 <View style={{alignSelf:"center",}}>
                     <LoadingAnimation />
@@ -325,7 +300,7 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
                                     refreshing={refreshing}
                                     onRefresh={onRefresh}
                                 />}
-                                style={{marginBottom: SPACING.space_20}}
+                                style={{marginBottom: SPACING.space_30}}
                             />
                         </View>
                     ) : (

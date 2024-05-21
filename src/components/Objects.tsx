@@ -44,7 +44,10 @@ export interface ChickenCardProps {
     price: any;
     quantity: number;
     status: boolean;
-    buttonPressHandler: any;
+    buttonAddPressHandler: any;
+    buttonLessPressHandler: any;
+    adjustQuantityHandler: any;
+    buttonaddtoCartPressHandler: any;
 }
 
 export interface ItemProps {
