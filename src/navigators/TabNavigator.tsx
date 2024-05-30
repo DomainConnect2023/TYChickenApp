@@ -7,9 +7,9 @@ import HomeScreen from '../screens/HomeScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ProductPageScreen from '../screens/ProductScreen';
 import HistoryPageScreen from '../screens/HistoryScreen';
-import ContactPageScreen from '../screens/ContactScreen';
 import ProfilePageScreen from '../screens/ProfileScreen';
 import { css } from '../theme/CSS';
+import OrderRecordPageScreen from '../screens/OrderRecordScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -57,52 +57,53 @@ const TabNavigator = () => {
               }
             />
           ),
-        }}></Tab.Screen>
-        <Tab.Screen
-          name="History"
-          component={HistoryPageScreen}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <Icon
-                name="notifications-sharp"
-                size={28}
-                color={
-                  focused ? COLORS.primaryOrangeHex : COLORS.secondaryLightGreyHex
-                }
-              />
-            ),
-          }}>
-        </Tab.Screen>
-        {/* <Tab.Screen
-          name="Contact"
-          component={ContactPageScreen}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <Icon
-                name="chatbox-sharp"
-                size={28}
-                color={
-                  focused ? COLORS.primaryOrangeHex : COLORS.secondaryLightGreyHex
-                }
-              />
-            ),
-          }}>
-        </Tab.Screen> */}
-        <Tab.Screen
-          name="Profile"
-          component={ProfilePageScreen}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <Icon
-                name="person-circle-sharp"
-                size={28}
-                color={
-                  focused ? COLORS.primaryOrangeHex : COLORS.secondaryLightGreyHex
-                }
-              />
-            ),
-          }}>
-        </Tab.Screen>
+        }}>
+      </Tab.Screen>
+      <Tab.Screen
+        name="OrderRecord"
+        component={OrderRecordPageScreen}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <Icon
+              name="notifications-sharp"
+              size={28}
+              color={
+                focused ? COLORS.primaryOrangeHex : COLORS.secondaryLightGreyHex
+              }
+            />
+          ),
+        }}>
+      </Tab.Screen>
+      <Tab.Screen
+        name="History"
+        component={HistoryPageScreen}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <Icon
+              name="chatbox-sharp"
+              size={28}
+              color={
+                focused ? COLORS.primaryOrangeHex : COLORS.secondaryLightGreyHex
+              }
+            />
+          ),
+        }}>
+      </Tab.Screen>
+      <Tab.Screen
+        name="Profile"
+        component={ProfilePageScreen}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <Icon
+              name="person-circle-sharp"
+              size={28}
+              color={
+                focused ? COLORS.primaryOrangeHex : COLORS.secondaryLightGreyHex
+              }
+            />
+          ),
+        }}>
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };

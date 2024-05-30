@@ -25,6 +25,7 @@ import DeliveryPageScreen from './src/screens/DeliveryScreen';
 import DeliveryDetailPageScreen from './src/screens/DeliveryDetailScreen';
 import ReportListScreen from './src/screens/ReportListScreen';
 import DeliveryAddPageScreen from './src/screens/DeliveryAddScreen';
+import OrderRecordPageScreen from './src/screens/OrderRecordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -75,6 +76,7 @@ const App = () => {
         <Stack.Screen name="HistoryReturn" component={HistoryReturnPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Contact" component={ContactPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="ContactAdd" component={ContactAddPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="OrderRecord" component={OrderRecordPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Profile" component={ProfilePageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="DoneDelivery" component={DoneDeliveryPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Admin" component={AdminPage} options={{animation: 'slide_from_bottom'}} />

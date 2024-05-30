@@ -27,6 +27,20 @@ const AdminPage = ({navigation}: {navigation:any}) => {
             navigate: "ProductAdjust",
         },
         {
+            id: 8,
+            index: 8,
+            icon: (
+                <Image
+                    style={{ width: 80, height: 80 }}
+                    source={{
+                        uri: "https://icons.iconarchive.com/icons/custom-icon-design/flatastic-5/256/Sales-report-icon.png"
+                    }}
+                />
+            ),
+            title: "Customer Order List",
+            navigate: "OrderList",
+        },
+        {
             id: 2,
             index: 2,
             icon: (
@@ -61,55 +75,55 @@ const AdminPage = ({navigation}: {navigation:any}) => {
                 <Image
                     style={{ width: 80, height: 80 }}
                     source={{
-                        uri: "https://icons.iconarchive.com/icons/custom-icon-design/flatastic-5/256/Sales-report-icon.png"
+                        uri: "https://icons.iconarchive.com/icons/justicon/free-simple-line/256/Report-Clip-Board-Medical-Data-Business-icon.png"
                     }}
                 />
             ),
             title: "Report",
             navigate: "ReportList",
         },
-        {
-            id: 5,
-            index: 5,
-            icon: (
-                <Image
-                    style={{ width: 80, height: 80 }}
-                    source={{
-                        uri: "https://icons.iconarchive.com/icons/hopstarter/sleek-xp-basic/256/Administrator-icon.png"
-                    }}
-                />
-            ),
-            title: "User Page",
-            navigate: "User Page",
-        },
-        {
-            id: 6,
-            index: 6,
-            icon: (
-                <Image
-                    style={{ width: 80, height: 80 }}
-                    source={{
-                        uri: "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/256/Delivery-Truck-3d-icon.png"
-                    }}
-                />
-            ),
-            title: "Driver Page",
-            navigate: "Driver Page",
-        },
-        {
-            id: 7,
-            index: 7,
-            icon: (
-                <Image
-                    style={{ width: 80, height: 80 }}
-                    source={{
-                        uri: "https://icons.iconarchive.com/icons/graphicloads/business/256/profile-icon.png"
-                    }}
-                />
-            ),
-            title: "Person Profile",
-            navigate: "Person Profile",
-        },
+        // {
+        //     id: 5,
+        //     index: 5,
+        //     icon: (
+        //         <Image
+        //             style={{ width: 80, height: 80 }}
+        //             source={{
+        //                 uri: "https://icons.iconarchive.com/icons/hopstarter/sleek-xp-basic/256/Administrator-icon.png"
+        //             }}
+        //         />
+        //     ),
+        //     title: "User Page",
+        //     navigate: "User Page",
+        // },
+        // {
+        //     id: 6,
+        //     index: 6,
+        //     icon: (
+        //         <Image
+        //             style={{ width: 80, height: 80 }}
+        //             source={{
+        //                 uri: "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-3d/256/Delivery-Truck-3d-icon.png"
+        //             }}
+        //         />
+        //     ),
+        //     title: "Driver Page",
+        //     navigate: "Driver Page",
+        // },
+        // {
+        //     id: 7,
+        //     index: 7,
+        //     icon: (
+        //         <Image
+        //             style={{ width: 80, height: 80 }}
+        //             source={{
+        //                 uri: "https://icons.iconarchive.com/icons/graphicloads/business/256/profile-icon.png"
+        //             }}
+        //         />
+        //     ),
+        //     title: "Person Profile",
+        //     navigate: "Person Profile",
+        // },
     ];
 
     useEffect(()=> {

@@ -100,7 +100,7 @@ export function CustomDrawer() {
       drawerContent={props => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name={"Admin Page"} component={AdminPage} />
-      <Drawer.Screen name={"User Page"} component={TabNavigation} options={{
+      {/* <Drawer.Screen name={"User Page"} component={TabNavigation} options={{
         headerTitle: "User Page",
         headerRight: () => (
           <View style={{flexDirection: "row"}}>
@@ -125,15 +125,12 @@ export function CustomDrawer() {
                         size={FONTSIZE.size_36}
                         style={{marginHorizontal: 5}}
                     />
-                    {/* <View style={css.badgeContainer}>
-                        <Text style={css.badge}>{countItem}</Text>
-                    </View> */}
                 </View>
             </TouchableOpacity>
           </View>
         ),
-      }} />
-      <Drawer.Screen name={"Driver Page"} component={TabDriverNavigator} />
+      }} /> */}
+      {/* <Drawer.Screen name={"Driver Page"} component={TabDriverNavigator} /> */}
       <Drawer.Screen name={"Person Profile"} component={ProfilePageScreen} />
     </Drawer.Navigator>
   );
