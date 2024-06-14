@@ -331,7 +331,7 @@ export const ChickenData3 : { itemList: ChickenCardProps[];} = {
             id: 'C5',
             name: 'Chicken Bone',
             roasted: 'Medium Roasted',
-            imagelink_square: require('../assets/chicken_assets/bone.jpg'),
+            imagelink_square: require('../assets/chicken_assets/noItem.jpg'),
             special_ingredient: 'With Bone',
             price: [
                 {size: 'S', price: '1200', currency: 'RM'},

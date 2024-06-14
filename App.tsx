@@ -11,13 +11,13 @@ import SearchPageScreen from './src/screens/SearchScreen';
 import ProductPageScreen from './src/screens/ProductScreen';
 import CartPageScreen from './src/screens/CartScreen';
 import ProductDetailPageScreen from './src/screens/ProductDetailScreen';
-import HistoryPageScreen from './src/screens/HistoryScreen';
+import HistoryPageScreen from './src/screens/DeliveryHistoryScreen';
 import ContactPageScreen from './src/screens/ContactScreen';
 import ProfilePageScreen from './src/screens/ProfileScreen';
 import { CustomDrawer } from './src/components/CustomDrawer';
 import ContactAddPageScreen from './src/screens/ContactAddScreen';
 import TabDriverNavigator from './src/navigators/TabDriverNavigator';
-import HistoryReturnPageScreen from './src/screens/HistoryReturn';
+import HistoryReturnPageScreen from './src/screens/DeliveryReturn';
 import DoneDeliveryPageScreen from './src/screens/DoneDeliveryScreen';
 import AdminPage from './src/navigators/AdminPage';
 import ProductAdjustPageScreen from './src/screens/ProductAdjust';
@@ -25,7 +25,11 @@ import DeliveryPageScreen from './src/screens/DeliveryScreen';
 import DeliveryDetailPageScreen from './src/screens/DeliveryDetailScreen';
 import ReportListScreen from './src/screens/ReportListScreen';
 import DeliveryAddPageScreen from './src/screens/DeliveryAddScreen';
-import OrderRecordPageScreen from './src/screens/OrderRecordScreen';
+import EditProfilePageScreen from './src/screens/EditProfileScreen';
+import FirstTimeScreen from './src/screens/FirstTimeScreen';
+import VerifyScreen from './src/screens/VerifiedScreen';
+import ChangePswdScreen from './src/screens/ChangePswdScreen';
+import OrderHistoryPageScreen from './src/screens/OrderHistoryScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,13 +40,14 @@ const App = () => {
   React.useEffect(() => {
     const checkUserCode = async () => {
       const userCode = await AsyncStorage.getItem('UserID');
+      const userLabel = await AsyncStorage.getItem('label');
       if (userCode === null) {
         setInitialRouteName('Login');
       }else{
-        if(userCode=="admin"){
+        if(userLabel=="admin"){
           setInitialRouteName('CustomDrawer');
         }else{
-          if(userCode=="driver"){
+          if(userLabel=="driver"){
             setInitialRouteName('TabDriver');
           }else{
             setInitialRouteName('Tab');
@@ -76,8 +81,9 @@ const App = () => {
         <Stack.Screen name="HistoryReturn" component={HistoryReturnPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Contact" component={ContactPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="ContactAdd" component={ContactAddPageScreen} options={{animation: 'slide_from_bottom'}} />
-        <Stack.Screen name="OrderRecord" component={OrderRecordPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="OrderHistory" component={OrderHistoryPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Profile" component={ProfilePageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="EditProfile" component={EditProfilePageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="DoneDelivery" component={DoneDeliveryPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Admin" component={AdminPage} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="ProductAdjust" component={ProductAdjustPageScreen} options={{animation: 'slide_from_bottom'}} />
@@ -85,6 +91,9 @@ const App = () => {
         <Stack.Screen name="DeliveryDetail" component={DeliveryDetailPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="DeliveryAdd" component={DeliveryAddPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="ReportList" component={ReportListScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="FirstTime" component={FirstTimeScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="Verify" component={VerifyScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="ChangePswd" component={ChangePswdScreen} options={{animation: 'slide_from_bottom'}} />
       </Stack.Navigator>
     </NavigationContainer>
     )}

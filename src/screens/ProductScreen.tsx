@@ -1,42 +1,39 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { View, Text, Dimensions, FlatList, TouchableOpacity, Alert, StatusBar, StyleSheet, ImageBackground, Image, Pressable, ScrollView, RefreshControl } from "react-native";
+import { View, FlatList, TouchableOpacity, StatusBar, RefreshControl } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
-import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { COLORS } from '../theme/theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ChickenData3 } from '../data/ChickenData';
-import { ActivityIndicator, TextInput } from 'react-native-paper';
 import { css } from '../theme/CSS';
 import { useFocusEffect } from '@react-navigation/native';
 import { addData, createTable, db, selectData, updateData } from '../data/SQLiteFile';
 import EmptyListAnimation from '../components/EmptyListAnimation';
 import PopUpAnimation from '../components/PopUpAnimation';
-import { ChickenCardProps, currencyFormat } from '../components/Objects';
+import { ChickenCardProps, ChickenProductProps } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
 import ShoppingListCard from '../components/ShoppingList';
+import RNFetchBlob from 'rn-fetch-blob';
 
-const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
 const ProductPageScreen = ({navigation}: {navigation:any}) => {
     const [processData, setProcessData] = useState(false);
-    const [showAnimation, setShowAnimation] = useState(false);
+    // const [showAnimation, setShowAnimation] = useState(false);
     const tabBarHeight = useBottomTabBarHeight();
-    const [userID, setUserID] = useState('');
+    const [userLabel, setUserLabel] = useState('');
     const [showNoItemImg, setShowNoItemImg] = useState(false);
     const [countItem, setCountItem] = useState<number>(0);
     const [refreshing, setRefreshing] = useState(false);
 
-    const [fetchedData, setFetchedData] = useState<ChickenCardProps[]>([]);
+    const [fetchedData, setFetchedData] = useState<ChickenProductProps[]>([]);
 
     useEffect(()=> {
         (async()=> {
             await createTable();
             await checkCartNum();
-            await fetchedDataAPI(ChickenData3);
-            // console.log(userID);
+            await fetchedDataAPI();
         })();
     }, []);
 
@@ -75,20 +72,50 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
         setRefreshing(false);
     };
 
-    const fetchedDataAPI = async(newData: { itemList: ChickenCardProps[] }) => {
+    const fetchedDataAPI = async() => {
         setProcessData(true);
-        setUserID(await AsyncStorage.getItem('UserID') ?? "");
+        setUserLabel(await AsyncStorage.getItem('label') ?? "");
+        const userCode = await AsyncStorage.getItem('UserID') ?? "";
+        const IPaddress = await AsyncStorage.getItem('IPAddress') ?? "";
+
         setFetchedData([]);
         try {
-            const { itemList } = newData;
+            const res = await RNFetchBlob.config({ trusty: true })
+            .fetch("POST", "https://"+IPaddress+"/api/GetProduct", {
+                "Content-Type": "application/json"
+            }, JSON.stringify({ 
+                "Code": userCode 
+            }));
 
-            if(itemList.length == 0){
-                setShowNoItemImg(true);
+            const responseData = await res.json();
+            if(responseData.status==1){
+                const formattedMessages = responseData.data.map((item: any) => {
+                    return {
+                        code: item.code,
+                        item: item.item,
+                        itemName: item.itemName, 
+                        active: item.active,
+                        category: item.category,
+                        price: item.price,
+                        unit: item.unit,
+                    };
+                });
+                
+                if(formattedMessages.length == 0){
+                    setShowNoItemImg(true);
+                }else{
+                    setShowNoItemImg(false);
+                    setFetchedData(formattedMessages);
+                }
+    
+                // setFetchedData((prevData) => [...prevData, ...JSON.parse(res.data)]);
             }else{
-                setShowNoItemImg(false);
-                setFetchedData(itemList);
+                console.log("Something Error");
+                Snackbar.show({
+                    text: "Something Error",
+                    duration: Snackbar.LENGTH_SHORT,
+                });
             }
-
         }catch (error: any) {
             Snackbar.show({
                 text: error.message,
@@ -98,104 +125,30 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
         setProcessData(false);
     };
 
-    const addQuantity = async ({index, quantity}: any) => {
-        
-        let newVar = quantity+1;
-        const updatedData = fetchedData.map((data) => {
-            if (data.index === index) {
-                return { ...data, quantity: newVar };
-            }
-            return data;
-        });
-        setFetchedData(updatedData);
-    }
-
-    const lessQuantity = async ({index, quantity}: any) => {
-        if (quantity>1) {
-            let newVar = quantity-1;
-            const updatedData = fetchedData.map((data) => {
-                if (data.index === index) {
-                    return { ...data, quantity: newVar };
-                }
-                return data;
-            });
-            setFetchedData(updatedData);
-        }
-    }
-
-    const adjustQuantity = async ({index, text}: any) => {
-        if(parseInt(text)>0){
-            const updatedData = fetchedData.map((data) => {
-                if (data.index === index) {
-                    return { ...data, quantity: parseInt(text) };
-                }
-                return data;
-            });
-            setFetchedData(updatedData);
-        }
-    }
-
-    // const addToCartApi = async(originid: number, name: string, type: string, picture: any, price: number, quantity: number) => {
-        const addToCartApi = async({index, name, type, picture, price, quantity}: any) => {
-        if(Number.isNaN(quantity) || quantity<=0){
-            Snackbar.show({
-                text: "Your item quantity can't be empty. ",
-                duration: Snackbar.LENGTH_SHORT,
-            });
-        }else{
-            try {
-                const { checkLength, numberOfQuantity } = await selectData(index);
-                if(checkLength>0){
-                    let submitTotal = numberOfQuantity+quantity;
-                    await updateData(index, submitTotal);
-                    setShowAnimation(true);
-                    setTimeout(() => {
-                        setShowAnimation(false);
-                    }, 800);
-                }else{
-                    await addData(index, name, type, picture, price, quantity);
-                    setShowAnimation(true);
-                    setTimeout(() => {
-                        setShowAnimation(false);
-                    }, 800);
-                }
-            } catch (error) {
-                console.error("Error:", error);
-            }
-            await checkCartNum();
-        }
-    }
-
-    const showChickenCard = ({ item }: { item: ChickenCardProps }) => {
+    const showChickenCard = ({ item }: { item: ChickenProductProps }) => {
         return (
             <TouchableOpacity onPress={() => {
-                if(item.status==true){
+                if(item.active=="Y"){
                     navigation.navigate('ProductDetail', {
-                        key: item.index, 
-                        name: item.name, 
-                        type: item.type, 
-                        price: parseInt(item.price[1].price),
-                        picture: item.imagelink_square, 
-                        description: item.special_ingredient
+                        key: item.code, 
+                        name: item.itemName, 
+                        type: item.category, 
+                        price: item.price,
+                        picture: require('../assets/chicken_assets/noItem.jpg'),
+                        description: ""
                     });
                 }
             }} >
                 <ShoppingListCard 
-                    id={item.id} 
-                    index={item.index} 
-                    type={item.type} 
-                    roasted={item.type} 
-                    imagelink_square={item.imagelink_square} 
-                    name={item.name} 
-                    special_ingredient={item.special_ingredient} 
-                    average_rating={item.average_rating} 
-                    price={item.price[1].price} 
-                    quantity={item.quantity} 
-                    status={item.status} 
-                    buttonAddPressHandler={addQuantity} 
-                    buttonLessPressHandler={lessQuantity} 
-                    adjustQuantityHandler={adjustQuantity}
-                    buttonaddtoCartPressHandler={addToCartApi} 
+                    code={item.code}
+                    item={item.item}
+                    itemName={item.itemName}
+                    category={item.category}
+                    active={item.active}
+                    price={item.price}
+                    unit={item.unit} 
+                    picture={""} 
+                    quantity={0}                    
                 />
             </TouchableOpacity>
         );
@@ -205,14 +158,14 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
         <View style={[css.ScreenContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex}]}>
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
 
-            {showAnimation ? (
+            {/* {showAnimation ? (
                 <PopUpAnimation
                     style={{flex: 1}}
                     source={require('../animationPart/AddSuccess.json')}
                 />
             ) : (
                 <></>
-            )}
+            )} */}
             
             {processData==true ? (
                 <View style={{alignSelf:"center",}}>
@@ -220,7 +173,7 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                 </View>
             ) : (
             <View style={{flex: 1, marginBottom: tabBarHeight}}>
-                {userID == "admin" ? (
+                {userLabel == "admin" ? (
                     <></>
                 ) : (
                     <HeaderBar title="Shopping List"  badgeNumber={countItem} />
@@ -233,7 +186,6 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
                         <FlatList
                             data={fetchedData}
                             renderItem={showChickenCard}
-                            keyExtractor={(item) => item.id}
                             removeClippedSubviews={false}
                             refreshControl={<RefreshControl
                                 refreshing={refreshing}
@@ -252,25 +204,5 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
     );
 }
 
-const styles = StyleSheet.create({
-    CardRatingText: {
-        fontFamily: FONTFAMILY.poppins_medium,
-        color: COLORS.primaryGreyHex,
-        lineHeight: SPACING.space_22,
-        fontSize: FONTSIZE.size_14,
-    },
-    CardTitle: {
-        fontFamily: FONTFAMILY.poppins_medium,
-        color: COLORS.primaryGreyHex,
-        fontSize: FONTSIZE.size_20,
-        fontWeight: "bold",
-    },
-    CardSubtitle: {
-        fontFamily: FONTFAMILY.poppins_light,
-        color: COLORS.primaryRedHex,
-        fontSize: FONTSIZE.size_18,
-        fontWeight: "bold",
-    },
-});
 
 export default ProductPageScreen;

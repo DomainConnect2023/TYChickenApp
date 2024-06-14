@@ -9,7 +9,19 @@ export interface ProductData {
     picture: any;
     description: string;
     price: number;
-} 
+}
+
+export interface ChickenProductProps {
+    code: string;
+    item: string;
+    itemName: string;
+    category: string;
+    picture: string;
+    active: string;
+    price: any;
+    unit: string;
+    quantity: number;
+}
   
 export interface CartItem {
     id: number;
@@ -20,6 +32,11 @@ export interface CartItem {
     price: number;
     quantity: number;
 }
+
+export interface PersonalData {
+    key: string;
+    name: string;
+} 
 
 export interface HistoryCardProps {
     id: string;

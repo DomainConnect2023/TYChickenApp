@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { View, ScrollView, StatusBar, TouchableOpacity, Animated, TextInput, FlatList, RefreshControl, Text, StyleSheet } from "react-native";
+import { View, ScrollView, StatusBar, TouchableOpacity, Animated, TextInput, FlatList, RefreshControl, Text, StyleSheet, Linking } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
@@ -17,11 +17,12 @@ import LoadingAnimation from '../components/LoadingAnimation';
 import EmptyListAnimation from '../components/EmptyListAnimation';
 import DeliveryCard from '../components/DeliveryCard';
 import { HistoryData } from '../data/ChickenData';
+import RNFetchBlob from 'rn-fetch-blob';
 
-const OrderRecordPageScreen = ({navigation}: {navigation:any}) => {
+const OrderHistoryPageScreen = ({navigation}: {navigation:any}) => {
     const tabBarHeight = useBottomTabBarHeight();
     const [processData, setProcessData] = useState(false);
-    const [userID, setUserID] = useState('');
+    const [userLabel, setUserLabel] = useState('');
     const [showNoItemImg, setShowNoItemImg] = useState(false);
     const [itemFinish, setItemFinish] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
@@ -70,18 +71,25 @@ const OrderRecordPageScreen = ({navigation}: {navigation:any}) => {
     const fetchedDataAPI = async(newData: { itemList: HistoryCardProps[] }) => {
         setProcessData(true);
         setFetchedData([]);
-        setUserID(await AsyncStorage.getItem('UserID') ?? "");
+        setUserLabel(await AsyncStorage.getItem('label') ?? "");
+        const userCode = await AsyncStorage.getItem('UserID') ?? "";
+        const IPaddress = await AsyncStorage.getItem('IPAddress') ?? "";
         try {
-            setShowNoItemImg(true);
-            // const { itemList } = newData;
+            
+            RNFetchBlob.config({ trusty: true })
+            .fetch("GET","https://"+IPaddress+"/api/GetHistory?page="+0+"&debtor="+userCode, 
+            ).then(async (res) => {
+                // console.log(res.json());
 
-            // if(itemList.length == 0){
-            //     setShowNoItemImg(true);
-            // }else{
-            //     setShowNoItemImg(false);
-            //     setFetchedData(itemList);
-            //     setItemFinish(true);
-            // }
+            }).catch(err => {
+                Snackbar.show({
+                    text: err.message,
+                    duration: Snackbar.LENGTH_LONG
+                });
+            })
+
+            setShowNoItemImg(true);
+            
         }catch (error: any) {
             Snackbar.show({
                 text: error.message,
@@ -153,7 +161,7 @@ const OrderRecordPageScreen = ({navigation}: {navigation:any}) => {
             </View>
             ): (
             <View style={{flex: 1, marginBottom: tabBarHeight}}>
-                {userID == "admin" ? (
+                {userLabel == "admin" ? (
                     <></>
                 ) : (
                     <HeaderBar title="Order History" badgeNumber={countItem} />
@@ -239,11 +247,8 @@ const OrderRecordPageScreen = ({navigation}: {navigation:any}) => {
                 <View style={css.ContactContainer}>
                     <View style={css.ContactIconButton}>
                     <TouchableOpacity 
-                        onPress={() => {
-                            Snackbar.show({
-                                text: "Link to Whatsapp or other functions",
-                                duration: Snackbar.LENGTH_SHORT,
-                            });
+                        onPress={async () => {
+                            await Linking.openURL('whatsapp://send?text=halo&phone=601110803983');
                         }} >
                             <Icon name={"send" ?? ""} size={FONTSIZE.size_20} color={COLORS.primaryWhiteHex} />
                         </TouchableOpacity>
@@ -277,4 +282,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default OrderRecordPageScreen;
+export default OrderHistoryPageScreen;

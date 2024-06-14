@@ -6,10 +6,10 @@ import {BlurView} from '@react-native-community/blur';
 import HomeScreen from '../screens/HomeScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ProductPageScreen from '../screens/ProductScreen';
-import HistoryPageScreen from '../screens/HistoryScreen';
+import HistoryPageScreen from '../screens/DeliveryHistoryScreen';
 import ProfilePageScreen from '../screens/ProfileScreen';
 import { css } from '../theme/CSS';
-import OrderRecordPageScreen from '../screens/OrderRecordScreen';
+import OrderHistoryPageScreen from '../screens/OrderHistoryScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -60,8 +60,8 @@ const TabNavigator = () => {
         }}>
       </Tab.Screen>
       <Tab.Screen
-        name="OrderRecord"
-        component={OrderRecordPageScreen}
+        name="OrderHistory"
+        component={OrderHistoryPageScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => (
             <Icon

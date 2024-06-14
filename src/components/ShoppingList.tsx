@@ -3,29 +3,22 @@ import React, { useState } from 'react';
 import {BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/theme';
 import { css } from '../theme/CSS';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { ChickenCardProps, currencyFormat } from './Objects';
+import { ChickenCardProps, ChickenProductProps, currencyFormat } from './Objects';
 import { ActivityIndicator, TextInput, TextInput as TextPaperInput } from 'react-native-paper';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
-const image = "../assets/chicken_assets/cartPic.png";
-const add = "add";
-const less = "less";
 
-const ShoppingListCard: React.FC<ChickenCardProps> = ({
-    id,
-    index,
-    name,
-    type,
-    imagelink_square,
+const ShoppingListCard: React.FC<ChickenProductProps> = ({
+    code,
+    item,
+    itemName,
+    active,
+    category,
     price,
-    average_rating,
-    quantity,
-    status,
-    buttonAddPressHandler,
-    buttonLessPressHandler,
-    adjustQuantityHandler,
-    buttonaddtoCartPressHandler,
+    unit,
+    picture,
+    quantity
 }) => {
     return (
         <View style={{
@@ -36,93 +29,29 @@ const ShoppingListCard: React.FC<ChickenCardProps> = ({
             borderRadius: 20,
         }}>
             <ImageBackground
-            source={imagelink_square}
+            source={require('../assets/chicken_assets/noItem.jpg')}
             style={[css.CardImageBG, {width: CARD_WIDTH*1.15, height: CARD_WIDTH*1.15,margin: SPACING.space_10}]}
-            blurRadius={status ? 0 : 20}
+            blurRadius={active=="Y" ? 0 : 20}
             resizeMode="cover">
-            {status ? (
-                <View style={css.CardRatingContainer}>
-                    <Icon
-                    name={'star'}
-                    color={COLORS.primaryOrangeHex}
-                    size={FONTSIZE.size_16}
-                    />
-                    <Text style={[styles.CardRatingText,{color:COLORS.primaryGreyHex}]}>{average_rating}</Text>
-                </View>
+            {active=="Y" ? (
+                <></>
             ) : (
                 <View style={css.CardRatingContainer}>
-                    <Text style={{color:COLORS.primaryRedHex,fontSize: 24,fontWeight: 'bold',}}>Sold Out</Text>
+                    <Text style={{color:COLORS.primaryRedHex,fontSize: 18,fontWeight: 'bold',}}>Sold Out</Text>
                 </View>
             )}
             </ImageBackground>
 
-            {status==true ? (
+            {active=="Y"==true ? (
                 <View style={{flexDirection: "column", justifyContent: "flex-start", margin: 20}}>
-                <Text style={styles.CardTitle}>{name}</Text>
-                <Text style={styles.CardSubtitle}>RM {currencyFormat(parseInt(price))}</Text>
+                <Text style={styles.CardTitle}>{itemName}</Text>
+                <Text style={styles.CardSubtitle}>By {unit}</Text>
+                <Text style={styles.CardPrice}>RM {currencyFormat(parseInt(price))}</Text>
 
-                <View style={{
-                    flexDirection: "row", 
-                    justifyContent: 'space-between',
-                }}>
-                    <Pressable
-                        style={css.miniPlusButton}
-                        onPress={async () => {
-                            buttonLessPressHandler({
-                                index,
-                                quantity,
-                            });
-                        }}
-                    >
-                        <Text style={css.buttonText}>-</Text>
-                    </Pressable>
-                    <TextInput
-                        style={css.miniNumberOfOrder}
-                        mode="outlined"
-                        keyboardType = 'numeric'
-                        value={quantity.toString()}
-                        onChangeText={(text)=>{
-                            adjustQuantityHandler({
-                                index,
-                                text,
-                            });
-                        }}
-                    />
-                    <Pressable
-                        style={css.miniPlusButton}
-                        onPress={async () => {
-                            buttonAddPressHandler({
-                                index,
-                                quantity,
-                            });
-                        }}
-                    >
-                        <Text style={css.buttonText}>+</Text>
-                    </Pressable>
-                </View>
-
-                <View style={css.CardFooterRow}>
-                    <Text style={[css.CardPriceCurrency, {marginHorizontal: SPACING.space_10}]}>
-                        Add to Cart
+                <View style={[css.CardFooterRow,{marginTop: SPACING.space_50}]}>
+                    <Text style={css.CardPriceCurrency}>
+                        Click to view more
                     </Text>
-                    <TouchableOpacity 
-                        onPress={() => {
-                            buttonaddtoCartPressHandler({
-                                index, 
-                                name, 
-                                type, 
-                                '../assets/chicken_assets/cartPic.png': String, 
-                                price, 
-                                quantity,
-                            });
-                        }}>
-                        <Icon
-                            color={COLORS.primaryWhiteHex}
-                            name={'add'}
-                            size={FONTSIZE.size_24}
-                            style={{backgroundColor: COLORS.primaryOrangeHex, borderRadius: BORDERRADIUS.radius_8}}
-                        />
-                    </TouchableOpacity>
                 </View>
             </View>
             ) : (
@@ -146,6 +75,12 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     CardSubtitle: {
+        fontFamily: FONTFAMILY.poppins_medium,
+        color: COLORS.primaryLightGreyHex,
+        fontSize: FONTSIZE.size_14,
+        fontWeight: "bold",
+    },
+    CardPrice: {
         fontFamily: FONTFAMILY.poppins_light,
         color: COLORS.primaryRedHex,
         fontSize: FONTSIZE.size_18,
