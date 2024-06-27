@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, StatusBar, Image, ScrollView } from 'react-native';
+import { View, TouchableOpacity, StatusBar, Image, ScrollView, BackHandler } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import HeaderBar from '../components/HeaderBar';
 import { css } from '../theme/CSS';
@@ -10,22 +10,22 @@ import { GridItem } from '../components/Objects';
 
 const AdminPage = ({navigation}: {navigation:any}) => {
     const [processData, setProcessData] = useState(false);
-    const [userID, setUserID] = useState('');
+    const [userLabel, setUserLabel] = useState('');
     const list = [
-        {
-            id: 1,
-            index: 1,
-            icon: (
-                <Image
-                    style={{ width: 80, height: 80 }}
-                    source={{
-                        uri: "https://icons.iconarchive.com/icons/mattahan/buuf/128/Menu-icon.png"
-                    }}
-                />
-            ),
-            title: "Product Adjustment",
-            navigate: "ProductAdjust",
-        },
+        // {
+        //     id: 1,
+        //     index: 1,
+        //     icon: (
+        //         <Image
+        //             style={{ width: 80, height: 80 }}
+        //             source={{
+        //                 uri: "https://icons.iconarchive.com/icons/mattahan/buuf/128/Menu-icon.png"
+        //             }}
+        //         />
+        //     ),
+        //     title: "Product Adjustment",
+        //     navigate: "ProductAdjust",
+        // },
         {
             id: 8,
             index: 8,
@@ -37,8 +37,8 @@ const AdminPage = ({navigation}: {navigation:any}) => {
                     }}
                 />
             ),
-            title: "Customer Order List",
-            navigate: "OrderList",
+            title: "Order Pending List",
+            navigate: "OrderHistory",
         },
         {
             id: 2,
@@ -55,20 +55,6 @@ const AdminPage = ({navigation}: {navigation:any}) => {
             navigate: "Delivery",
         },
         {
-            id: 3,
-            index: 3,
-            icon: (
-                <Image
-                    style={{ width: 80, height: 80 }}
-                    source={{
-                        uri: "https://icons.iconarchive.com/icons/hopstarter/soft-scraps/256/User-Group-icon.png"
-                    }}
-                />
-            ),
-            title: "Access Control",
-            navigate: "",
-        },
-        {
             id: 4,
             index: 4,
             icon: (
@@ -81,6 +67,20 @@ const AdminPage = ({navigation}: {navigation:any}) => {
             ),
             title: "Report",
             navigate: "ReportList",
+        },
+        {
+            id: 3,
+            index: 3,
+            icon: (
+                <Image
+                    style={{ width: 80, height: 80 }}
+                    source={{
+                        uri: "https://icons.iconarchive.com/icons/hopstarter/soft-scraps/256/User-Group-icon.png"
+                    }}
+                />
+            ),
+            title: "Access Control",
+            navigate: "AccessList",
         },
         // {
         //     id: 5,
@@ -135,7 +135,7 @@ const AdminPage = ({navigation}: {navigation:any}) => {
 
     const fetchedDataAPI = async() => {
         setProcessData(true);
-        setUserID(await AsyncStorage.getItem('UserID') ?? "");
+        setUserLabel(await AsyncStorage.getItem('label') ?? "");
         setProcessData(false);
     };
 
@@ -148,7 +148,7 @@ const AdminPage = ({navigation}: {navigation:any}) => {
                 </View>
             ) : (
             <View style={{flex: 1}}>    
-                {userID == "admin" ? (
+                {userLabel == "admin" ? (
                     <></>
                 ) : (
                     <HeaderBar title="Admin" checkBackBttn={false} />

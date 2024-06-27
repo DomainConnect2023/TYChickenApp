@@ -30,6 +30,8 @@ import FirstTimeScreen from './src/screens/FirstTimeScreen';
 import VerifyScreen from './src/screens/VerifiedScreen';
 import ChangePswdScreen from './src/screens/ChangePswdScreen';
 import OrderHistoryPageScreen from './src/screens/OrderHistoryScreen';
+import AccessListScreen from './src/screens/AccessListScreen';
+import DailyReportPageScreen from './src/screens/DailyReportScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -91,6 +93,8 @@ const App = () => {
         <Stack.Screen name="DeliveryDetail" component={DeliveryDetailPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="DeliveryAdd" component={DeliveryAddPageScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="ReportList" component={ReportListScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="DailyReport" component={DailyReportPageScreen} options={{animation: 'slide_from_bottom'}} />
+        <Stack.Screen name="AccessList" component={AccessListScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="FirstTime" component={FirstTimeScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="Verify" component={VerifyScreen} options={{animation: 'slide_from_bottom'}} />
         <Stack.Screen name="ChangePswd" component={ChangePswdScreen} options={{animation: 'slide_from_bottom'}} />

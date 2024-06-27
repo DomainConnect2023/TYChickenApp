@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { View, ScrollView, StatusBar, TouchableOpacity, Animated, TextInput, FlatList, RefreshControl, Text, StyleSheet, Linking } from "react-native";
+import { View, StatusBar, TouchableOpacity, Animated, TextInput, FlatList, RefreshControl, Text, StyleSheet, Linking, Dimensions, Image } from "react-native";
 import Snackbar from 'react-native-snackbar';
 import HeaderBar from '../components/HeaderBar';
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
@@ -8,36 +8,40 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HIDE_HEIGHT, css } from '../theme/CSS';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { ActivityIndicator } from 'react-native-paper';
 import { createTable, db } from '../data/SQLiteFile';
 import { useFocusEffect } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-import { HistoryCardProps } from '../components/Objects';
+import { OrderHistoryCardProps } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
 import EmptyListAnimation from '../components/EmptyListAnimation';
-import DeliveryCard from '../components/DeliveryCard';
-import { HistoryData } from '../data/ChickenData';
 import RNFetchBlob from 'rn-fetch-blob';
 
 const OrderHistoryPageScreen = ({navigation}: {navigation:any}) => {
-    const tabBarHeight = useBottomTabBarHeight();
+    const [tabBarHeight, setTabBarHeight] = useState<number>(0);
     const [processData, setProcessData] = useState(false);
     const [userLabel, setUserLabel] = useState('');
     const [showNoItemImg, setShowNoItemImg] = useState(false);
-    const [itemFinish, setItemFinish] = useState(false);
-    const [refreshing, setRefreshing] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [countItem, setCountItem] = useState<number>(0);
-    const [fetchedData, setFetchedData] = useState<HistoryCardProps[]>([]);
+    const [itemIndex, setItemIndex] = useState<number>(0);
+    const [fetchedData, setFetchedData] = useState<OrderHistoryCardProps[]>([]);
 
     const [scrollY] = useState(new Animated.Value(0));
     const [showHeader, setShowHeader] = useState(true);
+
+    // Pagination Part
+    const [itemFinish, setItemFinish] = useState(false);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemPerPage, setItemPerPage] = useState<number>(10);
+    const [refreshing, setRefreshing] = useState(false);
       
     useEffect(()=> {
         (async()=> {
+            setProcessData(true);
+            setFetchedData([]);
             await createTable();
             await checkCartNum();
-            await fetchedDataAPI(HistoryData);
+            await fetchedDataAPI(currentPage);
             // console.log(userID);
         })();
     }, []);
@@ -68,18 +72,61 @@ const OrderHistoryPageScreen = ({navigation}: {navigation:any}) => {
         }
     };
 
-    const fetchedDataAPI = async(newData: { itemList: HistoryCardProps[] }) => {
-        setProcessData(true);
-        setFetchedData([]);
-        setUserLabel(await AsyncStorage.getItem('label') ?? "");
+    const fetchedDataAPI = async(page: number) => {
+        
         const userCode = await AsyncStorage.getItem('UserID') ?? "";
         const IPaddress = await AsyncStorage.getItem('IPAddress') ?? "";
+
+        setUserLabel(await AsyncStorage.getItem('label') ?? "");
+
+        if(await AsyncStorage.getItem('label') == "admin"){
+            setTabBarHeight(0);
+        }else{
+            setTabBarHeight(65);
+        }
+
+        // setFetchedData([]);
         try {
             
             RNFetchBlob.config({ trusty: true })
-            .fetch("GET","https://"+IPaddress+"/api/GetHistory?page="+0+"&debtor="+userCode, 
+            .fetch("GET","https://"+IPaddress+"/api/GetHistory?page="+page+"&debtor="+userCode, 
             ).then(async (res) => {
                 // console.log(res.json());
+
+                const responseData = await res.json();
+                if(responseData.isSuccess==true){
+                    const formattedMessages = responseData.doRef.map((item: any) => {
+                        return {
+                            doRef: item.doRef,
+                            created_At: item.created_At.split('T')[0],
+                        };
+                    });
+                    
+                    if(formattedMessages.length == 0){
+                        if(page==0){
+                            setShowNoItemImg(true);
+                            setItemFinish(false);
+                        }else{
+                            setShowNoItemImg(false);
+                            setItemFinish(true);
+                        }
+                        setProcessData(false);
+                        
+                    }else{
+                        setShowNoItemImg(false);
+                        setFetchedData((prevData) => [...prevData, ...formattedMessages]);
+                        // setFetchedData(formattedMessages);
+                        setItemFinish(false);
+                        setProcessData(false);
+                        
+                    }
+                }else{
+                    console.log("Something Error");
+                    Snackbar.show({
+                        text: "Something Error",
+                        duration: Snackbar.LENGTH_SHORT,
+                    });
+                }
 
             }).catch(err => {
                 Snackbar.show({
@@ -88,7 +135,7 @@ const OrderHistoryPageScreen = ({navigation}: {navigation:any}) => {
                 });
             })
 
-            setShowNoItemImg(true);
+            // setShowNoItemImg(true);
             
         }catch (error: any) {
             Snackbar.show({
@@ -96,7 +143,6 @@ const OrderHistoryPageScreen = ({navigation}: {navigation:any}) => {
                 duration: Snackbar.LENGTH_SHORT,
             });
         }
-        setProcessData(false);
     };
 
     const handleScroll = Animated.event(
@@ -117,36 +163,68 @@ const OrderHistoryPageScreen = ({navigation}: {navigation:any}) => {
     const onRefresh = async () => {
         setRefreshing(true);
         setProcessData(true);
+        setFetchedData([]);
+        setItemIndex(0);
+        setCurrentPage(0);
         setTimeout(() => {
             setProcessData(false);
         }, 1000);
         setRefreshing(false);
     };
 
-    const showHistoryCard = ({ item }: { item: HistoryCardProps }) => {
+    const loadMore = async () => {
+        const passPage = currentPage + 1;
+        setCurrentPage(passPage);
+        await fetchedDataAPI(passPage);
+    }
+
+    const showHistoryCard = ({ item }: { item: OrderHistoryCardProps }) => {
         return (
             <TouchableOpacity onPress={() => {
-                navigation.navigate('DeliveryDetail', {
-                    id: item.id, 
-                    DOnumber: item.DOnumber, 
-                    customerName: item.customerName, 
-                    date: item.date, 
-                    totalWeight: item.totalWeight, 
-                    totalPrice: item.totalPrice, 
-                    currency: item.currency, 
-                    status: item.status, 
-                });
+                // navigation.navigate('OrderHistoryDetail', {
+                //     id: item.doRef, 
+                //     createdDate: item.created_At, 
+                // });
             }} >
-                <DeliveryCard 
-                    id={item.id}
-                    date={item.date}
-                    DOnumber={item.DOnumber}
-                    customerName={item.customerName}
-                    currency={item.currency}
-                    totalPrice={item.totalPrice}
-                    totalWeight={item.totalWeight}
-                    status={item.status}
-                />
+                <View style={css.HistoryCardContainer}>
+                    <View style={css.HistoryTitleContainer}>
+                        <Text style={styles.CardTitle}>Ref: {item.doRef}</Text>
+
+                        <Text style={styles.CardDate}>{item.created_At}</Text>
+                    </View>
+                    
+                    <View style={css.HistoryCardContent}>
+                        {/* <Text style={styles.CardSubtitle}>
+                            Customer: {' '}
+
+                            <Text style={styles.CardTextHightlight}>
+                                {item.doRef}
+                            </Text>
+                        </Text> */}
+
+                        <Text style={styles.CardSubtitle}>
+                            Total KG: {' '}
+
+                            <Text style={styles.CardTextHightlight}>
+                                {item.doRef}
+                            </Text>
+                        </Text>
+
+                        <Text style={styles.CardSubtitle}>
+                            RM: {' '}
+
+                            <Text style={styles.CardTextHightlight}>
+                                {item.doRef}
+                            </Text>
+                        </Text>
+                    </View>
+                    
+                    <View style={css.HistoryCardFooter}>
+                        <Text style={css.CardPriceCurrency}>
+                            View Detail
+                        </Text>
+                    </View>
+                </View>
             </TouchableOpacity>
         );
     };
@@ -162,7 +240,7 @@ const OrderHistoryPageScreen = ({navigation}: {navigation:any}) => {
             ): (
             <View style={{flex: 1, marginBottom: tabBarHeight}}>
                 {userLabel == "admin" ? (
-                    <></>
+                    <HeaderBar title="Order History" checkBackBttn={true} />
                 ) : (
                     <HeaderBar title="Order History" badgeNumber={countItem} />
                 )}
@@ -170,72 +248,127 @@ const OrderHistoryPageScreen = ({navigation}: {navigation:any}) => {
 
                 {( showNoItemImg == false ) ? (
                     <View style={{flex: 1}}>
-                        {showHeader && (                     
-                            <View style={[css.InputContainerComponent, {backgroundColor: COLORS.secondaryVeryLightGreyHex, borderWidth: 1, marginTop: -SPACING.space_5, marginBottom: 0}]}>
-                                <TouchableOpacity
-                                    onPress={async () => {
-                                        await fetchedDataAPI(HistoryData);
-                                    }}>
-                                    <Icon
-                                    style={css.InputIcon}
-                                    name="search"
-                                    size={FONTSIZE.size_18}
-                                    color={
-                                        searchText.length > 0
-                                        ? COLORS.primaryOrangeHex
-                                        : COLORS.primaryLightGreyHex
-                                    }
-                                    />
-                                </TouchableOpacity>
-                                <TextInput
-                                    placeholder="Search Order...."
-                                    value={searchText}
-                                    onChangeText={async text => {
-                                        setSearchText(text);
-                                    }}
-                                    placeholderTextColor={COLORS.primaryLightGreyHex}
-                                    style={[css.TextInputContainer, {height: SPACING.space_20 * 2,}]}
-                                    onEndEditing={async () => {
-                                        fetchedDataAPI(HistoryData);
-                                    }}
-                                />
-                                {searchText.length > 0 ? (
-                                    <TouchableOpacity
-                                    onPress={async () => {
-                                        setSearchText("");
-                                        fetchedDataAPI(HistoryData);
-                                    }}>
-                                    <Icon
-                                        style={css.InputIcon}
-                                        name="close"
-                                        size={FONTSIZE.size_16}
-                                        color={COLORS.primaryLightGreyHex}
-                                    />
-                                    </TouchableOpacity>
-                                ) : (
-                                    <></>
-                                )}
-                            </View>
-                        )}
-                        <View style={{flex: 1}}>
-                            <FlatList
-                                data={fetchedData}
-                                renderItem={showHistoryCard}
-                                keyExtractor={(item) => item.id}
-                                onScroll={handleScroll}
-                                removeClippedSubviews={false}
-                                refreshControl={<RefreshControl
-                                    refreshing={refreshing}
-                                    onRefresh={onRefresh}
-                                />}
-                                ListFooterComponent={() => itemFinish && (
-                                    <View style={css.HistoryCardContainer}>
-                                        <View style={css.HistoryTitleContainer}>
-                                            <Text style={[styles.CardTitle, {color: COLORS.secondaryLightGreyHex, fontSize: FONTSIZE.size_16}]}>No More Data</Text>
-                                        </View>
-                                    </View>
-                                )}
+                        {/* <View style={{
+                            flex: 0.2,
+                            alignSelf: "flex-start",
+                            // alignSelf: "center",
+                            flexDirection: "row",
+                            width: Dimensions.get("screen").width*80/100,
+                            // borderWidth: 1, 
+                        }}>
+                            <LottieView
+                                style={{height: 100,width: 100,}}
+                                source={require('../animationPart/CustomerService.json')}
+                                autoPlay
+                                loop
                             />
+                            <Image 
+                            source={require('../assets/chicken_assets/CustomerService.png')} 
+                            // source={require('../assets/chicken_assets/logo2.png')} 
+                            style={{ 
+                                height: 100, 
+                                width: 100, 
+                                resizeMode: "contain", 
+                                alignSelf: "flex-start",
+                            }} />
+                            <View style={{
+                                flexDirection: "column",
+                                padding: SPACING.space_5,
+                                alignSelf: "center",
+                                width: "70%",
+                                // borderWidth: 1, 
+                            }}>
+                                <Text style={[{
+                                    color: COLORS.secondaryGreyHex,
+                                    // color: COLORS.primaryOrangeHex,
+                                    fontSize: FONTSIZE.size_14,
+                                    fontFamily: FONTFAMILY.poppins_light,
+                                    fontWeight: "bold",
+                                    textAlign: "left",
+                                }]}>
+                                    You may add on other PO before 9pm.
+                                </Text>
+                                <Text style={[{
+                                    // color: COLORS.secondaryGreyHex,
+                                    color: COLORS.primaryOrangeHex,
+                                    fontSize: FONTSIZE.size_14,
+                                    fontFamily: FONTFAMILY.poppins_light,
+                                    fontWeight: "bold",
+                                    textAlign: "left",
+                                }]}>
+                                    WhatsApp us if any questions about PO.
+                                </Text>
+                            </View>
+                        </View> */}
+                        <View style={{flex: 1}}>
+                            {showHeader && (                     
+                                <View style={[css.InputContainerComponent, {backgroundColor: COLORS.secondaryVeryLightGreyHex, borderWidth: 1, marginTop: -SPACING.space_5, marginBottom: 0}]}>
+                                    <TouchableOpacity
+                                        onPress={async () => {
+                                            await fetchedDataAPI(currentPage);
+                                        }}>
+                                        <Icon
+                                        style={css.InputIcon}
+                                        name="search"
+                                        size={FONTSIZE.size_18}
+                                        color={
+                                            searchText.length > 0
+                                            ? COLORS.primaryOrangeHex
+                                            : COLORS.primaryLightGreyHex
+                                        }
+                                        />
+                                    </TouchableOpacity>
+                                    <TextInput
+                                        placeholder="Search Order...."
+                                        value={searchText}
+                                        onChangeText={async text => {
+                                            setSearchText(text);
+                                        }}
+                                        placeholderTextColor={COLORS.primaryLightGreyHex}
+                                        style={[css.TextInputContainer, {height: SPACING.space_20 * 2,}]}
+                                        onEndEditing={async () => {
+                                            fetchedDataAPI(currentPage);
+                                        }}
+                                    />
+                                    {searchText.length > 0 ? (
+                                        <TouchableOpacity
+                                        onPress={async () => {
+                                            setSearchText("");
+                                            fetchedDataAPI(currentPage);
+                                        }}>
+                                        <Icon
+                                            style={css.InputIcon}
+                                            name="close"
+                                            size={FONTSIZE.size_16}
+                                            color={COLORS.primaryLightGreyHex}
+                                        />
+                                        </TouchableOpacity>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </View>
+                            )}
+                            <View style={{flex: 1}}>
+                                <FlatList
+                                    data={fetchedData}
+                                    renderItem={showHistoryCard}
+                                    keyExtractor={(item) => item.doRef}
+                                    onScroll={handleScroll}
+                                    removeClippedSubviews={false}
+                                    onEndReached={loadMore}
+                                    refreshControl={<RefreshControl
+                                        refreshing={refreshing}
+                                        onRefresh={onRefresh}
+                                    />}
+                                    ListFooterComponent={() => itemFinish && (
+                                        <View style={css.HistoryCardContainer}>
+                                            <View style={css.HistoryTitleContainer}>
+                                                <Text style={[styles.CardTitle, {color: COLORS.secondaryLightGreyHex, fontSize: FONTSIZE.size_16}]}>No More Data</Text>
+                                            </View>
+                                        </View>
+                                    )}
+                                />
+                            </View>
                         </View>
                     </View>
                 ) : (

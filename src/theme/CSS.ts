@@ -530,3 +530,26 @@ export const css = StyleSheet.create({
         color: COLORS.primaryDarkGreyHex,
     }
 });
+
+export const datepickerCSS = StyleSheet.create({
+    datePicker: {
+        height: 120,
+        marginTop: -10,
+    },
+    textInput: {
+        color: COLORS.primaryDarkGreyHex,
+        textAlign: "center",
+        fontSize: FONTSIZE.size_14,
+        height: SPACING.space_28,
+        padding: 0,
+    },
+    pressableCSS: {
+        color: "black",
+        backgroundColor: COLORS.primaryWhiteHex,
+        width: '40%',
+        borderWidth: 1,
+        borderColor: COLORS.primaryVeryLightGreyHex,
+        borderRadius: BORDERRADIUS.radius_8,
+        marginTop: SPACING.space_10,
+    },
+});

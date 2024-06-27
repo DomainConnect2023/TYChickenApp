@@ -1,5 +1,5 @@
-import React from 'react';
-import {StyleSheet} from 'react-native';
+import React, { useEffect } from 'react';
+import {BackHandler, StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {COLORS} from '../theme/theme';
 import {BlurView} from '@react-native-community/blur';
@@ -14,6 +14,7 @@ import OrderHistoryPageScreen from '../screens/OrderHistoryScreen';
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
+
   return (
     <Tab.Navigator
       screenOptions={{

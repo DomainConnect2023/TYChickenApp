@@ -5,10 +5,8 @@ import HeaderBar from '../components/HeaderBar';
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { HIDE_HEIGHT, css } from '../theme/CSS';
-import { ActivityIndicator, TextInput as TextPaperInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Snackbar from 'react-native-snackbar';
-import { ChickenData3 } from '../data/ChickenData';
 import { addData, createTable, selectData, updateData } from '../data/SQLiteFile';
 import { ChickenProductProps, currencyFormat } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
@@ -16,11 +14,11 @@ import { useRoute } from '@react-navigation/native';
 import ShoppingListCard from '../components/ShoppingList';
 import PopUpAnimation from '../components/PopUpAnimation';
 import RNFetchBlob from 'rn-fetch-blob';
-import EmptyListAnimation from '../components/EmptyListAnimation';
 
 const CategoryList = [
     { id: '1', title: 'Frozen' },
     { id: '2', title: 'Fresh' },
+    { id: '3', title: 'Leg' },
 ];
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.36;
@@ -262,7 +260,7 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
                                 data={CategoryList}
                                 renderItem={showGridFlatlist}
                                 keyExtractor={item => item.id}
-                                numColumns={3}
+                                numColumns={2}
                             />
                         </View>
                     )
@@ -276,7 +274,7 @@ const SearchPageScreen = ({navigation}: {navigation:any}) => {
                             style={{width: Dimensions.get("window").width/100*90, height: 300}}
                         />
                         <Text style={[css.DetailTitle, {alignSelf:"center",marginTop: SPACING.space_50}]}>
-                            Search Another Words.
+                            Search other keywords.
                         </Text>
                     </View>
                 )

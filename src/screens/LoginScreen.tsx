@@ -35,20 +35,10 @@ const LoginScreen = ({navigation}: any) => {
             await AsyncStorage.setItem('IPAddress', "192.168.1.124:9879")
             setIPadress("192.168.1.124:9879");
 
-            if (__DEV__) {
+            // if (__DEV__) {
                 setUserName("3000/R01");
                 setPassword("12345");
-            }
-
-            const disableBackButton = () => {
-                return true;
-            };
-
-            BackHandler.addEventListener('hardwareBackPress', disableBackButton);
-          
-            return () => {
-                BackHandler.removeEventListener('hardwareBackPress', disableBackButton);
-            };
+            // }
         })();
     }, []);
 
@@ -69,10 +59,6 @@ const LoginScreen = ({navigation}: any) => {
     // };
 
     const loginAPI = async() => {
-        // navigation.navigate("FirstTime", {
-        //     key: username, 
-        //     name: username,
-        // });
         try {
             RNFetchBlob.config({ trusty: true }).fetch("POST","https://"+IPaddress+"/api/Login", 
             { "Content-Type": "application/json" },
@@ -81,16 +67,17 @@ const LoginScreen = ({navigation}: any) => {
                 "Password": password,
                 // "Token": await AsyncStorage.getItem("fcmtoken")
             })).then(async (res) => {
-                if (await res.json().issuccess == true) {
+                if (await res.json().isSuccess == true) {
                     await AsyncStorage.setItem('UserID', username);
                     await AsyncStorage.setItem('UserName', res.json().displayName);
-                    await AsyncStorage.setItem('UserEmail', res.json().email);
-                    await AsyncStorage.setItem('label', res.json().label);
+
                     setUserName("");
                     setPassword("");
 
                     if(res.json().label=="user"){
-                        
+                        await AsyncStorage.setItem('UserEmail', res.json().email);
+                        await AsyncStorage.setItem('label', res.json().label);
+
                         // check user is first time login or not
                         if(await res.json().isFirsttime==true){
                             navigation.navigate("FirstTime", {
@@ -100,13 +87,16 @@ const LoginScreen = ({navigation}: any) => {
                         }else{
                             navigation.navigate("Tab", { screen: 'Home'});
                         }
-                    }else if(res.json().label=="admin"){
+                    }else if(res.json().label=="Admin"){
+                        await AsyncStorage.setItem('label', "admin");
                         navigation.navigate("CustomDrawer", { screen: 'Home'});
                     }else{
+                        await AsyncStorage.setItem('label', res.json().label);
                         navigation.navigate("TabDriver", { screen: 'Home'});
                     }
                     
                 }else{
+                    console.log("Error3: "+res.json().message.message);
                     Snackbar.show({
                         text: res.json().message.message,
                         duration: Snackbar.LENGTH_LONG
@@ -115,6 +105,7 @@ const LoginScreen = ({navigation}: any) => {
                 setLoading(false);
 
             }).catch(err => {
+                console.log("Error2: "+err.message);
                 Snackbar.show({
                     text: err.message,
                     duration: Snackbar.LENGTH_LONG
@@ -122,7 +113,7 @@ const LoginScreen = ({navigation}: any) => {
                 setLoading(false);
             })
         }catch(e){
-            console.log(e);
+            console.log("Error1: "+e);
             setLoading(false);
         }
     };

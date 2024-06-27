@@ -46,7 +46,7 @@ const ShoppingListCard: React.FC<ChickenProductProps> = ({
                 <View style={{flexDirection: "column", justifyContent: "flex-start", margin: 20}}>
                 <Text style={styles.CardTitle}>{itemName}</Text>
                 <Text style={styles.CardSubtitle}>By {unit}</Text>
-                <Text style={styles.CardPrice}>RM {currencyFormat(parseInt(price))}</Text>
+                <Text style={styles.CardPrice}>RM {price.toFixed(2)}</Text>
 
                 <View style={[css.CardFooterRow,{marginTop: SPACING.space_50}]}>
                     <Text style={css.CardPriceCurrency}>

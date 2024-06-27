@@ -10,19 +10,19 @@ import HeaderBar from '../components/HeaderBar';
 import LoadingAnimation from '../components/LoadingAnimation';
 
 
-const ReportListScreen = ({navigation}: {navigation:any}) => {
+const AccessListScreen = ({navigation}: {navigation:any}) => {
     const [processData, setProcessData] = useState(false);
     const [userID, setUserID] = useState('');
 
     const list = [
         {
             id: 1,
-            title: "Daily Sales",
-            navigate: "DailyReport"
+            title: "Debtor List",
+            navigate: ""
         },
         {
             id: 2,
-            title: "Customer Order",
+            title: "Admin List",
             navigate: ""
         },
     ];
@@ -58,7 +58,7 @@ const ReportListScreen = ({navigation}: {navigation:any}) => {
                             <TouchableOpacity 
                             style={{ backgroundColor: "#ECE6F0", width: "95%", height: SPACING.space_50, margin: SPACING.space_5, borderRadius: BORDERRADIUS.radius_20 }} 
                             onPress={() => { 
-                                navigation.navigate(item.navigate);
+                                // navigation.navigate(item.navigate);
                             }}>
                                 <Text style={{ fontSize: FONTSIZE.size_16, fontWeight: "bold", color: COLORS.primaryGreyHex, padding: SPACING.space_12 }}>{item.title}</Text>
                             </TouchableOpacity>)}
@@ -70,4 +70,4 @@ const ReportListScreen = ({navigation}: {navigation:any}) => {
     )
 }
 
-export default ReportListScreen;
+export default AccessListScreen;

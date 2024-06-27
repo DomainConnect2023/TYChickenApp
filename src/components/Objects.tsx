@@ -1,6 +1,7 @@
 import { Image, ImageProps, Text, View } from "react-native";
 import { css } from "../theme/CSS";
 import { COLORS, FONTFAMILY, FONTSIZE } from "../theme/theme";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export interface ProductData {
     key: number;
@@ -37,6 +38,11 @@ export interface PersonalData {
     key: string;
     name: string;
 } 
+
+export interface OrderHistoryCardProps {
+    doRef: string;
+    created_At: string;
+}
 
 export interface HistoryCardProps {
     id: string;

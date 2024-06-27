@@ -8,7 +8,7 @@ import HeaderBar from '../components/HeaderBar';
 import { css } from '../theme/CSS';
 import { addData, createTable, db, selectData, updateData } from '../data/SQLiteFile';
 import PopUpAnimation from '../components/PopUpAnimation';
-import { CategoryProps, ProductData, currencyFormat } from '../components/Objects';
+import { CategoryProps, ProductData } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
 import { CategoryList } from '../data/ChickenData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -139,7 +139,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                         </Text>
                         <View>
                             <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
-                                RM {currencyFormat(price)}
+                                RM {price.toFixed(2)}
                             </Text>
                         </View>
                         
@@ -234,9 +234,10 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                     <Pressable
                         style={css.AddtoCartButton}
                         onPress={async () => {
-                            console.log(fetchedData);
+                            // console.log(fetchedData);
 
-                            // let categorySelected;
+                            let categorySelected;
+                            categorySelected="10";
                             // categoryIndex.index === 1 ? (
                             //     categorySelected="10"
                             // ) : (
@@ -247,15 +248,15 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                             //     )
                             // );
 
-
-                            // addToCartApi(
-                            //     key, 
-                            //     name, 
-                            //     categorySelected, 
-                            //     '../assets/chicken_assets/cartPic.png', 
-                            //     price, 
-                            //     parseInt(quantity)
-                            // );
+                            addToCartApi(
+                                key, 
+                                name, 
+                                categorySelected, 
+                                '../assets/chicken_assets/cartPic.png', 
+                                price, 
+                                10
+                                // parseInt(quantity)
+                            );
                         }}
                     >
                         <Text style={css.AddtoCartText}>Add to Cart</Text>

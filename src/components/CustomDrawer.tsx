@@ -2,7 +2,7 @@ import * as React from 'react';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { CommonActions, useFocusEffect, useNavigation } from '@react-navigation/native';
 import TabNavigation from '../navigators/TabNavigator';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,7 +34,10 @@ function CustomDrawerContent(props: any) {
         <DrawerItemList {...props} />
         <DrawerItem label={"Log Out"} onPress={async () => {[
             await AsyncStorage.removeItem("UserID"), 
-            navigation.navigate("Login" as never)
+            navigation.dispatch(CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'Login' }], // Navigate to Login screen after logout
+          })),
         ]}} />
         </DrawerContentScrollView>
     );

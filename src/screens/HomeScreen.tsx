@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, ImageProps,} from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, ImageProps, BackHandler,} from 'react-native';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import { COLORS, FONTSIZE, SPACING,} from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
@@ -31,7 +31,6 @@ const HomeScreen = ({navigation}: any) => {
       await createTable();
       await checkCartNum();
       await fetchedDataAPI(ChickenData2);
-      // console.log(userID);
     })();
   }, []);
 

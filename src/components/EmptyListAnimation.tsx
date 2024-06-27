@@ -12,7 +12,7 @@ const EmptyListAnimation: React.FC<EmptyListAnimationProps> = ({title}) => {
     <View style={styles.EmptyCartContainer}>
       <LottieView
         style={styles.LottieStyle}
-        source={require('../animationPart/CartEmpty.json')}
+        source={require('../animationPart/CartEmpty2.json')}
         autoPlay
         loop
       />

@@ -11,7 +11,7 @@ import { Switch, TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { css } from '../theme/CSS';
 import { createTable, db, deleteAllData } from '../data/SQLiteFile';
-import { useFocusEffect } from '@react-navigation/native';
+import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import HeaderDriverBar from '../components/HeaderDriverBar';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NameImage } from '../components/NameImage';
@@ -27,28 +27,19 @@ const ProfilePageScreen = ({navigation}: {navigation:any}) => {
 
     const [userID, setUserID] = useState('');
     const [userName, setUserName] = useState('');
+    const [userLabel, setUserLabel] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [countItem, setCountItem] = useState<number>(0);
 
-    const tabBarHeight = useBottomTabBarHeight();
+    const [tabBarHeight, setTabBarHeight] = useState<number>(0);
 
     useEffect(()=> {
-        (async()=> {
-            await createTable();
-            await checkCartNum();
-            setShowLanguage(false);
-            setShowEmailInput(false);
-            // await fetchedDataAPI();
-        })();
+        fetchData();
     }, []);
 
     useFocusEffect(
         React.useCallback(() => {
-            createTable();
-            checkCartNum();
-            setShowLanguage(false);
-            setShowEmailInput(false);
-            // fetchedDataAPI();
+            fetchData();
         }, [])
     );
 
@@ -79,22 +70,42 @@ const ProfilePageScreen = ({navigation}: {navigation:any}) => {
         setShowEmailInput(!showEmailInput);
     };
 
-    // const fetchedDataAPI = async() => {
-    //     setUserID(await AsyncStorage.getItem('UserID') ?? "");
-    //     setUserName(await AsyncStorage.getItem('UserName') ?? "");
+    const fetchData = async () => {
+        try {
+            await createTable();
+            await checkCartNum();
+            setShowLanguage(false);
+            setShowEmailInput(false);
+            await fetchedDataAPI();
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
-    //     try {
-    //         setLoading(true);
-    //         const IPaddress = await AsyncStorage.getItem('IPAddress') ?? "192.168.1.124:9879";
+    const fetchedDataAPI = async() => {
+        setUserID(await AsyncStorage.getItem('UserID') ?? "");
+        setUserName(await AsyncStorage.getItem('UserName') ?? "");
+        setUserLabel(await AsyncStorage.getItem('label') ?? "");
 
-    //         setLoading(false);
-    //     }catch (error: any) {
-    //         Snackbar.show({
-    //           text: error.message,
-    //           duration: Snackbar.LENGTH_SHORT,
-    //         });
-    //     }
-    // };
+        if(await AsyncStorage.getItem('label') == "admin"){
+            setTabBarHeight(0);
+        }else{
+            // const bottomTabBarHeight = useBottomTabBarHeight();
+            setTabBarHeight(65);
+        }
+
+        try {
+            setLoading(true);
+            const IPaddress = await AsyncStorage.getItem('IPAddress') ?? "192.168.1.124:9879";
+
+            setLoading(false);
+        }catch (error: any) {
+            Snackbar.show({
+              text: error.message,
+              duration: Snackbar.LENGTH_SHORT,
+            });
+        }
+    };
 
     const changeEmailAPI = async(purpose: string)=> {
         try {
@@ -131,10 +142,10 @@ const ProfilePageScreen = ({navigation}: {navigation:any}) => {
         <View style={[css.ScreenContainer, {backgroundColor: COLORS.primaryVeryLightGreyHex}]}>
             <StatusBar backgroundColor={COLORS.secondaryLightGreyHex} />
             {/* App Header */}
-            {userID == "admin" ? (
+            {userLabel == "admin" ? (
                 <></>
             ) : (
-                userID == "driver" ? (
+                userLabel == "driver" ? (
                     <HeaderDriverBar title="Profile" />
                 ) : (
                     <HeaderBar title="Profile" badgeNumber={countItem} />
@@ -147,7 +158,10 @@ const ProfilePageScreen = ({navigation}: {navigation:any}) => {
                 </View>
             ) : (
             <ScrollView 
-            style={{flex: 1, marginBottom: tabBarHeight}}
+            style={{
+                flex: 1, 
+                marginBottom: userLabel === "admin" ? 0 : tabBarHeight,
+            }}
             showsVerticalScrollIndicator={false} 
             contentContainerStyle={css.ScrollViewFlex}>
                 <TouchableOpacity onPress={()=>{
@@ -186,10 +200,20 @@ const ProfilePageScreen = ({navigation}: {navigation:any}) => {
                   
                     <View style={{ flexDirection: "row", padding: SPACING.space_10, alignSelf: "center" }}>
                         <TouchableOpacity onPress={async () => {
-                            navigation.navigate('ChangePswd', {
-                                key: userID,
-                                name: userName,
-                            });
+                            const userEmail = await AsyncStorage.getItem('UserEmail') ?? "";
+
+                            if(userEmail==""){
+                                Snackbar.show({
+                                    text: "You need to set an email first",
+                                    duration: Snackbar.LENGTH_LONG
+                                });
+                            }else{
+                                navigation.navigate('ChangePswd', {
+                                    key: userID,
+                                    name: userName,
+                                });
+                            }
+                            
                         }}>
                             <View style={{ flexDirection: "row", width: Dimensions.get("screen").width, padding: 10, justifyContent: 'center', alignItems: "center" }}>
                                 <View style={{ width: "20%", alignItems: "center", }}>
@@ -320,7 +344,10 @@ const ProfilePageScreen = ({navigation}: {navigation:any}) => {
                     <TouchableOpacity onPress={async () => {[
                         await AsyncStorage.removeItem("UserID"), 
                         deleteAllData(),
-                        navigation.navigate("Login" as never),
+                        navigation.dispatch(CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'Login' }], // Navigate to Login screen after logout
+                        })),
                     ]}}>
                         <View style={{ flexDirection: "row", width: Dimensions.get("screen").width, justifyContent: 'center', alignItems: "center" }}>
                             <View style={{ width: "20%", alignItems: "center", padding: SPACING.space_10 }}>
