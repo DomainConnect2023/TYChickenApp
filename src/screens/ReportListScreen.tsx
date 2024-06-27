@@ -18,7 +18,7 @@ const ReportListScreen = ({navigation}: {navigation:any}) => {
         {
             id: 1,
             title: "Daily Sales",
-            navigate: ""
+            navigate: "DailyReport"
         },
         {
             id: 2,
@@ -58,7 +58,7 @@ const ReportListScreen = ({navigation}: {navigation:any}) => {
                             <TouchableOpacity 
                             style={{ backgroundColor: "#ECE6F0", width: "95%", height: SPACING.space_50, margin: SPACING.space_5, borderRadius: BORDERRADIUS.radius_20 }} 
                             onPress={() => { 
-                                // navigation.navigate(item.navigate);
+                                navigation.navigate(item.navigate);
                             }}>
                                 <Text style={{ fontSize: FONTSIZE.size_16, fontWeight: "bold", color: COLORS.primaryGreyHex, padding: SPACING.space_12 }}>{item.title}</Text>
                             </TouchableOpacity>)}

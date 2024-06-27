@@ -1,6 +1,7 @@
 import { Image, ImageProps, Text, View } from "react-native";
 import { css } from "../theme/CSS";
 import { COLORS, FONTFAMILY, FONTSIZE } from "../theme/theme";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export interface ProductData {
     key: number;
@@ -9,7 +10,19 @@ export interface ProductData {
     picture: any;
     description: string;
     price: number;
-} 
+}
+
+export interface ChickenProductProps {
+    code: string;
+    item: string;
+    itemName: string;
+    category: string;
+    picture: string;
+    active: string;
+    price: any;
+    unit: string;
+    quantity: number;
+}
   
 export interface CartItem {
     id: number;
@@ -19,6 +32,16 @@ export interface CartItem {
     type: string;
     price: number;
     quantity: number;
+}
+
+export interface PersonalData {
+    key: string;
+    name: string;
+} 
+
+export interface OrderHistoryCardProps {
+    doRef: string;
+    created_At: string;
 }
 
 export interface HistoryCardProps {
@@ -44,7 +67,10 @@ export interface ChickenCardProps {
     price: any;
     quantity: number;
     status: boolean;
-    buttonPressHandler: any;
+    buttonAddPressHandler: any;
+    buttonLessPressHandler: any;
+    adjustQuantityHandler: any;
+    buttonaddtoCartPressHandler: any;
 }
 
 export interface ItemProps {

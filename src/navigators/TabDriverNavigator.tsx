@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {COLORS} from '../theme/theme';
 import {BlurView} from '@react-native-community/blur';
@@ -6,10 +6,26 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { css } from '../theme/CSS';
 import HomeDriverScreen from '../screens/HomeDriverScreen';
 import ProfilePageScreen from '../screens/ProfileScreen';
+import { BackHandler } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
 const TabDriverNavigator = () => {
+
+  useEffect(()=> {
+    (async()=> {
+        const disableBackButton = () => {
+            return false;
+        };
+
+        BackHandler.addEventListener('hardwareBackPress', disableBackButton);
+      
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', disableBackButton);
+        };
+    })();
+  }, []);
+  
   return (
     <Tab.Navigator
       screenOptions={{

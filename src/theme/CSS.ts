@@ -364,8 +364,9 @@ export const css = StyleSheet.create({
     NumberOfOrder: {
         textAlign:"center", 
         alignSelf: "center", 
-        height: SPACING.space_30, 
-        fontSize: FONTSIZE.size_18,
+        height: SPACING.space_24, 
+        fontSize: FONTSIZE.size_14,
+        elevation: 3,
     },
     miniNumberOfOrder: {
         alignSelf: "center", 
@@ -377,8 +378,8 @@ export const css = StyleSheet.create({
     },
     plusButton: {
         backgroundColor: COLORS.primaryWhiteHex,
-        width: SPACING.space_30,
-        height: SPACING.space_30,
+        width: SPACING.space_24,
+        height: SPACING.space_24,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
@@ -518,5 +519,37 @@ export const css = StyleSheet.create({
         fontSize: FONTSIZE.size_14,
         fontFamily: FONTFAMILY.poppins_medium,
         fontWeight: "bold",
+    },
+    OTPInputText: {
+        borderWidth: 1,
+        borderRadius: BORDERRADIUS.radius_10,
+        margin: SPACING.space_5,
+        width: SPACING.space_50,
+        height: SPACING.space_50,
+        fontSize: FONTSIZE.size_20,
+        color: COLORS.primaryDarkGreyHex,
     }
+});
+
+export const datepickerCSS = StyleSheet.create({
+    datePicker: {
+        height: 120,
+        marginTop: -10,
+    },
+    textInput: {
+        color: COLORS.primaryDarkGreyHex,
+        textAlign: "center",
+        fontSize: FONTSIZE.size_14,
+        height: SPACING.space_28,
+        padding: 0,
+    },
+    pressableCSS: {
+        color: "black",
+        backgroundColor: COLORS.primaryWhiteHex,
+        width: '40%',
+        borderWidth: 1,
+        borderColor: COLORS.primaryVeryLightGreyHex,
+        borderRadius: BORDERRADIUS.radius_8,
+        marginTop: SPACING.space_10,
+    },
 });

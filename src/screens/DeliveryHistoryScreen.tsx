@@ -143,7 +143,7 @@ const HistoryPageScreen = ({navigation}: {navigation:any}) => {
                 {userID == "admin" ? (
                     <></>
                 ) : (
-                    <HeaderBar title="Order Status" badgeNumber={countItem} />
+                    <HeaderBar title="Delivery Status" badgeNumber={countItem} />
                 )}
                 <View style={css.LineContainer}></View>
 

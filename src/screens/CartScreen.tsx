@@ -14,11 +14,13 @@ import EmptyListAnimation from '../components/EmptyListAnimation';
 import { CartItem, currencyFormat } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomDialog from '../components/ConfirmCheckoutDialog';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.36;
 
 const CartPageScreen = ({navigation}: {navigation:any}) => {
     const [processData, setProcessData] = useState(false);
+    const [dialogVisible, setDialogVisible] = useState(false);
     const [userID, setUserID] = useState('');
     const [showAnimation, setShowAnimation] = useState(false);
     const [showNoItemImg, setShowNoItemImg] = useState(false);
@@ -82,6 +84,10 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
         setProcessData(false);
     };
 
+    const onToggleDialog = () => {
+        setDialogVisible(!dialogVisible);
+    };
+
     const CheckOutProcess = () => {
         setShowAnimation(true);
         setFetchedData([]);
@@ -119,7 +125,8 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
             }} >
                 <View style={css.CardContainer}>
                     <ImageBackground
-                        source={require("../assets/chicken_assets/logo3.png")}
+                        source={require("../assets/chicken_assets/noItem.jpg")}
+                        // source={require("../assets/chicken_assets/logo3.png")}
                         style={[css.CardImageBG, {margin: SPACING.space_10}]}
                         resizeMode="cover">
                     </ImageBackground>
@@ -143,7 +150,7 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
                                 />
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.CardSubtitle}>RM {currencyFormat(item.price)} x {item.quantity}</Text>
+                        <Text style={styles.CardSubtitle}>RM {item.price.toFixed(2)} x {item.quantity}</Text>
                         <Text style={styles.CardSubtitle}>{item.type} KG</Text>
                         <View style={{flexDirection: "row", justifyContent: 'space-between',}}>
                             <Pressable
@@ -221,7 +228,7 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
 
                         <View style={styles.CardFooterRow}>
                             <Text style={styles.CardPriceCurrency}>
-                                RM {currencyFormat(item.quantity*item.price)}
+                                RM {(item.quantity*item.price).toFixed(2)}
                             </Text>
                         </View>
                     </View>
@@ -270,14 +277,16 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
                             <View style={css.CheckOutPressable}>
                                 <View style={{flexDirection:"row", width: Dimensions.get("screen").width, justifyContent: 'space-between',paddingHorizontal: SPACING.space_30,}}>
                                     <Text style={css.CartTotalPriceText}>Total</Text>
-                                    <Text style={css.CartTotalPriceText}>RM {currencyFormat(totalPrice)}</Text>
+                                    <Text style={css.CartTotalPriceText}>RM {totalPrice.toFixed(2)}</Text>
                                 </View>
                                 <View style={{height: 0.2, width: '100%', backgroundColor: COLORS.primaryLightGreyHex, marginTop: 5}}></View>
                                 <Pressable style={css.CheckOutButton} onPress={async () => {
-                                    CheckOutProcess();
+                                    // CheckOutProcess();
+                                    onToggleDialog();
                                 }}>
-                                    <Text style={css.CheckOutText}>Check Out</Text>
+                                    <Text style={css.CheckOutText}>Process to Check Out</Text>
                                 </Pressable>
+                                <CustomDialog visible={dialogVisible} onClose={onToggleDialog} DoneFunction={CheckOutProcess} />
                             </View>
                         </View>
                     </View>

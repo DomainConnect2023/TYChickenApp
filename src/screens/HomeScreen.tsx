@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image,} from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, ImageProps, BackHandler,} from 'react-native';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import { COLORS, FONTSIZE, SPACING,} from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
@@ -7,7 +7,7 @@ import {FlatList} from 'react-native';
 import {Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import { ChickenCard, } from '../components/ChickenCard';
+import { ChickenCard, HomeChickenCard, } from '../components/ChickenCard';
 import Snackbar from 'react-native-snackbar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from 'react-native-paper';
@@ -31,7 +31,6 @@ const HomeScreen = ({navigation}: any) => {
       await createTable();
       await checkCartNum();
       await fetchedDataAPI(ChickenData2);
-      // console.log(userID);
     })();
   }, []);
 
@@ -88,47 +87,25 @@ const HomeScreen = ({navigation}: any) => {
           price: parseInt(item.price[1].price),
           picture: item.imagelink_square, 
           description: item.special_ingredient
-      });
+        });
       }} >
-        <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}
-          style={[css.CardLinearGradientContainer, {margin: SPACING.space_10}]}
-          colors={[COLORS.primaryGreyHex, COLORS.primaryGreyHex]}>
-          {/* colors={[COLORS.primaryGreyHex, COLORS.primaryVeryLightGreyHex]}> */}
-          <ImageBackground
-            source={item.imagelink_square}
-            style={css.CardImageBG}
-            resizeMode="cover">
-            <View style={css.CardRatingContainer}>
-              <Icon
-                name={'star'}
-                color={COLORS.primaryOrangeHex}
-                size={FONTSIZE.size_16}
-              />
-              <Text style={css.CardRatingText}>{item.average_rating}</Text>
-            </View>
-          </ImageBackground>
-          <Text style={css.CardTitle}>{item.name}</Text>
-          <Text style={css.CardSubtitle}>{item.special_ingredient}</Text>
-          <View style={css.CardFooterRow}>
-            <Text style={css.CardPriceCurrency}>
-              RM <Text style={css.CardPrice}>{currencyFormat(parseInt(item.price[1].price))}</Text>
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('ProductDetail', {
-                  key: item.index, 
-                  name: item.name, 
-                  type: item.type, 
-                  price: item.price[1].price,
-                  picture: item.imagelink_square, 
-                  description: item.special_ingredient
-                });
-              }}>
-            </TouchableOpacity>
-          </View>
-        </LinearGradient>
+        <HomeChickenCard 
+          id={item.id}
+          index={item.index}
+          type={item.type}
+          roasted={item.roasted}
+          imagelink_square={item.imagelink_square}
+          name={item.name}
+          special_ingredient={item.special_ingredient}
+          average_rating={item.average_rating}
+          price={item.price[1].price}
+          quantity={item.quantity}
+          status={item.status}
+          buttonAddPressHandler={{}} 
+          buttonLessPressHandler={{}} 
+          adjustQuantityHandler={{}}
+          buttonaddtoCartPressHandler={{}}   
+        />
       </TouchableOpacity>
     );
   };
@@ -187,7 +164,10 @@ const HomeScreen = ({navigation}: any) => {
                   price={{size: 'M', price: '', currency: ''}}
                   quantity={0}
                   status={true}
-                  buttonPressHandler={{}}
+                  buttonAddPressHandler={{}} 
+                  buttonLessPressHandler={{}} 
+                  adjustQuantityHandler={{}}
+                  buttonaddtoCartPressHandler={{}}   
                 />
               </TouchableOpacity>
 
@@ -197,19 +177,22 @@ const HomeScreen = ({navigation}: any) => {
                 });
               }}>
                 <ChickenCard
-                    id={"2"}
-                    index={2}
-                    type={""}
-                    roasted={""}
-                    imagelink_square={require('../assets/chicken_assets/FullChicken.jpg')}
-                    name={"Fresh Chicken"}
-                    special_ingredient={""}
-                    average_rating={5.0}
-                    price={{ size: 'M', price: '', currency: '' }}
-                    quantity={0}
-                    status={true}
-                    buttonPressHandler={{}}
-                  />
+                  id={"2"}
+                  index={2}
+                  type={""}
+                  roasted={""}
+                  imagelink_square={require('../assets/chicken_assets/FullChicken.jpg')}
+                  name={"Fresh Chicken"}
+                  special_ingredient={""}
+                  average_rating={5.0}
+                  price={{ size: 'M', price: '', currency: '' }}
+                  quantity={0}
+                  status={true} 
+                  buttonAddPressHandler={{}} 
+                  buttonLessPressHandler={{}} 
+                  adjustQuantityHandler={{}}
+                  buttonaddtoCartPressHandler={{}}                  
+                />
               </TouchableOpacity>
             </View>
 

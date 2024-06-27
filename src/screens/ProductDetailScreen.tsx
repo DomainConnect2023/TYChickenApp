@@ -1,17 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
-import { Dimensions, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator, TextInput } from 'react-native-paper';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Dimensions, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import Snackbar from 'react-native-snackbar';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
-import {FlatList} from 'react-native';
 import { css } from '../theme/CSS';
 import { addData, createTable, db, selectData, updateData } from '../data/SQLiteFile';
 import PopUpAnimation from '../components/PopUpAnimation';
-import { CategoryProps, ProductData, currencyFormat } from '../components/Objects';
+import { CategoryProps, ProductData } from '../components/Objects';
 import LoadingAnimation from '../components/LoadingAnimation';
 import { CategoryList } from '../data/ChickenData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -142,17 +139,18 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                         </Text>
                         <View>
                             <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
-                                RM {currencyFormat(price)}
+                                RM {price.toFixed(2)}
                             </Text>
                         </View>
                         
                     </View>
                     <View>
-                        <View style={[css.CategoryScrollViewContainer, {alignSelf: "flex-start"}]}>
+                        <View style={[css.CategoryScrollViewContainer, {alignSelf: "center"}]}>
+
                             {fetchedData.map((item) => (
                                 <View style={styles.CategoryContainer} key={item.id}>
                                     <Text style={styles.CategoryText}>{item.value}</Text>
-                                    <View style={{ flexDirection: "row", marginHorizontal: SPACING.space_10, alignSelf: "center" }}>
+                                    <View style={{ flexDirection: "row", marginHorizontal: SPACING.space_4, alignSelf: "center" }}>
                                         <Pressable
                                             style={css.plusButton}
                                             onPress={() => {
@@ -168,7 +166,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                                 }
                                             }}
                                         >
-                                            <Text style={css.buttonText}>-</Text>
+                                            <Text style={styles.buttonText}>-</Text>
                                         </Pressable>
                                         <TextInput
                                             style={css.NumberOfOrder}
@@ -186,6 +184,18 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                                     setFetchedData(updatedData);
                                                 }
                                             }}
+                                            // onSubmitEditing={async (event) => {
+                                            //     const text = event.nativeEvent.text;
+                                            //     if(parseInt(text)>0){
+                                            //         const updatedData = fetchedData.map((data) => {
+                                            //             if (data.id === item.id) {
+                                            //                 return { ...data, quantity: parseInt(text) };
+                                            //             }
+                                            //             return data;
+                                            //         });
+                                            //         setFetchedData(updatedData);
+                                            //     }
+                                            // }}
                                         />
                                         <Pressable
                                             style={css.plusButton}
@@ -200,11 +210,12 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                                 setFetchedData(updatedData);
                                             }}
                                         >
-                                            <Text style={css.buttonText}>+</Text>
+                                            <Text style={styles.buttonText}>+</Text>
                                         </Pressable>
                                     </View>
                                 </View>
                             ))}
+
                         </View>
                     </View>
 
@@ -223,9 +234,10 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                     <Pressable
                         style={css.AddtoCartButton}
                         onPress={async () => {
-                            console.log(fetchedData);
+                            // console.log(fetchedData);
 
-                            // let categorySelected;
+                            let categorySelected;
+                            categorySelected="10";
                             // categoryIndex.index === 1 ? (
                             //     categorySelected="10"
                             // ) : (
@@ -236,14 +248,15 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                             //     )
                             // );
 
-                            // addToCartApi(
-                            //     key, 
-                            //     name, 
-                            //     categorySelected, 
-                            //     '../assets/chicken_assets/cartPic.png', 
-                            //     price, 
-                            //     parseInt(quantity)
-                            // );
+                            addToCartApi(
+                                key, 
+                                name, 
+                                categorySelected, 
+                                '../assets/chicken_assets/cartPic.png', 
+                                price, 
+                                10
+                                // parseInt(quantity)
+                            );
                         }}
                     >
                         <Text style={css.AddtoCartText}>Add to Cart</Text>
@@ -262,11 +275,11 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.standardGreyHex,
         flexDirection: "row",
         justifyContent:"space-between",
-        width: Dimensions.get("screen").width*95/100, 
+        width: Dimensions.get("screen").width*90/100, 
         marginHorizontal: SPACING.space_10,
         marginVertical: SPACING.space_5,
-        padding: SPACING.space_5,
-        borderRadius: BORDERRADIUS.radius_20,
+        // padding: SPACING.space_5,
+        borderRadius: BORDERRADIUS.radius_10,
     },
     CategoryText: {
         textAlignVertical: 'center',
@@ -276,6 +289,14 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: COLORS.primaryLightGreyHex,
         marginHorizontal: SPACING.space_20,
+    },
+    buttonText: {
+        fontSize: FONTSIZE.size_14,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: COLORS.primaryBlackHex,
+        textAlign: "center",
+
     },
 });
 
