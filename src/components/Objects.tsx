@@ -4,7 +4,7 @@ import { COLORS, FONTFAMILY, FONTSIZE } from "../theme/theme";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export interface ProductData {
-    key: number;
+    key: string;
     name: string;
     type: string;
     picture: any;
@@ -26,7 +26,8 @@ export interface ChickenProductProps {
   
 export interface CartItem {
     id: number;
-    originid: number;
+    originid: string;
+    category: string;
     picture: any;
     name: string;
     type: string;
@@ -81,7 +82,7 @@ export interface ItemProps {
 export interface CategoryProps {
     id: number;
     value: string;
-    quantity: number
+    quantity: number;
 }
 
 export const GridItem = ({ icon, title }: ItemProps) => {

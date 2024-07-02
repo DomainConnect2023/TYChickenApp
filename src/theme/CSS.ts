@@ -148,7 +148,7 @@ export const css = StyleSheet.create({
         marginHorizontal: SPACING.space_20,
     },
     ScreenTitle: {
-        fontSize: FONTSIZE.size_24,
+        fontSize: FONTSIZE.size_18,
         fontFamily: FONTFAMILY.poppins_semibold,
         color: COLORS.primaryLightGreyHex,
         paddingLeft: SPACING.space_15,

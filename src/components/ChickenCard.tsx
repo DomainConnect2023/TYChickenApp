@@ -18,7 +18,6 @@ export const ChickenCard: React.FC<ChickenCardProps> = ({
   special_ingredient,
   average_rating,
   price,
-  buttonPressHandler,
 }) => {
   return (
     <LinearGradient
@@ -43,20 +42,11 @@ export const ChickenCard: React.FC<ChickenCardProps> = ({
       <Text style={css.CardSubtitle}>{special_ingredient}</Text>
       <View style={css.CardFooterRow}>
         <Text style={css.CardPriceCurrency}>
-          {price.currency} <Text style={css.CardPrice}>{price.price==""? "" : currencyFormat(parseInt(price.price))}</Text>
+          {price.currency} <Text style={css.CardPrice}>{price.price==""? "" : price.price.toFixed(2)}</Text>
         </Text>
         <TouchableOpacity
           onPress={() => {
-            buttonPressHandler({
-              id,
-              index,
-              type,
-              roasted,
-              imagelink_square,
-              name,
-              special_ingredient,
-              prices: [{...price, quantity: 1}],
-            });
+            
           }}>
         </TouchableOpacity>
       </View>

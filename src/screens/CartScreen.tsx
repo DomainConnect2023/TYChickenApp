@@ -42,22 +42,23 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
         setUserID(await AsyncStorage.getItem('UserID') ?? "");
         setFetchedData([]);
         try {
-            let sql = "SELECT *, SUM(quantity) as totalQuantity FROM Carts GROUP BY originid";
+            let sql = "SELECT * FROM Carts";
             db.transaction((tx) => {
                 tx.executeSql(sql, [], async (tx, resultSet) => {
                     var length = resultSet.rows.length;
                     let finalTotal = 0;
                     let savedata: CartItem[] = [];
                     for (var i = 0; i < length; i++) {
-                        finalTotal = finalTotal + (resultSet.rows.item(i).price*resultSet.rows.item(i).totalQuantity);
+                        finalTotal = finalTotal + (resultSet.rows.item(i).price*resultSet.rows.item(i).quantity);
                         const newData: CartItem = {
                             id: resultSet.rows.item(i).id,
                             originid: resultSet.rows.item(i).originid,
                             name: resultSet.rows.item(i).name,
-                            type: resultSet.rows.item(i).type,
+                            category: resultSet.rows.item(i).category,
+                            type: resultSet.rows.item(i).unit,
                             picture: resultSet.rows.item(i).picture,
                             price: resultSet.rows.item(i).price,
-                            quantity: resultSet.rows.item(i).totalQuantity,
+                            quantity: resultSet.rows.item(i).quantity,
                         };
                         savedata.push(newData);
                     }
@@ -67,10 +68,11 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
                     }else{
                         setShowNoItemImg(false);
                     }
+
                     setTotalPrice(finalTotal);
                     setFetchedData(savedata);
                 }, (error) => {
-                    console.log("List user error", error);
+                    console.log("List error", error);
                 })
             });
             // setFetchedData(newData.itemList);
@@ -137,7 +139,7 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
                             <TouchableOpacity onPress={async ()=>{
                                 const newData = fetchedData.filter(data => data.originid !== item.originid);
                                 setFetchedData(newData);
-                                await deleteDB(item.originid);
+                                await deleteDB(item.originid, item.category);
                                 if(newData.length==0){
                                     setShowNoItemImg(true);
                                 }
@@ -150,8 +152,9 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
                                 />
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.CardSubtitle}>RM {item.price.toFixed(2)} x {item.quantity}</Text>
-                        <Text style={styles.CardSubtitle}>{item.type} KG</Text>
+                        <Text style={[styles.CardTitle, {fontSize: FONTSIZE.size_16}]}>{item.category}</Text>
+                        <Text style={[styles.CardSubtitle, {color: COLORS.primaryOrangeHex}]}>RM {item.price.toFixed(2)} x {item.quantity}</Text>
+                        <Text style={[styles.CardSubtitle, {color: COLORS.primaryOrangeHex}]}>{item.type}</Text>
                         <View style={{flexDirection: "row", justifyContent: 'space-between',}}>
                             <Pressable
                                 style={css.miniPlusButton}
@@ -160,19 +163,19 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
 
                                         let newVar = item.quantity-1;
                                         const updatedData = fetchedData.map((data) => {
-                                            if (data.originid === item.originid) {
+                                            if (data.id === item.id) {
                                                 return { ...data, quantity: newVar };
                                             }
                                             return data;
                                         });
                                         setFetchedData(updatedData);
-                                        updateData(item.originid, newVar);
+                                        updateData(item.originid, item.category, newVar);
                                         let newTotalPrice = totalPrice-item.price;
                                         setTotalPrice(newTotalPrice);
                                     }else{
                                         const newData = fetchedData.filter(data => data.originid !== item.originid);
                                         setFetchedData(newData);
-                                        await deleteDB(item.originid);
+                                        await deleteDB(item.originid, item.category);
                                         if(newData.length==0){
                                             setShowNoItemImg(true);
                                         }
@@ -189,13 +192,13 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
                                 onChangeText={(text)=>{
                                     if(parseInt(text)>0){
                                         const updatedData = fetchedData.map((data) => {
-                                            if (data.originid === item.originid) {
+                                            if (data.id === item.id) {
                                                 return { ...data, quantity: parseInt(text) };
                                             }
                                             return data;
                                         });
                                         setFetchedData(updatedData);
-                                        updateData(item.originid, parseInt(text));
+                                        updateData(item.originid, item.category, parseInt(text));
                                         if(parseInt(text)>item.quantity){
                                             let newTotalPrice = totalPrice+(item.price*(parseInt(text)-item.quantity));
                                             setTotalPrice(newTotalPrice);
@@ -211,13 +214,13 @@ const CartPageScreen = ({navigation}: {navigation:any}) => {
                                 onPress={async () => {
                                     let newVar = item.quantity+1;
                                     const updatedData = fetchedData.map((data) => {
-                                        if (data.originid === item.originid) {
+                                        if (data.id === item.id) {
                                             return { ...data, quantity: newVar };
                                         }
                                         return data;
                                     });
                                     setFetchedData(updatedData);
-                                    updateData(item.originid, newVar);
+                                    updateData(item.originid, item.category, newVar);
                                     let newTotalPrice = totalPrice+item.price;
                                     setTotalPrice(newTotalPrice);
                                 }}

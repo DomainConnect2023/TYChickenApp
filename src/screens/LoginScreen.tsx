@@ -75,18 +75,18 @@ const LoginScreen = ({navigation}: any) => {
                     setPassword("");
 
                     if(res.json().label=="user"){
-                        await AsyncStorage.setItem('UserEmail', res.json().email);
-                        await AsyncStorage.setItem('label', res.json().label);
+                        await AsyncStorage.setItem('UserEmail', res.json().email ?? "");
+                        await AsyncStorage.setItem('label', res.json().label ?? "");
 
                         // check user is first time login or not
-                        if(await res.json().isFirsttime==true){
-                            navigation.navigate("FirstTime", {
-                                key: username, 
-                                name: username,
-                            });
-                        }else{
+                        // if(await res.json().isFirsttime==true || await res.json().email==null){
+                        //     navigation.navigate("FirstTime", {
+                        //         key: username, 
+                        //         name: username,
+                        //     });
+                        // }else{
                             navigation.navigate("Tab", { screen: 'Home'});
-                        }
+                        // }
                     }else if(res.json().label=="Admin"){
                         await AsyncStorage.setItem('label', "admin");
                         navigation.navigate("CustomDrawer", { screen: 'Home'});
