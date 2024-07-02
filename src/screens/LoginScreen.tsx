@@ -59,6 +59,7 @@ const LoginScreen = ({navigation}: any) => {
     // };
 
     const loginAPI = async() => {
+        
         try {
             RNFetchBlob.config({ trusty: true }).fetch("POST","https://"+IPaddress+"/api/Login", 
             { "Content-Type": "application/json" },
@@ -67,15 +68,16 @@ const LoginScreen = ({navigation}: any) => {
                 "Password": password,
                 // "Token": await AsyncStorage.getItem("fcmtoken")
             })).then(async (res) => {
+               
                 if (await res.json().isSuccess == true) {
                     await AsyncStorage.setItem('UserID', username);
                     await AsyncStorage.setItem('UserName', res.json().displayName);
-
                     setUserName("");
                     setPassword("");
 
                     if(res.json().label=="user"){
-                        await AsyncStorage.setItem('UserEmail', res.json().email);
+                        
+                        await AsyncStorage.setItem('UserEmail', res.json().Email ?? "");
                         await AsyncStorage.setItem('label', res.json().label);
 
                         // check user is first time login or not

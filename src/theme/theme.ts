@@ -62,6 +62,8 @@ interface Color {
   normalLightGreyHex: string;
   thirdBlackRGBA: string;
   headerColor: string;
+  CardGoodStatusColorRGBA:string
+  CardBadStatusColorRGBA:string
 }
 
 export const COLORS: Color = {
@@ -84,6 +86,9 @@ export const COLORS: Color = {
   secondaryBlackRGBA: 'rgba(0,0,0,0.7)',
   thirdBlackRGBA: 'rgba(42, 45, 60, 0.48)',
   headerColor: "#F9F9F9",
+  CardGoodStatusColorRGBA:'rgba(0, 214, 4)',
+  CardBadStatusColorRGBA:'rgba(166, 34, 17)'
+  
 };
 
 interface FontFamily {

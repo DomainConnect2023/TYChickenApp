@@ -23,7 +23,7 @@ export interface ChickenProductProps {
     unit: string;
     quantity: number;
 }
-  
+
 export interface CartItem {
     id: number;
     originid: number;
@@ -37,11 +37,22 @@ export interface CartItem {
 export interface PersonalData {
     key: string;
     name: string;
-} 
+}
 
 export interface OrderHistoryCardProps {
     doRef: string;
     created_At: string;
+}
+
+export interface PendingListCardProps {
+    doRef: string;
+    created_At: string;
+    debtor:string;
+    area:string;
+    currency:string;
+    vehicle:string;
+    isApprove: string;
+    debtorName:string;
 }
 
 export interface HistoryCardProps {
@@ -88,13 +99,13 @@ export const GridItem = ({ icon, title }: ItemProps) => {
     return (
         <View style={css.gridCSS}>
             <View>{icon}</View>
-            <View style={{marginHorizontal: 10, marginTop: 10}}>
+            <View style={{ marginHorizontal: 10, marginTop: 10 }}>
                 <Text style={css.gridTitle}>{title}</Text>
             </View>
         </View>
     );
 };
-  
+
 export function currencyFormat(num: number) {
     return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
