@@ -19,7 +19,8 @@ const CustomDialog = ({ visible, onClose, DoneFunction }: {visible: any, onClose
   const handleConfirm = async () => {
     setProcessData(true);
     const now = new Date();
-    const todayDate = `${now.toISOString().split('T')[0]} ${now.toLocaleTimeString()}`;
+    now.setTime(now.getTime()+8*60*60*1000);
+    // const todayDate = `${now.toISOString().split('T')[0]} ${now.toLocaleTimeString()}`;
     const userCode = await AsyncStorage.getItem('UserID') ?? "";
     const IPaddress = await AsyncStorage.getItem('IPAddress') ?? "";
     try {
@@ -65,7 +66,7 @@ const CustomDialog = ({ visible, onClose, DoneFunction }: {visible: any, onClose
                     "Ais": numofIce,
                     "Pedal": numofPedal,
                     "Hati": numofHati,
-                    "OrderTime": todayDate.toString()
+                    "OrderTime": now
                 })).then(async (res) => {
                     if(res.json().isSuccess==true){
                       DoneFunction();
