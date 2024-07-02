@@ -46,6 +46,7 @@ export interface OrderHistoryCardProps {
 }
 
 export interface PendingListCardProps {
+    position: string;
     doRef: string;
     created_At: string;
     debtor:string;

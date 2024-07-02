@@ -15,6 +15,7 @@ import { OrderHistoryCardProps, PendingListCardProps } from '../components/Objec
 import LoadingAnimation from '../components/LoadingAnimation';
 import EmptyListAnimation from '../components/EmptyListAnimation';
 import RNFetchBlob from 'rn-fetch-blob';
+import OrderHistoryCard from '../components/OrderHistoryCard';
 
 const OrderHistoryPageScreen = ({ navigation }: { navigation: any }) => {
     const [tabBarHeight, setTabBarHeight] = useState<number>(0);
@@ -76,8 +77,9 @@ const OrderHistoryPageScreen = ({ navigation }: { navigation: any }) => {
 
         const userCode = await AsyncStorage.getItem('UserID') ?? "";
         const IPaddress = await AsyncStorage.getItem('IPAddress') ?? "";
+        const userLabel = await AsyncStorage.getItem('label') ?? "";
 
-        setUserLabel(await AsyncStorage.getItem('label') ?? "");
+        setUserLabel(userLabel);
 
         if (await AsyncStorage.getItem('label') == "admin") {
             setTabBarHeight(0);
@@ -89,30 +91,45 @@ const OrderHistoryPageScreen = ({ navigation }: { navigation: any }) => {
         try {
 
             RNFetchBlob.config({ trusty: true })
-                .fetch("GET", "https://" + IPaddress + "/admin/GetPendingList?page=" + page,
+                .fetch("GET", "https://"+IPaddress+"/api/GetHistory?page="+page+"&debtor="+userCode,
+                    // .fetch("GET", "https://" + IPaddress + "/admin/GetPendingList?page=" + page,
                 ).then(async (res) => {
-                    // console.log(res.json());
 
                     const responseData = await res.json();
                     if (responseData.isSuccess == true) {
+                        let formattedMessages;
+
+                        if(userLabel=="admin"){
+                            // Admin Part
+                            formattedMessages = responseData.pendingList.map((item: any) => {
+                                return {
+                                    doRef: item.refNo,
+                                    created_At: item.createDate.split('T')[0],
+                                    debtor:item.debtor,
+                                    area:item.area,
+                                    currency:item.currency,
+                                    vehicle:item.vehicle,
+                                    isApprove:item.isApprove,
+                                    debtorName:item.debtorName
+                                };
+                            });
+                        }else{
+                            // Customer Part
+                            formattedMessages = responseData.doRef.map((item: any) => {
+                                return {
+                                    doRef: item.doRef,
+                                    created_At: item.created_At.split('T')[0],
+                                    isApprove: item.status
+                                    // debtor:item.debtor,
+                                    // area:item.area,
+                                    // currency:item.currency,
+                                    // vehicle:item.vehicle,
+                                    // isApprove:item.isApprove,
+                                    // debtorName:item.debtorName
+                                };
+                            });
+                        }
                         
-                        // console.log(res.json().PendingList)
-                        // setItemFinish(false);
-                        // setProcessData(false);
-
-                        const formattedMessages = responseData.pendingList.map((item: any) => {
-                            return {
-                                doRef: item.refNo,
-                                created_At: item.createDate.split('T')[0],
-                                debtor:item.debtor,
-                                area:item.area,
-                                currency:item.currency,
-                                vehicle:item.vehicle,
-                                isApprove:item.isApprove,
-                                debtorName:item.debtorName
-                            };
-                        });
-
                         if(formattedMessages.length == 0){
                             if(page==0){
                                 setShowNoItemImg(true);
@@ -198,47 +215,17 @@ const OrderHistoryPageScreen = ({ navigation }: { navigation: any }) => {
                 //     createdDate: item.created_At, 
                 // });
             }} >
-                <View style={css.HistoryCardContainer}>
-                    <View style={css.HistoryTitleContainer}>
-                        <Text style={styles.CardTitle}>Ref: {item.doRef}</Text>
-
-                        <Text style={styles.CardDate}>{item.created_At}</Text>
-                    </View>
-
-                    <View style={css.HistoryCardContent}>
-
-                        <Text style={styles.CardSubtitle}>
-                            Debtor: {' '}
-
-                            <Text style={styles.CardTextHightlight}>
-                                {item.debtorName}  [{item.debtor}]
-                            </Text>
-                        </Text>
-
-                        <Text style={styles.CardSubtitle}>
-                            Area: {' '}
-                            
-                            <Text style={styles.CardTextHightlight}>
-                                {item.area} 
-                            </Text>
-
-                            {'  '}Vehicle: {' '}
-                            <Text style={styles.CardTextHightlight}>
-                                {item.vehicle} 
-                            </Text>
-                        </Text>
-                    </View>
-
-                    <View style={css.HistoryCardFooter}>
-                            <View style={styles.CardStatus}>
-                                <Image source={item.isApprove !=null ? require('../assets/app_images/GreenApprove.png') :require('../assets/app_images/Red_Pending.png')} style={styles.CardStatusImage} />
-                            </View>
-
-                        <Text style={css.CardPriceCurrency}>
-                            View Detail
-                        </Text>
-                    </View>
-                </View>
+                <OrderHistoryCard 
+                    position={userLabel}
+                    doRef={item.doRef} 
+                    created_At={item.created_At} 
+                    debtor={item.debtor} 
+                    area={item.area} 
+                    currency={item.currency} 
+                    vehicle={item.vehicle} 
+                    isApprove={item.isApprove} 
+                    debtorName={item.debtorName}                    
+                />
             </TouchableOpacity>
         );
     };

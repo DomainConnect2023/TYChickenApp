@@ -364,7 +364,7 @@ export const css = StyleSheet.create({
     NumberOfOrder: {
         textAlign:"center", 
         alignSelf: "center", 
-        height: SPACING.space_24, 
+        height: SPACING.space_28, 
         fontSize: FONTSIZE.size_14,
         elevation: 3,
     },
