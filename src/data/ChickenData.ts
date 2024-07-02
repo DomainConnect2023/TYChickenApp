@@ -472,56 +472,33 @@ export const CategoryList = {
     "itemList": [
         {
             id: 1,
-            value: "Without Cut",
+            value: "一整只",
             quantity: 0,
         },
         {
             id: 2,
-            value: "Cut 2 Piece",
+            value: "切一半",
             quantity: 0,
         },
         {
             id: 3,
-            value: "Cut 4 Piece",
+            value: "切1片",
             quantity: 0,
         },
         {
             id: 4,
-            value: "Cut 6 Piece",
+            value: "切4片",
             quantity: 0,
         },
         {
             id: 5,
-            value: "Cut 8 Piece",
+            value: "切9片",
+            quantity: 0,
+        },
+        {
+            id: 6,
+            value: "Curry Cut",
             quantity: 0,
         },
     ]
 }
-
-export const CategoryListTest = [
-    {
-        id: 1,
-        value: "Without Cut",
-        quantity: 0,
-    },
-    {
-        id: 2,
-        value: "Cut 2 Piece",
-        quantity: 0,
-    },
-    {
-        id: 3,
-        value: "Cut 4 Piece",
-        quantity: 0,
-    },
-    {
-        id: 4,
-        value: "Cut 6 Piece",
-        quantity: 0,
-    },
-    {
-        id: 5,
-        value: "Cut 8 Piece",
-        quantity: 0,
-    },
-]

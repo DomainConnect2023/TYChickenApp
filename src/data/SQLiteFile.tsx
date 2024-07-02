@@ -15,20 +15,29 @@ export async function createTable() {
         tx.executeSql(
             "CREATE TABLE IF NOT EXISTS "+
             "Carts (id INTEGER PRIMARY KEY AUTOINCREMENT, "+
-            "originid INTEGER, name TEXT, type TEXT, picture TEXT, price INTEGER, quantity INTEGER)"
+            "originid TEXT, name TEXT, category TEXT, unit TEXT, picture TEXT, price INTEGER, quantity INTEGER, remark TEXT)"
         )
     })
 }
 
-export async function selectData (originid:number): Promise<{checkLength: number, numberOfQuantity: number}> {
+    // originid: productcode
+    // name: product name (菜园母鸡)
+    // category: 切4片，切9片
+    // unit：kg, box
+    // picture： product照片
+    // price： 当下的价格
+    // quantity：数量
+    // remark：remark
+
+export async function selectData (setID:string, setCatogory:string): Promise<{checkLength: number, numberOfQuantity: number}> {
     return new Promise((resolve, reject) => {
-        let sql = "SELECT SUM(quantity) as totalQuantity FROM Carts WHERE originid = ? GROUP BY originid";
+        let sql = "SELECT * FROM Carts WHERE originid = ? AND category = ?";
         db.transaction((tx) => {
-            tx.executeSql(sql, [originid], async (tx, resultSet) => {
+            tx.executeSql(sql, [setID, setCatogory], async (tx, resultSet) => {
                 var checkLength = resultSet.rows.length;
                 var numberOfQuantity;
                 if(checkLength>0){
-                    numberOfQuantity = resultSet.rows.item(0).totalQuantity;
+                    numberOfQuantity = resultSet.rows.item(0).quantity;
                     resolve({ checkLength, numberOfQuantity });
                 }else{
                     numberOfQuantity = 0;
@@ -40,16 +49,15 @@ export async function selectData (originid:number): Promise<{checkLength: number
         });
     });
 }
-
     
-export async function addData (setID:number , setName:string, setType:string, setPicture:any, setPrice:number, setQuantity:number) {
-    let sql = "INSERT INTO Carts (originid, name, type, picture, price, quantity) VALUES (?, ?, ?, ?, ?, ?)";
-    let params = [setID, setName, setType, "", setPrice, setQuantity];
+export async function addData (setID:string, setName:string, setCatogory:string, setUnit:string, setPicture:any, setPrice:number, setQuantity:number, setRemark:string) {
+    let sql = "INSERT INTO Carts (originid, name, category, unit, picture, price, quantity, remark) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    let params = [setID, setName, setCatogory, setUnit, "", setPrice, setQuantity, setRemark];
     db.executeSql(sql, params, (result) => {
-        // Snackbar.show({
-        //     text: "Add to Cart successfully.",
-        //     duration: Snackbar.LENGTH_SHORT,
-        // });
+        Snackbar.show({
+            text: "Add to Cart successfully.",
+            duration: Snackbar.LENGTH_SHORT,
+        });
         return "success";
     }, (error) => {
         console.log("Error", error);
@@ -58,9 +66,9 @@ export async function addData (setID:number , setName:string, setType:string, se
 }
 
 
-export async function updateData (originid:number, setQuantity:number) {
-    let sql = "UPDATE Carts SET quantity = ? WHERE originid = ?";
-    let params = [setQuantity, originid];
+export async function updateData (setCode:string, setCategory:string, setQuantity:number) {
+    let sql = "UPDATE Carts SET quantity = ? WHERE originid = ? AND category = ?";
+    let params = [setQuantity, setCode, setCategory];
     db.executeSql(sql, params, (result) => {
         return "success";
     }, (error) => {
@@ -70,9 +78,9 @@ export async function updateData (originid:number, setQuantity:number) {
 }
 
 
-export async function deleteDB(originid:number) {
-    let sql = "DELETE FROM Carts WHERE originid = ?";
-    let params = [originid];
+export async function deleteDB(setCode:string, setCategory:string) {
+    let sql = "DELETE FROM Carts WHERE originid = ? AND category = ?";
+    let params = [setCode, setCategory];
     db.executeSql(sql, params, (resultSet) => {
         return Alert.alert("Delete Successfully");
     }, (error) => {

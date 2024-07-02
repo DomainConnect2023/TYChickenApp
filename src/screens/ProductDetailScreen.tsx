@@ -20,6 +20,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
     const [userID, setUserID] = useState('');
     const [showAnimation, setShowAnimation] = useState(false);
     const [countItem, setCountItem] = useState<number>(0);
+    const [remark, setRemark] = useState('');
 
     const [fetchedData, setFetchedData] = useState<CategoryProps[]>([]);
 
@@ -40,7 +41,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
 
     const checkCartNum = async () => {
         try {
-            let sql = "SELECT * FROM Carts GROUP BY id";
+            let sql = "SELECT * FROM Carts";
             db.transaction((tx) => {
                 tx.executeSql(sql, [], async (tx, resultSet) => {
                     var length = resultSet.rows.length;
@@ -74,34 +75,28 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
         setProcessData(false);
     };
 
-    const addToCartApi = async(originid: number, name: string, type: string, picture: any, price: number, quantity: number) => {
-        if(Number.isNaN(quantity) || quantity<=0){
-            Snackbar.show({
-                text: "Your item quantity can't be empty. ",
-                duration: Snackbar.LENGTH_SHORT,
-            });
-        }else{
-            try {
-                const { checkLength, numberOfQuantity } = await selectData(originid);
-                if(checkLength>0){
-                    let submitTotal = numberOfQuantity+quantity;
-                    await updateData(originid, submitTotal);
-                    setShowAnimation(true);
-                    setTimeout(() => {
-                        setShowAnimation(false);
-                    }, 800);
-                }else{
-                    await addData(originid,name, type, picture, price, quantity);
-                    setShowAnimation(true);
-                    setTimeout(() => {
-                        setShowAnimation(false);
-                    }, 800);
+    const addToCartApi = async() => {
+        fetchedData.forEach(async (item) => {
+            if(item.quantity>0){
+                try {
+                    const { checkLength, numberOfQuantity } = await selectData(key, item.value);
+                    if(checkLength>0){
+                        let submitTotal = numberOfQuantity+item.quantity;
+                        await updateData(key, item.value, submitTotal);
+                    }else{
+                        await addData(key, name, item.value, type, picture, price, item.quantity, remark);
+                        await checkCartNum();
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
                 }
-            } catch (error) {
-                console.error("Error:", error);
             }
-            await checkCartNum();
-        }
+        });
+
+        setShowAnimation(true);
+        setTimeout(() => {
+            setShowAnimation(false);
+        }, 800);
     }
     
 
@@ -135,7 +130,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                 <View style={[css.cardContainer, {marginBottom: 60}]}>
                     <View style={css.CardContainerTitle}>
                         <Text style={css.ScreenTitle}>
-                            {name}
+                            {name} - {type} 
                         </Text>
                         <View>
                             <Text style={[css.ScreenTitle, {color: COLORS.primaryRedHex}]}>
@@ -147,6 +142,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                     <View>
                         <View style={[css.CategoryScrollViewContainer, {alignSelf: "center"}]}>
 
+                            {/* showing category list in here */}
                             {fetchedData.map((item) => (
                                 <View style={styles.CategoryContainer} key={item.id}>
                                     <Text style={styles.CategoryText}>{item.value}</Text>
@@ -215,6 +211,7 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                                     </View>
                                 </View>
                             ))}
+                            {/* end showing category list */}
 
                         </View>
                     </View>
@@ -223,40 +220,25 @@ const ProductDetailPageScreen = ({navigation}: {navigation:any}) => {
                     
                     <View>
                         <Text style={css.DetailTitle}>
-                            Description
+                            Remark
                         </Text>
-                        <Text style={css.DescriptionText}>
+                        <TextInput
+                            style={{alignSelf:"center",width: "90%", height: 80}}
+                            mode="outlined"
+                            label="Additional Remark"
+                            value={remark}
+                            onChangeText={setRemark}
+                        />
+                        {/* <Text style={css.DescriptionText}>
                             {description} asdA fasd asdf asdA fasd asdf asdasdA fasd asdf asdA fasd A fasd aA fasd asdf sdA fasdsdA fasd asdf asdA fasd asdf asdA fasd asdf asdA fasd asdf a asdf aasd asdf a
-                        </Text>
+                        </Text> */}
                     </View>
                 </View>
                 <View style={css.CartFooter}>
                     <Pressable
                         style={css.AddtoCartButton}
                         onPress={async () => {
-                            // console.log(fetchedData);
-
-                            let categorySelected;
-                            categorySelected="10";
-                            // categoryIndex.index === 1 ? (
-                            //     categorySelected="10"
-                            // ) : (
-                            //     categoryIndex.index === 2 ? (
-                            //         categorySelected="50"
-                            //     ) : (
-                            //         categorySelected="100"
-                            //     )
-                            // );
-
-                            addToCartApi(
-                                key, 
-                                name, 
-                                categorySelected, 
-                                '../assets/chicken_assets/cartPic.png', 
-                                price, 
-                                10
-                                // parseInt(quantity)
-                            );
+                            addToCartApi();
                         }}
                     >
                         <Text style={css.AddtoCartText}>Add to Cart</Text>
@@ -284,7 +266,7 @@ const styles = StyleSheet.create({
     CategoryText: {
         textAlignVertical: 'center',
         height: SPACING.space_50,
-        fontSize: FONTSIZE.size_16,
+        fontSize: FONTSIZE.size_14,
         fontFamily: FONTFAMILY.poppins_semibold,
         fontWeight: "bold",
         color: COLORS.primaryLightGreyHex,

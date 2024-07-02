@@ -130,9 +130,9 @@ const ProductPageScreen = ({navigation}: {navigation:any}) => {
             <TouchableOpacity onPress={() => {
                 if(item.active=="Y"){
                     navigation.navigate('ProductDetail', {
-                        key: item.code, 
+                        key: item.item, 
                         name: item.itemName, 
-                        type: item.category, 
+                        type: item.unit, 
                         price: item.price,
                         picture: require('../assets/chicken_assets/noItem.jpg'),
                         description: ""
